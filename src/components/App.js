@@ -1,12 +1,14 @@
 import React from "react";
-import SearchBar from "./SearchBar";
-import Attribution from "./Attribution";
+import SearchBar from "components/SearchBar";
+import SortableTable from "components/Record";
+import Attribution from "components/Attribution";
 
 class App extends React.Component {
   render() {
     return (
       <>
         <SearchBar />
+        <SortableTable />
         <Attribution />
       </>
     );
