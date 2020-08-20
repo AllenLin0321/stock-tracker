@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Table, Button } from "antd";
+import { Table, Button, Tag } from "antd";
 import {
   sortableContainer,
   sortableElement,
@@ -10,7 +10,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import arrayMove from "array-move";
 import * as actions from "actions";
 import "components/Record.scss";
-
+import { DeleteOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: "pointer", color: "#999" }} />
 ));
@@ -39,7 +39,26 @@ class Record extends React.Component {
       },
       {
         title: "Change",
-        dataIndex: "change",
+        key: "change",
+        render: text => {
+          const changePercent = (text.change / text.previousClose) * 100;
+          const isRise = changePercent > 0;
+          return (
+            <div>
+              <div style={{ color: isRise ? "green" : "red" }}>
+                {isRise && "+"}
+                {text.change}
+              </div>
+              <Tag
+                color={isRise ? "green" : "red"}
+                icon={isRise ? <RiseOutlined /> : <FallOutlined />}
+              >
+                {isRise && "+"}
+                {changePercent.toFixed(2)}%
+              </Tag>
+            </div>
+          );
+        },
       },
       {
         title: "High",
@@ -50,18 +69,22 @@ class Record extends React.Component {
         dataIndex: "low",
       },
       {
+        title: "Updated Time",
+        dataIndex: "updatedTime",
+      },
+      {
         title: "Action",
         key: "action",
         render: text => {
           return (
             <Button
-              type="link"
+              type="danger"
+              shape="circle"
+              icon={<DeleteOutlined />}
               onClick={() => {
                 this.props.removeStock(text);
               }}
-            >
-              Delete
-            </Button>
+            />
           );
         },
       },
