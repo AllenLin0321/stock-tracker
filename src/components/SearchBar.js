@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "actions";
-import { Input, message } from "antd";
+import { Input, message, Button } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import { apiGetStock } from "../api";
+import "components/SearchBar.scss";
 
 export class SearchBar extends Component {
-  state = { searchVal: null, latestPrice: null };
+  state = { searchVal: null };
 
   onInputChange = event => {
     this.setState({ searchVal: event.target.value.toUpperCase() });
@@ -15,31 +17,49 @@ export class SearchBar extends Component {
     if (symbol === "") return;
     try {
       const { data } = await apiGetStock(symbol);
-      this.setState({ latestPrice: data.quote.latestPrice });
       this.props.saveStock(data.quote);
       this.setState({ searchVal: "" });
     } catch (error) {
-      message.error(error.response.data);
+      console.log("error: ", error);
+      if (error.response) {
+        message.error(error.response.data);
+      }
     }
+  };
+
+  onClickReload = async () => {
+    this.props.stocks.map(async stock => {
+      await this.onClickSearch(stock.symbol);
+    });
   };
 
   render() {
     return (
-      <div>
+      <div className="searchBar__wrapper">
         <Input.Search
           allowClear
           type="text"
-          placeholder="input search text"
-          enterButton="Search"
+          placeholder="代碼"
+          enterButton
           size="large"
           value={this.state.searchVal}
           onSearch={this.onClickSearch}
           onChange={this.onInputChange}
         />
-        <h2>{this.state.latestPrice}</h2>
+        <Button
+          className="searchBar__reload-btn"
+          type="primary"
+          icon={<ReloadOutlined />}
+          size="large"
+          onClick={this.onClickReload}
+        />
       </div>
     );
   }
 }
 
-export default connect(null, actions)(SearchBar);
+const mapStateToProps = state => {
+  return { stocks: state.stocks };
+};
+
+export default connect(mapStateToProps, actions)(SearchBar);

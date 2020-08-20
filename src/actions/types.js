@@ -1,1 +1,3 @@
 export const SAVE_STOCK = "SAVE_STOCK";
+export const REMOVE_STOCK = "REMOVE_STOCK";
+export const CHANGE_STOCK_ORDER = "CHANGE_STOCK_ORDER";
