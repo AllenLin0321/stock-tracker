@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import moment from "moment";
-import * as actions from "actions";
 import { Input, message, Button } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
-import { apiGetStock } from "../api";
+
+import * as actions from "actions";
+import { apiGetStock } from "api";
 import "components/SearchBar.scss";
 
 export class SearchBar extends Component {
@@ -18,11 +19,14 @@ export class SearchBar extends Component {
     if (symbol === "") return;
     try {
       const { data } = await apiGetStock(symbol);
-      this.props.saveStock({
-        ...data.quote,
-        updatedTime: moment().format("HH:mm"),
-      });
-      this.setState({ searchVal: "" });
+
+      if (data.quote) {
+        this.props.saveStock({
+          ...data.quote,
+          updatedTime: moment().format("HH:mm"),
+        });
+        this.setState({ searchVal: "" });
+      }
     } catch (error) {
       console.log("error: ", error);
       if (error.response) {

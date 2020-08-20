@@ -124,6 +124,7 @@ class Record extends React.Component {
         dataSource={stocks}
         columns={this.state.columns}
         rowKey="symbol"
+        scroll={{ y: 200 }}
         components={{
           body: {
             wrapper: DraggableContainer,
