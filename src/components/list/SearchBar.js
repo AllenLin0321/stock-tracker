@@ -6,7 +6,7 @@ import { ReloadOutlined } from "@ant-design/icons";
 
 import * as actions from "actions";
 import { apiGetStock } from "api";
-import "components/SearchBar.scss";
+import "components/list/SearchBar.scss";
 
 export class SearchBar extends Component {
   state = {
@@ -45,12 +45,12 @@ export class SearchBar extends Component {
     if (stocks[page].length === 0) return;
     this.setState({ isReloadLoading: true });
 
-    stocks[page].map(stock => {
+    stocks[page].forEach(stock => {
       promiseArr.push(apiGetStock(stock.symbol));
     });
 
     Promise.all(promiseArr).then(res => {
-      res.map(({ data }) => {
+      res.forEach(({ data }) => {
         saveStock(this.getStoreData(data));
       });
       this.setState({ isReloadLoading: false });

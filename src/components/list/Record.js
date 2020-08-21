@@ -9,7 +9,7 @@ import {
 import { MenuOutlined } from "@ant-design/icons";
 import arrayMove from "array-move";
 import * as actions from "actions";
-import "components/Record.scss";
+import "components/list/Record.scss";
 import { DeleteOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: "pointer", color: "#999" }} />

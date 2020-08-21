@@ -7,7 +7,7 @@ import {
   MailOutlined,
   CoffeeOutlined,
 } from "@ant-design/icons";
-import "components/NavBar.scss";
+import "components/common/NavBar.scss";
 
 const { TabPane } = Tabs;
 

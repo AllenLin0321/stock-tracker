@@ -1,6 +1,6 @@
 import React from "react";
-import SearchBar from "components/SearchBar";
-import Record from "components/Record";
+import SearchBar from "components/list/SearchBar";
+import Record from "components/list/Record";
 
 const List1Page = () => {
   return (
