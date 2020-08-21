@@ -82,7 +82,10 @@ class Record extends React.Component {
               shape="circle"
               icon={<DeleteOutlined />}
               onClick={() => {
-                this.props.removeStock(text);
+                this.props.removeStock({
+                  newStockArr: text,
+                  page: this.props.page,
+                });
               }}
             />
           );
@@ -92,12 +95,14 @@ class Record extends React.Component {
   };
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { stocks } = this.props;
+    const { stocks, page } = this.props;
     if (oldIndex !== newIndex) {
-      const newData = arrayMove([].concat(stocks), oldIndex, newIndex).filter(
-        el => !!el
-      );
-      this.props.changeStockOrder(newData);
+      const newStockArr = arrayMove(
+        [].concat(stocks),
+        oldIndex,
+        newIndex
+      ).filter(el => !!el);
+      this.props.changeStockOrder({ newStockArr, page });
     }
   };
 
@@ -136,8 +141,8 @@ class Record extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { stocks: state.stocks };
+const mapStateToProps = (state, ownProps) => {
+  return { stocks: state.stocks[ownProps.page] };
 };
 
 export default connect(mapStateToProps, actions)(Record);

@@ -9,7 +9,11 @@ import { apiGetStock } from "api";
 import "components/SearchBar.scss";
 
 export class SearchBar extends Component {
-  state = { searchVal: null };
+  state = {
+    searchVal: null,
+    isSearchBtnLoading: false,
+    isReloadLoading: false,
+  };
 
   onInputChange = event => {
     this.setState({ searchVal: event.target.value.toUpperCase() });
@@ -17,14 +21,12 @@ export class SearchBar extends Component {
 
   onClickSearch = async symbol => {
     if (symbol === "") return;
+    this.setState({ isSearchBtnLoading: true });
     try {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.saveStock({
-          ...data.quote,
-          updatedTime: moment().format("HH:mm"),
-        });
+        this.props.saveStock(this.getStoreData(data));
         this.setState({ searchVal: "" });
       }
     } catch (error) {
@@ -32,14 +34,34 @@ export class SearchBar extends Component {
       if (error.response) {
         message.error(error.response.data);
       }
+    } finally {
+      this.setState({ isSearchBtnLoading: false });
     }
   };
 
   onClickReload = async () => {
-    this.props.stocks.map(async stock => {
-      await this.onClickSearch(stock.symbol);
+    let promiseArr = [];
+    const { stocks, page, saveStock } = this.props;
+    if (stocks[page].length === 0) return;
+    this.setState({ isReloadLoading: true });
+
+    stocks[page].map(stock => {
+      promiseArr.push(apiGetStock(stock.symbol));
+    });
+
+    Promise.all(promiseArr).then(res => {
+      res.map(({ data }) => {
+        saveStock(this.getStoreData(data));
+      });
+      this.setState({ isReloadLoading: false });
     });
   };
+
+  getStoreData = data => ({
+    ...data.quote,
+    updatedTime: moment().format("HH:mm"),
+    page: this.props.page,
+  });
 
   render() {
     return (
@@ -48,6 +70,7 @@ export class SearchBar extends Component {
           allowClear
           type="text"
           placeholder="代碼"
+          loading={this.state.isSearchBtnLoading}
           enterButton
           size="large"
           value={this.state.searchVal}
@@ -60,6 +83,7 @@ export class SearchBar extends Component {
           icon={<ReloadOutlined />}
           size="large"
           onClick={this.onClickReload}
+          loading={this.state.isReloadLoading}
         />
       </div>
     );
