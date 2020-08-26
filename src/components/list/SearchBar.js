@@ -7,7 +7,6 @@ import { ReloadOutlined } from "@ant-design/icons";
 import * as actions from "actions";
 import { apiGetStock } from "api";
 import "components/list/SearchBar.scss";
-
 export class SearchBar extends Component {
   state = {
     searchVal: null,
@@ -22,6 +21,7 @@ export class SearchBar extends Component {
   onClickSearch = async symbol => {
     if (symbol === "") return;
     this.setState({ isSearchBtnLoading: true });
+
     try {
       const { data } = await apiGetStock(symbol);
 

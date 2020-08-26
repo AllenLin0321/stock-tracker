@@ -1,5 +1,14 @@
-import { SAVE_STOCK, CHANGE_STOCK_ORDER, REMOVE_STOCK } from "actions/types";
+import {
+  SAVE_STOCK,
+  CHANGE_STOCK_ORDER,
+  REMOVE_STOCK,
+  INITIAL_STOCK,
+} from "actions/types";
 
+export const initialStock = payload => ({
+  type: INITIAL_STOCK,
+  payload,
+});
 export const saveStock = payload => ({
   type: SAVE_STOCK,
   payload,

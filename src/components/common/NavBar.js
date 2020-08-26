@@ -17,7 +17,7 @@ class NavBar extends React.Component {
       {
         title: "觀察名單 1",
         icon: <LineChartOutlined />,
-        key: "list1",
+        key: null,
       },
       {
         title: "觀察名單 2",

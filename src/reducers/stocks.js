@@ -1,11 +1,21 @@
 import _ from "lodash";
 import * as types from "actions/types";
-const initialState = { 1: [], 2: [] };
+const initialState = { 1: [], 2: [] }; // 觀察名單 1 & 2
+
+function updateLocalStorage(newData) {
+  localStorage.removeItem("stocks");
+  localStorage.setItem("stocks", JSON.stringify(newData));
+}
 
 export default (state = initialState, { type, payload }) => {
+  let newState;
+
   switch (type) {
+    case types.INITIAL_STOCK:
+      return payload;
+
     case types.SAVE_STOCK:
-      return {
+      newState = {
         ...state,
         [payload.page]: [
           ...state[payload.page].filter(
@@ -14,18 +24,23 @@ export default (state = initialState, { type, payload }) => {
           _.omit(payload, "page"),
         ],
       };
+      updateLocalStorage(newState);
+      return newState;
 
     case types.REMOVE_STOCK:
-      return {
+      newState = {
         ...state,
         [payload.page]: state[payload.page].filter(
           stock => stock.symbol !== payload.newStockArr.symbol
         ),
       };
+      updateLocalStorage(newState);
+      return newState;
 
     case types.CHANGE_STOCK_ORDER:
-      return { ...state, [payload.page]: payload.newStockArr };
-
+      newState = { ...state, [payload.page]: payload.newStockArr };
+      updateLocalStorage(newState);
+      return newState;
     default:
       return state;
   }
