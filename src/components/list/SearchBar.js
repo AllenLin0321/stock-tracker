@@ -26,7 +26,7 @@ export class SearchBar extends Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.saveStock(this.getStoreData(data));
+        this.props.onSaveStock(this.getStoreData(data));
         this.setState({ searchVal: "" });
       }
     } catch (error) {
@@ -40,21 +40,30 @@ export class SearchBar extends Component {
   };
 
   onClickReload = async () => {
-    let promiseArr = [];
-    const { stocks, page, saveStock } = this.props;
+    const { stocks, page, onSaveStock } = this.props;
+    const delayIncrement = 200;
+    let delay = 0;
+
     if (stocks[page].length === 0) return;
     this.setState({ isReloadLoading: true });
 
-    stocks[page].forEach(stock => {
-      promiseArr.push(apiGetStock(stock.symbol));
+    let promiseArr = stocks[page].map(async stock => {
+      delay += delayIncrement;
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return apiGetStock(stock.symbol);
     });
 
-    Promise.all(promiseArr).then(res => {
+    try {
+      const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        saveStock(this.getStoreData(data));
+        onSaveStock(this.getStoreData(data));
       });
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
       this.setState({ isReloadLoading: false });
-    });
+    }
   };
 
   getStoreData = data => ({

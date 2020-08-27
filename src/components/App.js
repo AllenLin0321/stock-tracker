@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
+import { apiGetStock } from "api";
+import moment from "moment";
 
 import * as actions from "actions";
 import List1Page from "pages/List1Page";
@@ -11,26 +13,80 @@ import NavBar from "components/common/NavBar";
 import Attribution from "components/common/Attribution";
 import history from "history.js";
 
-const App = props => {
-  useEffect(() => {
+const initialPage = 1;
+
+class App extends React.Component {
+  state = { firstReload: true };
+
+  componentDidMount() {
     history.push("/");
     const savedStock = localStorage.getItem("stocks");
     if (savedStock) {
-      props.initialStock(JSON.parse(savedStock));
+      this.props.initialStock(JSON.parse(savedStock));
     }
-  }, []);
+  }
 
-  return (
-    <div>
-      <Router history={history}>
-        <Route path="/" exact component={List1Page} />
-        <Route path="/list2" exact component={List2Page} />
-        <Route path="/donate" component={DonatePage} />
-        <Route path="/rebalance" component={RebalancePage} />
-        <NavBar history={history} />
-        <Attribution />
-      </Router>
-    </div>
-  );
+  componentDidUpdate(prevProps) {
+    if (
+      this.state.firstReload &&
+      prevProps.stocks[initialPage].length !==
+        this.props.stocks[initialPage].length
+    ) {
+      this.reloadStocksPrice();
+    }
+  }
+
+  reloadStocksPrice = async () => {
+    const { stocks, onSaveStock, setTableLoading } = this.props;
+    const delayIncrement = 250;
+    let delay = 0;
+
+    if (stocks[initialPage].length === 0) return;
+
+    let promiseArr = stocks[initialPage].map(async stock => {
+      delay += delayIncrement;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return apiGetStock(stock.symbol);
+    });
+
+    try {
+      setTableLoading({ tableLoading: true });
+      const res = await Promise.all(promiseArr);
+      res.forEach(({ data }) => {
+        onSaveStock(this.getStoreData(data));
+      });
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
+      this.setState({ firstReload: false });
+      setTableLoading({ tableLoading: false });
+    }
+  };
+
+  getStoreData = data => ({
+    ...data.quote,
+    updatedTime: moment().format("HH:mm"),
+    page: initialPage,
+  });
+
+  render() {
+    return (
+      <div>
+        <Router history={history}>
+          <Route path="/" exact component={List1Page} />
+          <Route path="/list2" exact component={List2Page} />
+          <Route path="/donate" component={DonatePage} />
+          <Route path="/rebalance" component={RebalancePage} />
+          <NavBar history={history} />
+          <Attribution />
+        </Router>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return { stocks: state.stocks };
 };
-export default connect(null, actions)(App);
+
+export default connect(mapStateToProps, actions)(App);

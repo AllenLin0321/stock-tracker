@@ -1,10 +1,8 @@
 import React from "react";
 import { Tabs } from "antd";
 import {
-  SettingOutlined,
   LineChartOutlined,
   CalculatorOutlined,
-  MailOutlined,
   CoffeeOutlined,
 } from "@ant-design/icons";
 import "components/common/NavBar.scss";
@@ -17,7 +15,7 @@ class NavBar extends React.Component {
       {
         title: "觀察名單 1",
         icon: <LineChartOutlined />,
-        key: null,
+        key: "",
       },
       {
         title: "觀察名單 2",
@@ -28,16 +26,6 @@ class NavBar extends React.Component {
         title: "再平衡",
         icon: <CalculatorOutlined />,
         key: "rebalance",
-      },
-      {
-        title: "設定",
-        icon: <SettingOutlined />,
-        key: "setting",
-      },
-      {
-        title: "聯絡",
-        icon: <MailOutlined />,
-        key: "contact",
       },
       {
         title: "贊助",

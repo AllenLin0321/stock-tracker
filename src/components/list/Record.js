@@ -114,7 +114,7 @@ class Record extends React.Component {
   };
 
   render() {
-    const { stocks } = this.props;
+    const { stocks, loading } = this.props;
     const DraggableContainer = props => (
       <SortableContainer
         useDragHandle
@@ -130,6 +130,7 @@ class Record extends React.Component {
         columns={this.state.columns}
         rowKey="symbol"
         scroll={{ y: 200 }}
+        loading={loading.tableLoading}
         components={{
           body: {
             wrapper: DraggableContainer,
@@ -142,7 +143,7 @@ class Record extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return { stocks: state.stocks[ownProps.page] };
+  return { stocks: state.stocks[ownProps.page], loading: state.loading };
 };
 
 export default connect(mapStateToProps, actions)(Record);
