@@ -14,5 +14,9 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

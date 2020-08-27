@@ -1,3 +1,5 @@
+/* global chrome */
+/* global StorageArea */
 import _ from "lodash";
 import * as types from "actions/types";
 const initialState = { 1: [], 2: [] }; // 觀察名單 1 & 2
@@ -5,6 +7,17 @@ const initialState = { 1: [], 2: [] }; // 觀察名單 1 & 2
 function updateLocalStorage(newData) {
   localStorage.removeItem("stocks");
   localStorage.setItem("stocks", JSON.stringify(newData));
+  StorageArea.remove("stocks");
+  chrome.runtime.sendMessage({
+    type: "SAVE_STOCK",
+    payload: {
+      stocks: {
+        1: newData.stocks[1].map(stock => stock.symbol),
+        // 2:newData.stocks[2].map(stock=>stock.symbol)
+      },
+    },
+  });
+  chrome.runtime.sendMessage({ type: "SHOW_STOCK" });
 }
 
 export default (state = initialState, { type, payload }) => {
