@@ -17,11 +17,11 @@ class NavBar extends React.Component {
         icon: <LineChartOutlined />,
         key: "",
       },
-      {
-        title: "觀察名單 2",
-        icon: <LineChartOutlined />,
-        key: "list2",
-      },
+      // {
+      //   title: "觀察名單 2",
+      //   icon: <LineChartOutlined />,
+      //   key: "list2",
+      // },
       {
         title: "再平衡",
         icon: <CalculatorOutlined />,
