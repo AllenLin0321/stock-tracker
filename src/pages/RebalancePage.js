@@ -1,5 +1,5 @@
 import React from "react";
-import SearchBar from "components/list/SearchBar";
+import SearchBar from "components/common/SearchBar";
 
 class RebalancePage extends React.Component {
   render() {

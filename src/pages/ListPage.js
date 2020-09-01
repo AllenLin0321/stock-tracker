@@ -5,7 +5,7 @@ import * as actions from "actions";
 import { message } from "antd";
 import { getStoreData } from "utils";
 
-import SearchBar from "components/list/SearchBar";
+import SearchBar from "components/common/SearchBar";
 import Record from "components/list/Record";
 
 class ListPage extends React.Component {
@@ -48,7 +48,7 @@ class ListPage extends React.Component {
     try {
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSaveStock(this.getStoreData(data));
+        onSaveStock(getStoreData(data));
       });
     } catch (error) {
       console.log("error: ", error);

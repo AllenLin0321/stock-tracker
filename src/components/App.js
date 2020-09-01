@@ -37,15 +37,12 @@ class App extends React.Component {
     const { stocks, onSaveStock, setTableLoading } = this.props;
     const delayIncrement = 250;
     let delay = 0;
-
     if (stocks.length === 0) return;
-
     let promiseArr = stocks.map(async stock => {
       delay += delayIncrement;
       await new Promise(resolve => setTimeout(resolve, delay));
       return apiGetStock(stock.symbol);
     });
-
     try {
       setTableLoading({ tableLoading: true });
       const res = await Promise.all(promiseArr);

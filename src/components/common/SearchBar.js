@@ -3,7 +3,7 @@ import { Input, Button } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { injectIntl } from "react-intl";
 
-import "components/list/SearchBar.scss";
+import "components/common/SearchBar.scss";
 export class SearchBar extends Component {
   state = {
     searchVal: null,
