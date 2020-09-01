@@ -1,31 +1,30 @@
-import {
-  SAVE_STOCK,
-  CHANGE_STOCK_ORDER,
-  REMOVE_STOCK,
-  INITIAL_STOCK,
-  TABLE_LOADING,
-} from "actions/types";
+import * as types from "actions/types";
 
 export const initialStock = payload => ({
-  type: INITIAL_STOCK,
+  type: types.INITIAL_STOCK,
   payload,
 });
 export const onSaveStock = payload => ({
-  type: SAVE_STOCK,
+  type: types.SAVE_STOCK,
   payload,
 });
 
 export const removeStock = payload => ({
-  type: REMOVE_STOCK,
+  type: types.REMOVE_STOCK,
   payload,
 });
 
 export const changeStockOrder = payload => ({
-  type: CHANGE_STOCK_ORDER,
+  type: types.CHANGE_STOCK_ORDER,
   payload,
 });
 
 export const setTableLoading = payload => ({
-  type: TABLE_LOADING,
+  type: types.TABLE_LOADING,
+  payload,
+});
+
+export const onSavePortfolioStock = payload => ({
+  type: types.SAVE_PORTFOLIO_STOCK,
   payload,
 });

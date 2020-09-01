@@ -12,7 +12,6 @@ class ListPage extends React.Component {
   onClickSearch = async symbol => {
     if (symbol === "") return;
     let res = { isSuccess: false };
-    this.setState({ isSearchBtnLoading: true });
 
     try {
       const { data } = await apiGetStock(symbol);
@@ -27,7 +26,6 @@ class ListPage extends React.Component {
         message.error(error.response.data);
       }
     } finally {
-      this.setState({ isSearchBtnLoading: false });
       return res;
     }
   };

@@ -1,4 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
+import { message } from "antd";
+
+import { apiGetStock } from "api";
+import * as actions from "actions";
+import { getPortfolioData } from "utils";
+
 import SearchBar from "components/common/SearchBar";
 import Chart from "components/portfolio/Chart";
 
@@ -22,14 +29,35 @@ const chartData = [
 ];
 
 class Portfolio extends React.Component {
+  onClickSearch = async symbol => {
+    if (symbol === "") return;
+    let res = { isSuccess: false };
+
+    try {
+      const { data } = await apiGetStock(symbol);
+
+      if (data.quote) {
+        this.props.onSavePortfolioStock(getPortfolioData(data));
+      }
+      res.isSuccess = true;
+    } catch (error) {
+      console.log("error: ", error);
+      if (error.response) {
+        message.error(error.response.data);
+      }
+    } finally {
+      return res;
+    }
+  };
+
   render() {
     return (
       <div>
-        <SearchBar />
+        <SearchBar onClickSearch={this.onClickSearch} />
         <Chart data={chartData} />
       </div>
     );
   }
 }
 
-export default Portfolio;
+export default connect(null, actions)(Portfolio);
