@@ -2,7 +2,7 @@ import React from "react";
 import { Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { apiGetStock } from "api";
-import moment from "moment";
+import { getStoreData } from "utils";
 
 import * as actions from "actions";
 import ListPage from "pages/ListPage";
@@ -12,8 +12,6 @@ import DonatePage from "pages/DonatePage";
 import NavBar from "components/common/NavBar";
 import Attribution from "components/common/Attribution";
 import history from "history.js";
-
-const initialPage = 1;
 
 class App extends React.Component {
   state = { firstReload: true };
@@ -29,8 +27,7 @@ class App extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       this.state.firstReload &&
-      prevProps.stocks[initialPage].length !==
-        this.props.stocks[initialPage].length
+      prevProps.stocks.length !== this.props.stocks.length
     ) {
       this.reloadStocksPrice();
     }
@@ -41,9 +38,9 @@ class App extends React.Component {
     const delayIncrement = 250;
     let delay = 0;
 
-    if (stocks[initialPage].length === 0) return;
+    if (stocks.length === 0) return;
 
-    let promiseArr = stocks[initialPage].map(async stock => {
+    let promiseArr = stocks.map(async stock => {
       delay += delayIncrement;
       await new Promise(resolve => setTimeout(resolve, delay));
       return apiGetStock(stock.symbol);
@@ -53,7 +50,7 @@ class App extends React.Component {
       setTableLoading({ tableLoading: true });
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSaveStock(this.getStoreData(data));
+        onSaveStock(getStoreData(data));
       });
     } catch (error) {
       console.log("error: ", error);
@@ -62,12 +59,6 @@ class App extends React.Component {
       setTableLoading({ tableLoading: false });
     }
   };
-
-  getStoreData = data => ({
-    ...data.quote,
-    updatedTime: moment().format("HH:mm"),
-    page: initialPage,
-  });
 
   render() {
     return (

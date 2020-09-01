@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { apiGetStock } from "api";
 import * as actions from "actions";
 import { message } from "antd";
-import moment from "moment";
+import { getStoreData } from "utils";
 
 import SearchBar from "components/list/SearchBar";
 import Record from "components/list/Record";
@@ -18,7 +18,7 @@ class ListPage extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSaveStock(this.getStoreData(data));
+        this.props.onSaveStock(getStoreData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -34,13 +34,12 @@ class ListPage extends React.Component {
 
   onClickReload = async () => {
     const { stocks, onSaveStock } = this.props;
-    const page = 1;
     const delayIncrement = 200;
     let delay = 0;
 
-    if (stocks[page].length === 0) return;
+    if (stocks.length === 0) return;
 
-    let promiseArr = stocks[page].map(async stock => {
+    let promiseArr = stocks.map(async stock => {
       delay += delayIncrement;
       await new Promise(resolve => setTimeout(resolve, delay));
       return apiGetStock(stock.symbol);
@@ -55,12 +54,6 @@ class ListPage extends React.Component {
       console.log("error: ", error);
     }
   };
-
-  getStoreData = data => ({
-    ...data.quote,
-    updatedTime: moment().format("HH:mm"),
-    page: "1",
-  });
 
   render() {
     return (

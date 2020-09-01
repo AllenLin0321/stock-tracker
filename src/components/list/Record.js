@@ -34,14 +34,14 @@ class Record extends React.Component {
         title: <FormattedMessage id="record.name" />,
         key: "symbol",
         className: "drag-visible",
-        render: text => (
+        render: rowData => (
           <Button
             type="link"
-            href={`https://www.google.com/search?q=${text.symbol}+stock`}
+            href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {text.symbol}
+            {rowData.symbol}
           </Button>
         ),
       },
@@ -52,14 +52,14 @@ class Record extends React.Component {
       {
         title: <FormattedMessage id="record.change" />,
         key: "change",
-        render: text => {
-          const changePercent = (text.change / text.previousClose) * 100;
+        render: rowData => {
+          const changePercent = (rowData.change / rowData.previousClose) * 100;
           const isRise = changePercent > 0;
           return (
             <div>
               <div style={{ color: isRise ? "green" : "red" }}>
                 {isRise && "+"}
-                {text.change}
+                {rowData.change}
               </div>
               <Tag
                 color={isRise ? "green" : "red"}
@@ -87,17 +87,14 @@ class Record extends React.Component {
       {
         title: <FormattedMessage id="record.action" />,
         key: "action",
-        render: text => {
+        render: rowData => {
           return (
             <Button
               type="danger"
               shape="circle"
               icon={<DeleteOutlined />}
               onClick={() => {
-                this.props.removeStock({
-                  newStockArr: text,
-                  page: this.props.page,
-                });
+                this.props.removeStock(rowData);
               }}
             />
           );
@@ -107,14 +104,13 @@ class Record extends React.Component {
   };
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { stocks, page } = this.props;
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
-        [].concat(stocks),
+        [].concat(this.props.stocks),
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      this.props.changeStockOrder({ newStockArr, page });
+      this.props.changeStockOrder({ newStockArr });
     }
   };
 
@@ -129,10 +125,10 @@ class Record extends React.Component {
     const { stocks, loading } = this.props;
     const DraggableContainer = props => (
       <SortableContainer
+        {...props}
         useDragHandle
         helperClass="row-dragging"
         onSortEnd={this.onSortEnd}
-        {...props}
       />
     );
     return (
@@ -154,8 +150,8 @@ class Record extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return { stocks: state.stocks[ownProps.page], loading: state.loading };
+const mapStateToProps = state => {
+  return { stocks: state.stocks, loading: state.loading };
 };
 
 export default connect(mapStateToProps, actions)(Record);

@@ -4,27 +4,19 @@ import { PieChart } from "bizcharts";
 
 const data = [
   {
-    type: "分类一",
-    value: 27,
+    type: "VTI",
+    value: 60,
   },
   {
-    type: "分类二",
-    value: 25,
+    type: "VXUS",
+    value: 20,
   },
   {
-    type: "分类三",
-    value: 18,
+    type: "BND",
+    value: 5,
   },
   {
-    type: "分类四",
-    value: 15,
-  },
-  {
-    type: "分类五",
-    value: 10,
-  },
-  {
-    type: "其它",
+    type: "BNDW",
     value: 5,
   },
 ];
@@ -33,7 +25,7 @@ class Portfolio extends React.Component {
   render() {
     return (
       <div>
-        <SearchBar page="2" />
+        <SearchBar />
         <PieChart
           data={data}
           title={{
