@@ -14,28 +14,11 @@ class NavBar extends React.Component {
     tabs: [
       {
         icon: <LineChartOutlined />,
-        key: 'list1',
-      },
-      // {
-      //   title: "觀察名單 2",
-      //   icon: <LineChartOutlined />,
-      //   key: "list2",
-      // },
-      {
-        icon: <LineChartOutlined />,
-        key: 'list2',
+        key: ' ',
       },
       {
         icon: <CalculatorOutlined />,
         key: 'rebalance',
-      },
-      {
-        icon: <SettingOutlined />,
-        key: 'setting',
-      },
-      {
-        icon: <MailOutlined />,
-        key: 'contact',
       },
       {
         icon: <CoffeeOutlined />,

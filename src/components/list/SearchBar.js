@@ -4,13 +4,10 @@ import moment from 'moment';
 import { Input, message, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
+
 import * as actions from 'actions';
 import { apiGetStock } from 'api';
 import 'components/list/SearchBar.scss';
-
-import * as actions from "actions";
-import { apiGetStock } from "api";
-import "components/list/SearchBar.scss";
 export class SearchBar extends Component {
   state = {
     searchVal: null,
@@ -31,7 +28,7 @@ export class SearchBar extends Component {
 
       if (data.quote) {
         this.props.onSaveStock(this.getStoreData(data));
-        this.setState({ searchVal: "" });
+        this.setState({ searchVal: '' });
       }
     } catch (error) {
       console.log('error: ', error);
@@ -64,7 +61,7 @@ export class SearchBar extends Component {
         onSaveStock(this.getStoreData(data));
       });
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
     } finally {
       this.setState({ isReloadLoading: false });
     }
