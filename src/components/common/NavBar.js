@@ -1,21 +1,20 @@
-import React from "react";
-import { Tabs } from "antd";
+import React from 'react';
+import { Tabs } from 'antd';
 import {
   LineChartOutlined,
   CalculatorOutlined,
   CoffeeOutlined,
-} from "@ant-design/icons";
-import "components/common/NavBar.scss";
-
+} from '@ant-design/icons';
+import 'components/common/NavBar.scss';
+import { injectIntl } from 'react-intl';
 const { TabPane } = Tabs;
 
 class NavBar extends React.Component {
   state = {
     tabs: [
       {
-        title: "觀察名單 1",
         icon: <LineChartOutlined />,
-        key: "",
+        key: 'list1',
       },
       // {
       //   title: "觀察名單 2",
@@ -23,14 +22,24 @@ class NavBar extends React.Component {
       //   key: "list2",
       // },
       {
-        title: "再平衡",
-        icon: <CalculatorOutlined />,
-        key: "rebalance",
+        icon: <LineChartOutlined />,
+        key: 'list2',
       },
       {
-        title: "贊助",
+        icon: <CalculatorOutlined />,
+        key: 'rebalance',
+      },
+      {
+        icon: <SettingOutlined />,
+        key: 'setting',
+      },
+      {
+        icon: <MailOutlined />,
+        key: 'contact',
+      },
+      {
         icon: <CoffeeOutlined />,
-        key: "donate",
+        key: 'donate',
       },
     ],
   };
@@ -40,6 +49,8 @@ class NavBar extends React.Component {
   };
 
   render() {
+    const { intl } = this.props;
+
     return (
       <div className="narBar__wrapper">
         <Tabs
@@ -50,7 +61,11 @@ class NavBar extends React.Component {
           {this.state.tabs.map(tab => {
             return (
               <TabPane
-                tab={<span title={tab.title}>{tab.icon}</span>}
+                tab={
+                  <span title={intl.formatMessage({ id: `navBar.${tab.key}` })}>
+                    {tab.icon}
+                  </span>
+                }
                 key={tab.key}
               ></TabPane>
             );
@@ -61,4 +76,4 @@ class NavBar extends React.Component {
   }
 }
 
-export default NavBar;
+export default injectIntl(NavBar);

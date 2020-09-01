@@ -1,18 +1,19 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Table, Button, Tag } from "antd";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Table, Button, Tag } from 'antd';
 import {
   sortableContainer,
   sortableElement,
   sortableHandle,
-} from "react-sortable-hoc";
-import { MenuOutlined } from "@ant-design/icons";
-import arrayMove from "array-move";
-import * as actions from "actions";
-import "components/list/Record.scss";
-import { DeleteOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
+} from 'react-sortable-hoc';
+import { FormattedMessage } from 'react-intl';
+import { MenuOutlined } from '@ant-design/icons';
+import arrayMove from 'array-move';
+import * as actions from 'actions';
+import 'components/list/Record.scss';
+import { DeleteOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
 const DragHandle = sortableHandle(() => (
-  <MenuOutlined style={{ cursor: "pointer", color: "#999" }} />
+  <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
 
 const SortableItem = sortableElement(props => <tr {...props} />);
@@ -22,38 +23,38 @@ class Record extends React.Component {
   state = {
     columns: [
       {
-        title: "",
-        dataIndex: "sort",
+        title: '',
+        dataIndex: 'sort',
         width: 30,
-        className: "drag-visible",
+        className: 'drag-visible',
         render: () => <DragHandle />,
       },
       {
-        title: "Name",
-        dataIndex: "symbol",
-        className: "drag-visible",
+        title: <FormattedMessage id="record.name" />,
+        dataIndex: 'symbol',
+        className: 'drag-visible',
       },
       {
-        title: "Latest Price",
-        dataIndex: "latestPrice",
+        title: <FormattedMessage id="record.latestPrice" />,
+        dataIndex: 'latestPrice',
       },
       {
-        title: "Change",
-        key: "change",
+        title: <FormattedMessage id="record.change" />,
+        key: 'change',
         render: text => {
           const changePercent = (text.change / text.previousClose) * 100;
           const isRise = changePercent > 0;
           return (
             <div>
-              <div style={{ color: isRise ? "green" : "red" }}>
-                {isRise && "+"}
+              <div style={{ color: isRise ? 'green' : 'red' }}>
+                {isRise && '+'}
                 {text.change}
               </div>
               <Tag
-                color={isRise ? "green" : "red"}
+                color={isRise ? 'green' : 'red'}
                 icon={isRise ? <RiseOutlined /> : <FallOutlined />}
               >
-                {isRise && "+"}
+                {isRise && '+'}
                 {changePercent.toFixed(2)}%
               </Tag>
             </div>
@@ -61,20 +62,20 @@ class Record extends React.Component {
         },
       },
       {
-        title: "High",
-        dataIndex: "high",
+        title: <FormattedMessage id="record.high" />,
+        dataIndex: 'high',
       },
       {
-        title: "Low",
-        dataIndex: "low",
+        title: <FormattedMessage id="record.low" />,
+        dataIndex: 'low',
       },
       {
-        title: "Updated Time",
-        dataIndex: "updatedTime",
+        title: <FormattedMessage id="record.updatedTime" />,
+        dataIndex: 'updatedTime',
       },
       {
-        title: "Action",
-        key: "action",
+        title: <FormattedMessage id="record.action" />,
+        key: 'action',
         render: text => {
           return (
             <Button
@@ -109,7 +110,7 @@ class Record extends React.Component {
   DraggableBodyRow = ({ className, style, ...restProps }) => {
     const { stocks } = this.props;
     // function findIndex base on Table rowKey props and should always be a right array index
-    const index = stocks.findIndex(x => x.symbol === restProps["data-row-key"]);
+    const index = stocks.findIndex(x => x.symbol === restProps['data-row-key']);
     return <SortableItem index={index} {...restProps} />;
   };
 

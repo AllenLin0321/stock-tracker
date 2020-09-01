@@ -1,8 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import moment from "moment";
-import { Input, message, Button } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { Input, message, Button } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
+import { injectIntl } from 'react-intl';
+import * as actions from 'actions';
+import { apiGetStock } from 'api';
+import 'components/list/SearchBar.scss';
 
 import * as actions from "actions";
 import { apiGetStock } from "api";
@@ -19,7 +23,7 @@ export class SearchBar extends Component {
   };
 
   onClickSearch = async symbol => {
-    if (symbol === "") return;
+    if (symbol === '') return;
     this.setState({ isSearchBtnLoading: true });
 
     try {
@@ -30,7 +34,7 @@ export class SearchBar extends Component {
         this.setState({ searchVal: "" });
       }
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
       if (error.response) {
         message.error(error.response.data);
       }
@@ -68,17 +72,18 @@ export class SearchBar extends Component {
 
   getStoreData = data => ({
     ...data.quote,
-    updatedTime: moment().format("HH:mm"),
+    updatedTime: moment().format('HH:mm'),
     page: this.props.page,
   });
 
   render() {
+    const { intl } = this.props;
     return (
       <div className="searchBar__wrapper">
         <Input.Search
           allowClear
           type="text"
-          placeholder="代碼"
+          placeholder={intl.formatMessage({ id: 'searchBar.placeholder' })}
           loading={this.state.isSearchBtnLoading}
           enterButton
           size="large"
@@ -103,4 +108,4 @@ const mapStateToProps = state => {
   return { stocks: state.stocks };
 };
 
-export default connect(mapStateToProps, actions)(SearchBar);
+export default connect(mapStateToProps, actions)(injectIntl(SearchBar));
