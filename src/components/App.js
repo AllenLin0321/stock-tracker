@@ -5,7 +5,7 @@ import { apiGetStock } from "api";
 import moment from "moment";
 
 import * as actions from "actions";
-import List1Page from "pages/List1Page";
+import ListPage from "pages/ListPage";
 import PortfolioPage from "pages/PortfolioPage";
 import RebalancePage from "pages/RebalancePage";
 import DonatePage from "pages/DonatePage";
@@ -73,7 +73,7 @@ class App extends React.Component {
     return (
       <div>
         <Router history={history}>
-          <Route path="/list" exact component={List1Page} />
+          <Route path="/list" exact component={ListPage} />
           <Route path="/portfolio" exact component={PortfolioPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
