@@ -1,4 +1,3 @@
-/* global chrome */
 import React from "react";
 import { Router, Route } from "react-router-dom";
 import { connect } from "react-redux";
@@ -7,7 +6,7 @@ import moment from "moment";
 
 import * as actions from "actions";
 import List1Page from "pages/List1Page";
-import List2Page from "pages/List2Page";
+import PortfolioPage from "pages/PortfolioPage";
 import RebalancePage from "pages/RebalancePage";
 import DonatePage from "pages/DonatePage";
 import NavBar from "components/common/NavBar";
@@ -20,7 +19,7 @@ class App extends React.Component {
   state = { firstReload: true };
 
   componentDidMount() {
-    history.push("/");
+    history.push("/list");
     const savedStock = localStorage.getItem("stocks");
     if (savedStock) {
       this.props.initialStock(JSON.parse(savedStock));
@@ -74,8 +73,8 @@ class App extends React.Component {
     return (
       <div>
         <Router history={history}>
-          <Route path="/" exact component={List1Page} />
-          <Route path="/list2" exact component={List2Page} />
+          <Route path="/list" exact component={List1Page} />
+          <Route path="/portfolio" exact component={PortfolioPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
           <NavBar history={history} />

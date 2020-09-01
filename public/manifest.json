@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "browser_action": {
     "default_popup": "index.html",
-    "default_icon": "favicon.png",
+    "default_icon": "icon48.png",
     "default_title": "Open the popup"
   },
   "permissions": ["storage"],
