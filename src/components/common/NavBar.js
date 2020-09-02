@@ -1,12 +1,12 @@
-import React from "react";
-import { Tabs } from "antd";
+import React from 'react';
+import { Tabs } from 'antd';
 import {
   LineChartOutlined,
   PieChartOutlined,
   CalculatorOutlined,
   CoffeeOutlined,
-} from "@ant-design/icons";
-import { injectIntl } from "react-intl";
+} from '@ant-design/icons';
+import { injectIntl } from 'react-intl';
 const { TabPane } = Tabs;
 
 class NavBar extends React.Component {
@@ -14,19 +14,19 @@ class NavBar extends React.Component {
     tabs: [
       {
         icon: <PieChartOutlined />,
-        key: "portfolio",
+        key: 'portfolio',
       },
       {
         icon: <LineChartOutlined />,
-        key: "list",
+        key: 'list',
       },
       {
         icon: <CalculatorOutlined />,
-        key: "rebalance",
+        key: 'rebalance',
       },
       {
         icon: <CoffeeOutlined />,
-        key: "donate",
+        key: 'donate',
       },
     ],
   };

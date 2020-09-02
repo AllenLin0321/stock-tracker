@@ -73,10 +73,15 @@ class Record extends React.Component {
         },
       },
       {
-        title: <FormattedMessage id="record.stockNum" />,
-        key: 'stockNum',
+        title: <FormattedMessage id="record.quantity" />,
+        key: 'quantity',
         render: rowData => {
-          return <InputNumber min={1} max={10} defaultValue={3} />;
+          return (
+            <InputNumber
+              value={rowData.quantity}
+              onChange={this.onQuantityChange}
+            />
+          );
         },
       },
       {
@@ -136,6 +141,10 @@ class Record extends React.Component {
       x => x.symbol === restProps['data-row-key']
     );
     return <SortableItem index={index} {...restProps} />;
+  };
+
+  onQuantityChange = val => {
+    console.log('val: ', val);
   };
 
   render() {

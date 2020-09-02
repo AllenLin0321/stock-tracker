@@ -10,10 +10,11 @@ export const getStoreData = ({ quote }) => ({
   updatedTime: moment().format('HH:mm'),
 });
 
-export const getPortfolioData = ({ quote }) => ({
+export const getPortfolioData = ({ quote }, quantity = 1) => ({
   symbol: quote.symbol,
   latestPrice: quote.latestPrice,
   change: quote.change,
   previousClose: quote.previousClose,
+  quantity,
   updatedTime: moment().format('HH:mm'),
 });
