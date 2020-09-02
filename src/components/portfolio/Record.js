@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { MenuOutlined } from '@ant-design/icons';
 import arrayMove from 'array-move';
-
+import { getStockPercent } from 'utils';
 import * as actions from 'actions';
 import 'components/list/Record.scss';
 import { DeleteOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
@@ -78,8 +78,9 @@ class Record extends React.Component {
         render: rowData => {
           return (
             <InputNumber
+              min="1"
               value={rowData.quantity}
-              onChange={this.onQuantityChange}
+              onChange={value => this.onQuantityChange(rowData, value)}
             />
           );
         },
@@ -88,13 +89,14 @@ class Record extends React.Component {
         title: <FormattedMessage id="record.percent" />,
         key: 'percent',
         render: rowData => {
+          const percent = getStockPercent({
+            stock: rowData,
+            stockArr: this.props.portfolio,
+          });
           return (
             <InputNumber
               disabled
-              defaultValue={100}
-              min={0}
-              max={100}
-              formatter={value => `${value}%`}
+              formatter={() => `${percent}%`}
               parser={value => value.replace('%', '')}
             />
           );
@@ -114,7 +116,7 @@ class Record extends React.Component {
               shape="circle"
               icon={<DeleteOutlined />}
               onClick={() => {
-                this.props.removeStock(rowData);
+                this.props.removePortfolio(rowData);
               }}
             />
           );
@@ -130,7 +132,7 @@ class Record extends React.Component {
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      this.props.changeStockOrder({ newStockArr });
+      this.props.changePortfolioOrder({ newStockArr });
     }
   };
 
@@ -143,8 +145,8 @@ class Record extends React.Component {
     return <SortableItem index={index} {...restProps} />;
   };
 
-  onQuantityChange = val => {
-    console.log('val: ', val);
+  onQuantityChange = (rowData, newQuantity) => {
+    this.props.changeStockQuantity({ ...rowData, quantity: newQuantity });
   };
 
   render() {

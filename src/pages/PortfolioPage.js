@@ -4,30 +4,11 @@ import { message } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'actions';
-import { getPortfolioData } from 'utils';
+import { getPortfolioData, getStockPercent } from 'utils';
 
 import SearchBar from 'components/common/SearchBar';
 import Record from 'components/portfolio/Record';
 import Chart from 'components/portfolio/Chart';
-
-const chartData = [
-  {
-    type: 'VTI',
-    value: 70,
-  },
-  {
-    type: 'VXUS',
-    value: 20,
-  },
-  {
-    type: 'BND',
-    value: 5,
-  },
-  {
-    type: 'BNDW',
-    value: 5,
-  },
-];
 
 class Portfolio extends React.Component {
   onClickSearch = async symbol => {
@@ -38,7 +19,7 @@ class Portfolio extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSavePortfolioStock(getPortfolioData(data));
+        this.props.onSavePortfolio(getPortfolioData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -52,6 +33,11 @@ class Portfolio extends React.Component {
   };
 
   render() {
+    const chartData = this.props.portfolio.map(stock => ({
+      type: stock.symbol,
+      value: getStockPercent({ stock, stockArr: this.props.portfolio }),
+    }));
+
     return (
       <div>
         <SearchBar onClickSearch={this.onClickSearch} />

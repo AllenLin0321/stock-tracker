@@ -1,4 +1,6 @@
-import * as types from "actions/types";
+import * as types from 'actions/types';
+
+/* Stock List */
 
 export const initialStock = payload => ({
   type: types.INITIAL_STOCK,
@@ -19,12 +21,36 @@ export const changeStockOrder = payload => ({
   payload,
 });
 
+/* Loading */
+
 export const setTableLoading = payload => ({
   type: types.TABLE_LOADING,
   payload,
 });
 
-export const onSavePortfolioStock = payload => ({
-  type: types.SAVE_PORTFOLIO_STOCK,
+/* Portfolio */
+
+export const initialPortfolio = payload => ({
+  type: types.INITIAL_PORTFOLIO,
+  payload,
+});
+
+export const onSavePortfolio = payload => ({
+  type: types.SAVE_PORTFOLIO,
+  payload,
+});
+
+export const removePortfolio = payload => ({
+  type: types.REMOVE_PORTFOLIO,
+  payload,
+});
+
+export const changePortfolioOrder = payload => ({
+  type: types.CHANGE_PORTFOLIO_ORDER,
+  payload,
+});
+
+export const changeStockQuantity = payload => ({
+  type: types.CHANGE_STOCK_QUANTITY,
   payload,
 });

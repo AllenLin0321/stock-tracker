@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+const stockValueReducer = (accumulator, currentValue) =>
+  parseFloat(
+    (accumulator + currentValue.quantity * currentValue.latestPrice).toFixed(2)
+  );
+
 export const getStoreData = ({ quote }) => ({
   symbol: quote.symbol,
   change: quote.change,
@@ -10,11 +15,19 @@ export const getStoreData = ({ quote }) => ({
   updatedTime: moment().format('HH:mm'),
 });
 
-export const getPortfolioData = ({ quote }, quantity = 1) => ({
+export const getPortfolioData = ({ quote }) => ({
   symbol: quote.symbol,
   latestPrice: quote.latestPrice,
   change: quote.change,
   previousClose: quote.previousClose,
-  quantity,
+  quantity: 1,
   updatedTime: moment().format('HH:mm'),
 });
+
+export const getStockPercent = ({ stock, stockArr }) => {
+  const stockValue = parseFloat(
+    (stock.quantity * stock.latestPrice).toFixed(2)
+  );
+  const totalValue = stockArr.reduce(stockValueReducer, 0);
+  return parseFloat(((stockValue / totalValue) * 100).toFixed(2));
+};

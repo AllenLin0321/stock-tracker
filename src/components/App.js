@@ -20,8 +20,12 @@ class App extends React.Component {
   componentDidMount() {
     history.push('/portfolio');
     const savedStock = localStorage.getItem('stocks');
+    const savedPortfolio = localStorage.getItem('portfolio');
     if (savedStock) {
       this.props.initialStock(JSON.parse(savedStock));
+    }
+    if (savedPortfolio) {
+      this.props.initialPortfolio(JSON.parse(savedPortfolio));
     }
   }
 

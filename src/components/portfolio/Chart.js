@@ -1,13 +1,13 @@
-import React from "react";
-import { DonutChart } from "bizcharts";
+import React from 'react';
+import { Donut } from '@ant-design/charts';
 
 const Chart = props => {
   return (
-    <DonutChart
+    <Donut
       data={props.data || []}
       forceFit
       statistic={{
-        totalLabel: "總計",
+        totalLabel: '總計',
       }}
       meta={{
         value: {
@@ -20,7 +20,7 @@ const Chart = props => {
       padding="auto"
       angleField="value"
       colorField="type"
-      pieStyle={{ stroke: "white", lineWidth: 5 }}
+      pieStyle={{ stroke: 'white', lineWidth: 5 }}
     />
   );
 };
