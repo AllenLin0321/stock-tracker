@@ -10,8 +10,9 @@ import PortfolioPage from 'pages/PortfolioPage';
 import RebalancePage from 'pages/RebalancePage';
 import DonatePage from 'pages/DonatePage';
 import NavBar from 'components/common/NavBar';
-import Attribution from 'components/common/Attribution';
 import history from 'history.js';
+
+import 'components/App.scss';
 
 class App extends React.Component {
   state = { firstReload: true };
@@ -65,8 +66,9 @@ class App extends React.Component {
           <Route path="/list" exact component={ListPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
-          <NavBar history={history} />
-          <Attribution />
+          <div className="footer">
+            <NavBar history={history} />
+          </div>
         </Router>
       </div>
     );

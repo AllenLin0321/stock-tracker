@@ -1,28 +1,27 @@
-import React from 'react';
-// import { DonutChart } from 'bizcharts';
+import React from "react";
+import { DonutChart } from "bizcharts";
 
 const Chart = props => {
   return (
-    <div>Chart</div>
-    // <DonutChart
-    //   data={props.data || []}
-    //   forceFit
-    //   statistic={{
-    //     totalLabel: "總計",
-    //   }}
-    //   meta={{
-    //     value: {
-    //       formatter: val => {
-    //         return `${val}%`;
-    //       },
-    //     },
-    //   }}
-    //   radius={0.8}
-    //   padding="auto"
-    //   angleField="value"
-    //   colorField="type"
-    //   pieStyle={{ stroke: "white", lineWidth: 5 }}
-    // />
+    <DonutChart
+      data={props.data || []}
+      forceFit
+      statistic={{
+        totalLabel: "總計",
+      }}
+      meta={{
+        value: {
+          formatter: val => {
+            return `${val}%`;
+          },
+        },
+      }}
+      radius={0.8}
+      padding="auto"
+      angleField="value"
+      colorField="type"
+      pieStyle={{ stroke: "white", lineWidth: 5 }}
+    />
   );
 };
 

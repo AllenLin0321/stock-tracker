@@ -1,5 +1,4 @@
 import React from "react";
-import "components/common/Attribution.scss";
 const Attribution = () => {
   return (
     <div className="attribution">

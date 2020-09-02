@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { message } from 'antd';
+import { message, Radio } from 'antd';
+import { Route, Switch } from 'react-router-dom';
 
 import { apiGetStock } from 'api';
 import * as actions from 'actions';
@@ -9,6 +10,8 @@ import { getPortfolioData } from 'utils';
 import SearchBar from 'components/common/SearchBar';
 import Record from 'components/portfolio/Record';
 import Chart from 'components/portfolio/Chart';
+
+import 'pages/PortfolioPage.scss';
 
 const chartData = [
   {
@@ -51,12 +54,34 @@ class Portfolio extends React.Component {
     }
   };
 
+  onDisplayChange = event => {
+    const { value } = event.target;
+    const { history, location } = this.props;
+    history.push(`${location.pathname}/${value}`);
+  };
+
   render() {
     return (
       <div>
         <SearchBar onClickSearch={this.onClickSearch} />
-        <Record />
-        <Chart data={chartData} />
+        <div className="portfolio_switch">
+          <Radio.Group
+            defaultValue="list"
+            size="small"
+            onChange={this.onDisplayChange}
+          >
+            <Radio.Button value="list">條列</Radio.Button>
+            <Radio.Button value="chart">圖表</Radio.Button>
+          </Radio.Group>
+        </div>
+        <Switch>
+          <Route path="/portfolio/list">
+            <Record />
+          </Route>
+          <Route path="/portfolio/chart">
+            <Chart data={chartData} />
+          </Route>
+        </Switch>
       </div>
     );
   }
