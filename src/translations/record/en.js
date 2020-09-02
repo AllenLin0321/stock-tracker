@@ -6,4 +6,6 @@ export default {
   'record.low': 'Low',
   'record.updatedTime': 'Updated Time',
   'record.action': 'Action',
+  'record.stockNum': 'Quantity',
+  'record.percent': 'Percent',
 };

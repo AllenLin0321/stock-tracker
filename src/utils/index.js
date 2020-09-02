@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export const getStoreData = ({ quote }) => ({
   symbol: quote.symbol,
@@ -7,11 +7,13 @@ export const getStoreData = ({ quote }) => ({
   high: quote.high,
   low: quote.low,
   previousClose: quote.previousClose,
-  updatedTime: moment().format("HH:mm"),
+  updatedTime: moment().format('HH:mm'),
 });
 
 export const getPortfolioData = ({ quote }) => ({
   symbol: quote.symbol,
   latestPrice: quote.latestPrice,
   change: quote.change,
+  previousClose: quote.previousClose,
+  updatedTime: moment().format('HH:mm'),
 });

@@ -1,36 +1,37 @@
-import React from "react";
-import { connect } from "react-redux";
-import { message } from "antd";
+import React from 'react';
+import { connect } from 'react-redux';
+import { message } from 'antd';
 
-import { apiGetStock } from "api";
-import * as actions from "actions";
-import { getPortfolioData } from "utils";
+import { apiGetStock } from 'api';
+import * as actions from 'actions';
+import { getPortfolioData } from 'utils';
 
-import SearchBar from "components/common/SearchBar";
-import Chart from "components/portfolio/Chart";
+import SearchBar from 'components/common/SearchBar';
+import Record from 'components/portfolio/Record';
+import Chart from 'components/portfolio/Chart';
 
 const chartData = [
   {
-    type: "VTI",
+    type: 'VTI',
     value: 70,
   },
   {
-    type: "VXUS",
+    type: 'VXUS',
     value: 20,
   },
   {
-    type: "BND",
+    type: 'BND',
     value: 5,
   },
   {
-    type: "BNDW",
+    type: 'BNDW',
     value: 5,
   },
 ];
 
 class Portfolio extends React.Component {
   onClickSearch = async symbol => {
-    if (symbol === "") return;
+    if (symbol === '') return;
     let res = { isSuccess: false };
 
     try {
@@ -41,7 +42,7 @@ class Portfolio extends React.Component {
       }
       res.isSuccess = true;
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
       if (error.response) {
         message.error(error.response.data);
       }
@@ -54,6 +55,7 @@ class Portfolio extends React.Component {
     return (
       <div>
         <SearchBar onClickSearch={this.onClickSearch} />
+        <Record />
         <Chart data={chartData} />
       </div>
     );

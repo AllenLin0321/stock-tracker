@@ -1,24 +1,24 @@
-import React from "react";
-import { Router, Route } from "react-router-dom";
-import { connect } from "react-redux";
-import { apiGetStock } from "api";
-import { getStoreData } from "utils";
+import React from 'react';
+import { Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { apiGetStock } from 'api';
+import { getStoreData } from 'utils';
 
-import * as actions from "actions";
-import ListPage from "pages/ListPage";
-import PortfolioPage from "pages/PortfolioPage";
-import RebalancePage from "pages/RebalancePage";
-import DonatePage from "pages/DonatePage";
-import NavBar from "components/common/NavBar";
-import Attribution from "components/common/Attribution";
-import history from "history.js";
+import * as actions from 'actions';
+import ListPage from 'pages/ListPage';
+import PortfolioPage from 'pages/PortfolioPage';
+import RebalancePage from 'pages/RebalancePage';
+import DonatePage from 'pages/DonatePage';
+import NavBar from 'components/common/NavBar';
+import Attribution from 'components/common/Attribution';
+import history from 'history.js';
 
 class App extends React.Component {
   state = { firstReload: true };
 
   componentDidMount() {
-    history.push("/list");
-    const savedStock = localStorage.getItem("stocks");
+    history.push('/portfolio');
+    const savedStock = localStorage.getItem('stocks');
     if (savedStock) {
       this.props.initialStock(JSON.parse(savedStock));
     }
@@ -50,7 +50,7 @@ class App extends React.Component {
         onSaveStock(getStoreData(data));
       });
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
     } finally {
       this.setState({ firstReload: false });
       setTableLoading({ tableLoading: false });
@@ -61,8 +61,8 @@ class App extends React.Component {
     return (
       <div>
         <Router history={history}>
-          <Route path="/list" exact component={ListPage} />
           <Route path="/portfolio" exact component={PortfolioPage} />
+          <Route path="/list" exact component={ListPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
           <NavBar history={history} />

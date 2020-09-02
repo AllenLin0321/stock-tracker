@@ -1,33 +1,33 @@
-import React from "react";
-import { Tabs } from "antd";
+import React from 'react';
+import { Tabs } from 'antd';
 import {
   LineChartOutlined,
   PieChartOutlined,
   CalculatorOutlined,
   CoffeeOutlined,
-} from "@ant-design/icons";
-import "components/common/NavBar.scss";
-import { injectIntl } from "react-intl";
+} from '@ant-design/icons';
+import 'components/common/NavBar.scss';
+import { injectIntl } from 'react-intl';
 const { TabPane } = Tabs;
 
 class NavBar extends React.Component {
   state = {
     tabs: [
       {
-        icon: <LineChartOutlined />,
-        key: "list",
+        icon: <PieChartOutlined />,
+        key: 'portfolio',
       },
       {
-        icon: <PieChartOutlined />,
-        key: "portfolio",
+        icon: <LineChartOutlined />,
+        key: 'list',
       },
       {
         icon: <CalculatorOutlined />,
-        key: "rebalance",
+        key: 'rebalance',
       },
       {
         icon: <CoffeeOutlined />,
-        key: "donate",
+        key: 'donate',
       },
     ],
   };
@@ -41,7 +41,7 @@ class NavBar extends React.Component {
       <div className="narBar__wrapper">
         <Tabs
           tabPosition="bottom"
-          defaultActiveKey="list"
+          defaultActiveKey="portfolio"
           onChange={this.onTabClick}
         >
           {this.state.tabs.map(tab => {
