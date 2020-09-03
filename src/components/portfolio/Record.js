@@ -75,15 +75,15 @@ class Record extends React.Component {
       {
         title: <FormattedMessage id="record.quantity" />,
         key: 'quantity',
-        render: rowData => {
-          return (
-            <InputNumber
-              min="1"
-              value={rowData.quantity}
-              onChange={value => this.onQuantityChange(rowData, value)}
-            />
-          );
-        },
+        render: rowData => (
+          <InputNumber
+            step={0.01}
+            value={rowData.quantity}
+            onChange={newQuantity =>
+              this.onQuantityChange(rowData, newQuantity)
+            }
+          />
+        ),
       },
       {
         title: <FormattedMessage id="record.percent" />,
@@ -125,6 +125,13 @@ class Record extends React.Component {
     ],
   };
 
+  onQuantityChange = (rowData, newQuantity) => {
+    this.props.changeStockQuantity({
+      ...rowData,
+      quantity: newQuantity,
+    });
+  };
+
   onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
@@ -145,10 +152,6 @@ class Record extends React.Component {
     return <SortableItem index={index} {...restProps} />;
   };
 
-  onQuantityChange = (rowData, newQuantity) => {
-    this.props.changeStockQuantity({ ...rowData, quantity: newQuantity });
-  };
-
   render() {
     const { portfolio, loading } = this.props;
     const DraggableContainer = props => (
@@ -159,6 +162,7 @@ class Record extends React.Component {
         onSortEnd={this.onSortEnd}
       />
     );
+
     return (
       <Table
         pagination={false}
