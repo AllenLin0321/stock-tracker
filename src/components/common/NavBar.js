@@ -41,12 +41,11 @@ class NavBar extends React.Component {
       return (
         <TabPane
           tab={
-            <span
-              title={this.props.intl.formatMessage({
+            <span>
+              {tab.icon}{' '}
+              {this.props.intl.formatMessage({
                 id: `navBar.${tab.key}`,
               })}
-            >
-              {tab.icon}
             </span>
           }
           key={tab.key}
