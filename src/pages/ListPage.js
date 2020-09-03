@@ -1,16 +1,23 @@
-import React from "react";
-import { connect } from "react-redux";
-import { apiGetStock } from "api";
-import * as actions from "actions";
-import { message } from "antd";
-import { getStoreData } from "utils";
+import React from 'react';
+import { connect } from 'react-redux';
+import { apiGetStock } from 'api';
+import * as actions from 'actions';
+import { message } from 'antd';
+import { getStoreData } from 'utils';
 
-import SearchBar from "components/common/SearchBar";
-import Record from "components/list/Record";
+import SearchBar from 'components/common/SearchBar';
+import Record from 'components/list/Record';
 
 class ListPage extends React.Component {
+  componentDidMount() {
+    const savedStock = localStorage.getItem('stocks');
+    if (savedStock) {
+      this.props.initialStock(JSON.parse(savedStock));
+    }
+  }
+
   onClickSearch = async symbol => {
-    if (symbol === "") return;
+    if (symbol === '') return;
     let res = { isSuccess: false };
 
     try {
@@ -21,7 +28,7 @@ class ListPage extends React.Component {
       }
       res.isSuccess = true;
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
       if (error.response) {
         message.error(error.response.data);
       }
@@ -49,7 +56,7 @@ class ListPage extends React.Component {
         onSaveStock(getStoreData(data));
       });
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
     }
   };
 

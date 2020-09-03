@@ -11,6 +11,14 @@ import Record from 'components/portfolio/Record';
 import Chart from 'components/portfolio/Chart';
 
 class Portfolio extends React.Component {
+  componentDidMount() {
+    const savedPortfolio = localStorage.getItem('portfolio');
+
+    if (savedPortfolio) {
+      this.props.initialPortfolio(JSON.parse(savedPortfolio));
+    }
+  }
+
   onClickSearch = async symbol => {
     if (symbol === '') return;
     let res = { isSuccess: false };

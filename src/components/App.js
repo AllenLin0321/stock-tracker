@@ -18,15 +18,7 @@ class App extends React.Component {
   state = { firstReload: true };
 
   componentDidMount() {
-    history.push('/portfolio');
-    const savedStock = localStorage.getItem('stocks');
-    const savedPortfolio = localStorage.getItem('portfolio');
-    if (savedStock) {
-      this.props.initialStock(JSON.parse(savedStock));
-    }
-    if (savedPortfolio) {
-      this.props.initialPortfolio(JSON.parse(savedPortfolio));
-    }
+    history.push('/list');
   }
 
   componentDidUpdate(prevProps) {
@@ -66,13 +58,13 @@ class App extends React.Component {
     return (
       <div>
         <Router history={history}>
+          <div className="header">
+            <NavBar history={history} />
+          </div>
           <Route path="/portfolio" exact component={PortfolioPage} />
           <Route path="/list" exact component={ListPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
-          <div className="footer">
-            <NavBar history={history} />
-          </div>
         </Router>
       </div>
     );

@@ -13,12 +13,12 @@ class NavBar extends React.Component {
   state = {
     tabs: [
       {
-        icon: <PieChartOutlined />,
-        key: 'portfolio',
-      },
-      {
         icon: <LineChartOutlined />,
         key: 'list',
+      },
+      {
+        icon: <PieChartOutlined />,
+        key: 'portfolio',
       },
       {
         icon: <CalculatorOutlined />,
@@ -35,30 +35,32 @@ class NavBar extends React.Component {
     this.props.history.push(`/${key}`);
   };
 
+  renderTabPane = () => {
+    if (this.state.tabs.length === 0) return;
+    const TabPaneJsx = this.state.tabs.map(tab => {
+      return (
+        <TabPane
+          tab={
+            <span
+              title={this.props.intl.formatMessage({
+                id: `navBar.${tab.key}`,
+              })}
+            >
+              {tab.icon}
+            </span>
+          }
+          key={tab.key}
+        ></TabPane>
+      );
+    });
+    return TabPaneJsx;
+  };
+
   render() {
     return (
       <div className="narBar__wrapper">
-        <Tabs
-          tabPosition="bottom"
-          defaultActiveKey="portfolio"
-          onChange={this.onTabClick}
-        >
-          {this.state.tabs.map(tab => {
-            return (
-              <TabPane
-                tab={
-                  <span
-                    title={this.props.intl.formatMessage({
-                      id: `navBar.${tab.key}`,
-                    })}
-                  >
-                    {tab.icon}
-                  </span>
-                }
-                key={tab.key}
-              ></TabPane>
-            );
-          })}
+        <Tabs type="card" defaultActiveKey="list" onChange={this.onTabClick}>
+          {this.renderTabPane()}
         </Tabs>
       </div>
     );
