@@ -14,7 +14,9 @@ class Portfolio extends React.Component {
 
     if (savedPortfolio) {
       await this.props.initialPortfolio(JSON.parse(savedPortfolio));
-      this.onClickReload();
+      this.props.setTableLoading({ tableLoading: true });
+      await this.onClickReload();
+      this.props.setTableLoading({ tableLoading: false });
     }
   }
 
@@ -55,7 +57,12 @@ class Portfolio extends React.Component {
     try {
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSavePortfolio(getPortfolioData(data));
+        let matchStock = portfolio.find(
+          stock => stock.symbol === data.quote.symbol
+        );
+
+        let quantity = matchStock ? matchStock.quantity : null;
+        onSavePortfolio(getPortfolioData(data, quantity));
       });
     } catch (error) {
       console.log('error: ', error);

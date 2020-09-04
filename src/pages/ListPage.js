@@ -9,10 +9,13 @@ import SearchBar from 'components/common/SearchBar';
 import Record from 'components/list/Record';
 
 class ListPage extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const savedStock = localStorage.getItem('stocks');
     if (savedStock) {
-      this.props.initialStock(JSON.parse(savedStock));
+      await this.props.initialStock(JSON.parse(savedStock));
+      this.props.setTableLoading({ tableLoading: true });
+      await this.onClickReload();
+      this.props.setTableLoading({ tableLoading: false });
     }
   }
 

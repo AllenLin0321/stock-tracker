@@ -1,25 +1,46 @@
-import React, { Component } from "react";
-import { Input, Button } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
-import { injectIntl } from "react-intl";
+import React, { Component } from 'react';
+import { Input, Button, AutoComplete } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
+import { injectIntl } from 'react-intl';
+import { apiSeachSymbol } from 'api';
 
-import "components/common/SearchBar.scss";
+import 'components/common/SearchBar.scss';
 export class SearchBar extends Component {
   state = {
     searchVal: null,
     isSearchBtnLoading: false,
     isReloadLoading: false,
+    autoCompleteOption: [],
   };
 
   onInputChange = event => {
-    this.setState({ searchVal: event.target.value.toUpperCase() });
+    this.setState({ searchVal: event.target.value.toUpperCase() }, async () => {
+      if (this.state.searchVal !== '') {
+        const { data } = await apiSeachSymbol(this.state.searchVal);
+        if (data.length === 0) this.setState({ autoCompleteOption: [] });
+        const newOption = data.map(symbolInfo => ({
+          value: symbolInfo.symbol,
+          label: (
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{symbolInfo.name}</div>
+              <div>{symbolInfo.symbol}</div>
+            </div>
+          ),
+        }));
+        this.setState({ autoCompleteOption: newOption });
+      }
+    });
+  };
+
+  onOptionSelect = value => {
+    this.onClickSearch(value);
   };
 
   onClickSearch = async symbol => {
     this.setState({ isSearchBtnLoading: true });
     const res = await this.props.onClickSearch(symbol);
     if (res.isSuccess) {
-      this.setState({ searchVal: "" });
+      this.setState({ searchVal: '' });
     }
     this.setState({ isSearchBtnLoading: false });
   };
@@ -33,18 +54,24 @@ export class SearchBar extends Component {
   render() {
     return (
       <div className="searchBar__wrapper">
-        <Input.Search
-          enterButton
-          type="text"
-          size="large"
+        <AutoComplete
+          options={this.state.autoCompleteOption}
+          style={{ width: '100%' }}
+          onSelect={this.onOptionSelect}
           value={this.state.searchVal}
-          loading={this.state.isSearchBtnLoading}
-          placeholder={this.props.intl.formatMessage({
-            id: "searchBar.placeholder",
-          })}
-          onSearch={this.onClickSearch}
-          onChange={this.onInputChange}
-        />
+        >
+          <Input.Search
+            enterButton
+            type="text"
+            size="large"
+            loading={this.state.isSearchBtnLoading}
+            placeholder={this.props.intl.formatMessage({
+              id: 'searchBar.placeholder',
+            })}
+            onSearch={this.onClickSearch}
+            onChange={this.onInputChange}
+          />
+        </AutoComplete>
         <Button
           size="large"
           type="primary"
