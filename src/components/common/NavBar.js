@@ -4,6 +4,7 @@ import {
   LineChartOutlined,
   PieChartOutlined,
   CalculatorOutlined,
+  UnorderedListOutlined,
   CoffeeOutlined,
 } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
@@ -17,8 +18,12 @@ class NavBar extends React.Component {
         key: 'list',
       },
       {
-        icon: <PieChartOutlined />,
+        icon: <UnorderedListOutlined />,
         key: 'portfolio',
+      },
+      {
+        icon: <PieChartOutlined />,
+        key: 'chart',
       },
       {
         icon: <CalculatorOutlined />,
@@ -41,11 +46,12 @@ class NavBar extends React.Component {
       return (
         <TabPane
           tab={
-            <span>
-              {tab.icon}{' '}
-              {this.props.intl.formatMessage({
+            <span
+              title={this.props.intl.formatMessage({
                 id: `navBar.${tab.key}`,
               })}
+            >
+              {tab.icon}
             </span>
           }
           key={tab.key}

@@ -4,18 +4,17 @@ import { message } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'actions';
-import { getPortfolioData, getStockPercent } from 'utils';
+import { getPortfolioData } from 'utils';
 
 import SearchBar from 'components/common/SearchBar';
 import Record from 'components/portfolio/Record';
-import Chart from 'components/portfolio/Chart';
-
 class Portfolio extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const savedPortfolio = localStorage.getItem('portfolio');
 
     if (savedPortfolio) {
-      this.props.initialPortfolio(JSON.parse(savedPortfolio));
+      await this.props.initialPortfolio(JSON.parse(savedPortfolio));
+      this.onClickReload();
     }
   }
 
@@ -64,11 +63,6 @@ class Portfolio extends React.Component {
   };
 
   render() {
-    const chartData = this.props.portfolio.map(stock => ({
-      type: stock.symbol,
-      value: getStockPercent({ stock, stockArr: this.props.portfolio }),
-    }));
-
     return (
       <div>
         <SearchBar
@@ -76,7 +70,6 @@ class Portfolio extends React.Component {
           onClickReload={this.onClickReload}
         />
         <Record />
-        {this.props.portfolio.length !== 0 && <Chart data={chartData} />}
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { getStoreData } from 'utils';
 import * as actions from 'actions';
 import ListPage from 'pages/ListPage';
 import PortfolioPage from 'pages/PortfolioPage';
+import ChartPage from 'pages/ChartPage';
 import RebalancePage from 'pages/RebalancePage';
 import DonatePage from 'pages/DonatePage';
 import NavBar from 'components/common/NavBar';
@@ -61,8 +62,9 @@ class App extends React.Component {
           <div className="header">
             <NavBar history={history} />
           </div>
-          <Route path="/portfolio" exact component={PortfolioPage} />
-          <Route path="/list" exact component={ListPage} />
+          <Route path="/portfolio" component={PortfolioPage} />
+          <Route path="/list" component={ListPage} />
+          <Route path="/chart" component={ChartPage} />
           <Route path="/donate" component={DonatePage} />
           <Route path="/rebalance" component={RebalancePage} />
         </Router>

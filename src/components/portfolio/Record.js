@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, InputNumber } from 'antd';
+import { Table, Button, Tag, InputNumber, Space } from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -12,7 +12,12 @@ import arrayMove from 'array-move';
 import { getStockPercent } from 'utils';
 import * as actions from 'actions';
 import 'components/list/Record.scss';
-import { DeleteOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  RiseOutlined,
+  FallOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
@@ -74,16 +79,7 @@ class Record extends React.Component {
       },
       {
         title: <FormattedMessage id="record.quantity" />,
-        key: 'quantity',
-        render: rowData => (
-          <InputNumber
-            step={0.01}
-            value={rowData.quantity}
-            onChange={newQuantity =>
-              this.onQuantityChange(rowData, newQuantity)
-            }
-          />
-        ),
+        dataIndex: 'quantity',
       },
       {
         title: <FormattedMessage id="record.percent" />,
@@ -111,14 +107,24 @@ class Record extends React.Component {
         key: 'action',
         render: rowData => {
           return (
-            <Button
-              type="danger"
-              shape="circle"
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                this.props.removePortfolio(rowData);
-              }}
-            />
+            <Space>
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  this.props.removePortfolio(rowData);
+                }}
+              />
+              <Button
+                type="danger"
+                shape="circle"
+                icon={<DeleteOutlined />}
+                onClick={() => {
+                  this.props.removePortfolio(rowData);
+                }}
+              />
+            </Space>
           );
         },
       },
