@@ -8,7 +8,6 @@ import {
   CoffeeOutlined,
 } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
-const { TabPane } = Tabs;
 
 class NavBar extends React.Component {
   state = {
@@ -36,15 +35,12 @@ class NavBar extends React.Component {
     ],
   };
 
-  onTabClick = key => {
-    this.props.history.push(`/${key}`);
-  };
-
   renderTabPane = () => {
     if (this.state.tabs.length === 0) return;
+
     const TabPaneJsx = this.state.tabs.map(tab => {
       return (
-        <TabPane
+        <Tabs.TabPane
           tab={
             <span
               title={this.props.intl.formatMessage({
@@ -55,7 +51,7 @@ class NavBar extends React.Component {
             </span>
           }
           key={tab.key}
-        ></TabPane>
+        ></Tabs.TabPane>
       );
     });
     return TabPaneJsx;
@@ -64,7 +60,11 @@ class NavBar extends React.Component {
   render() {
     return (
       <div className="narBar__wrapper">
-        <Tabs type="card" defaultActiveKey="list" onChange={this.onTabClick}>
+        <Tabs
+          type="card"
+          defaultActiveKey="list"
+          onChange={key => this.props.history.push(`/${key}`)}
+        >
           {this.renderTabPane()}
         </Tabs>
       </div>

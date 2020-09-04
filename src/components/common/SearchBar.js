@@ -32,11 +32,7 @@ export class SearchBar extends Component {
     });
   };
 
-  onOptionSelect = value => {
-    this.onClickSearch(value);
-  };
-
-  onClickSearch = async symbol => {
+  onOptionSelect = async symbol => {
     this.setState({ isSearchBtnLoading: true });
     const res = await this.props.onClickSearch(symbol);
     if (res.isSuccess) {
@@ -68,7 +64,6 @@ export class SearchBar extends Component {
             placeholder={this.props.intl.formatMessage({
               id: 'searchBar.placeholder',
             })}
-            onSearch={this.onClickSearch}
             onChange={this.onInputChange}
           />
         </AutoComplete>

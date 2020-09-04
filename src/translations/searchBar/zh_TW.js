@@ -1,3 +1,3 @@
 export default {
-  'searchBar.placeholder': '代碼',
+  'searchBar.placeholder': '美股代碼/名稱',
 };
