@@ -2,13 +2,55 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Form, InputNumber } from 'antd';
 
+import { apiGetStock } from 'api';
+import * as actions from 'actions';
+import { getPortfolioData } from 'utils';
 import Record from 'components/rebalance/Record';
 
 import 'pages/RebalancePage.scss';
 class RebalancePage extends React.Component {
   state = {
-    isAddNewFund: true,
+    isAddNewFund: false,
     newFund: 0,
+  };
+
+  async componentDidMount() {
+    const savedPortfolio = localStorage.getItem('portfolio');
+
+    if (savedPortfolio) {
+      await this.props.initialPortfolio(JSON.parse(savedPortfolio));
+      this.props.setTableLoading({ tableLoading: true });
+      await this.onClickReload();
+      this.props.setTableLoading({ tableLoading: false });
+    }
+  }
+
+  onClickReload = async () => {
+    const { portfolio, onSavePortfolio } = this.props;
+    const delayIncrement = 200;
+    let delay = 0;
+
+    if (portfolio.length === 0) return;
+
+    let promiseArr = portfolio.map(async stock => {
+      delay += delayIncrement;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return apiGetStock(stock.symbol);
+    });
+
+    try {
+      const res = await Promise.all(promiseArr);
+      res.forEach(({ data }) => {
+        let matchStock = portfolio.find(
+          stock => stock.symbol === data.quote.symbol
+        );
+
+        let quantity = matchStock ? matchStock.quantity : null;
+        onSavePortfolio(getPortfolioData(data, quantity));
+      });
+    } catch (error) {
+      console.log('error: ', error);
+    }
   };
 
   onSwitchChange = isAddNewFund => {
@@ -51,4 +93,4 @@ const mapStateToProps = state => {
   return { portfolio: state.portfolio };
 };
 
-export default connect(mapStateToProps)(RebalancePage);
+export default connect(mapStateToProps, actions)(RebalancePage);

@@ -1,38 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, InputNumber, Space, Modal, Form } from 'antd';
-import {
-  sortableContainer,
-  sortableElement,
-  sortableHandle,
-} from 'react-sortable-hoc';
+import { Table, Button, InputNumber } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { MenuOutlined } from '@ant-design/icons';
-import arrayMove from 'array-move';
-import { getStockPercent } from 'utils';
-import * as actions from 'actions';
-import 'components/list/Record.scss';
-import { DeleteOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
-const DragHandle = sortableHandle(() => (
-  <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
-));
 
-const SortableItem = sortableElement(props => <tr {...props} />);
-const SortableContainer = sortableContainer(props => <tbody {...props} />);
+import { getStockPercent, toCurrency } from 'utils';
+import * as actions from 'actions';
+
+import 'components/list/Record.scss';
 
 class Record extends React.Component {
-  state = {
-    modalVisible: false,
-    selectedStock: null,
-  };
-
   columns = [
-    {
-      title: '',
-      dataIndex: 'sort',
-      className: 'drag-visible',
-      render: () => <DragHandle />,
-    },
     {
       title: <FormattedMessage id="record.name" />,
       key: 'symbol',
@@ -49,55 +26,8 @@ class Record extends React.Component {
       ),
     },
     {
-      title: <FormattedMessage id="record.latestPrice" />,
-      key: 'latestPrice',
-      dataIndex: 'latestPrice',
-    },
-    {
-      title: <FormattedMessage id="record.change" />,
-      key: 'change',
-      render: rowData => {
-        const changePercent = (rowData.change / rowData.previousClose) * 100;
-        const isRise = changePercent > 0;
-        return (
-          <div>
-            <div style={{ color: isRise ? 'green' : 'red' }}>
-              {isRise && '+'}
-              {rowData.change}
-            </div>
-            <Tag
-              color={isRise ? 'green' : 'red'}
-              icon={isRise ? <RiseOutlined /> : <FallOutlined />}
-            >
-              {isRise && '+'}
-              {changePercent.toFixed(2)}%
-            </Tag>
-          </div>
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id="record.quantity" />,
-      key: 'quantity',
-      render: rowData => {
-        return (
-          <Button
-            type="link"
-            onClick={() => {
-              this.setState({
-                selectedStock: rowData,
-                modalVisible: true,
-              });
-            }}
-          >
-            {rowData.quantity}
-          </Button>
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id="record.percent" />,
-      key: 'percent',
+      title: <FormattedMessage id="record.defaultPercent" />,
+      key: 'defaultPercent',
       render: rowData => {
         const percent = getStockPercent({
           stock: rowData,
@@ -105,100 +35,75 @@ class Record extends React.Component {
         });
         return (
           <InputNumber
-            disabled
             formatter={() => `${percent}%`}
             parser={value => value.replace('%', '')}
           />
         );
       },
     },
+    {
+      title: '目前投資部位',
+      children: [
+        {
+          title: <FormattedMessage id="record.latestPrice" />,
+          key: 'latestPrice',
+          render: rowData => (
+            <span>
+              {toCurrency({
+                num: rowData.latestPrice.toFixed(2),
+                hasSymbol: true,
+              })}
+            </span>
+          ),
+        },
+        {
+          title: <FormattedMessage id="record.quantity" />,
+          key: 'quantity',
+          render: rowData => (
+            <span>{toCurrency({ num: rowData.quantity.toFixed(4) })}</span>
+          ),
+        },
+        {
+          title: <FormattedMessage id="record.value" />,
+          key: 'value',
+          render: rowData => {
+            const num = (rowData.latestPrice * rowData.quantity).toFixed(2);
+            return <span>{toCurrency({ num, hasSymbol: true })}</span>;
+          },
+        },
+        {
+          title: <FormattedMessage id="record.percent" />,
+          key: 'percent',
+          render: rowData => {
+            const percent = getStockPercent({
+              stock: rowData,
+              stockArr: this.props.portfolio,
+            });
+            return (
+              <InputNumber
+                disabled
+                formatter={() => `${percent}%`}
+                parser={value => value.replace('%', '')}
+              />
+            );
+          },
+        },
+      ],
+    },
   ];
-
-  onSortEnd = ({ oldIndex, newIndex }) => {
-    if (oldIndex !== newIndex) {
-      const newStockArr = arrayMove(
-        [].concat(this.props.portfolio),
-        oldIndex,
-        newIndex
-      ).filter(el => !!el);
-      this.props.changePortfolioOrder({ newStockArr });
-    }
-  };
-
-  onModalFormSubmit = ({ quantity }) => {
-    this.onQuantityChange(this.state.selectedStock, quantity);
-    this.setState({ modalVisible: false, selectedStock: null });
-  };
-
-  onQuantityChange = (rowData, newQuantity) => {
-    this.props.changeStockQuantity({
-      ...rowData,
-      quantity: newQuantity,
-    });
-  };
 
   render() {
     const { portfolio, loading } = this.props;
-    const DraggableContainer = props => (
-      <SortableContainer
-        {...props}
-        useDragHandle
-        helperClass="row-dragging"
-        onSortEnd={this.onSortEnd}
-      />
-    );
-
-    const DraggableBodyRow = ({ className, style, ...restProps }) => {
-      const index = this.props.portfolio.findIndex(
-        x => x.symbol === restProps['data-row-key']
-      );
-      return <SortableItem index={index} {...restProps} />;
-    };
-
     return (
       <>
         <Table
+          bordered
           pagination={false}
           dataSource={portfolio}
           columns={this.columns}
           rowKey="symbol"
-          scroll={{ y: 200 }}
           loading={loading.tableLoading}
-          components={{
-            body: {
-              wrapper: DraggableContainer,
-              row: DraggableBodyRow,
-            },
-          }}
         />
-        <Modal
-          centered
-          title={
-            this.state.selectedStock ? this.state.selectedStock.symbol : ''
-          }
-          visible={this.state.modalVisible}
-          footer={null}
-          onCancel={() => this.setState({ modalVisible: false })}
-        >
-          <Form
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            onFinish={this.onModalFormSubmit}
-          >
-            <Form.Item
-              label="股數"
-              name="quantity"
-              rules={[{ required: true, message: '請輸入股數' }]}
-            >
-              <InputNumber autoFocus size="large" step={0.0001} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                更新
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
       </>
     );
   }

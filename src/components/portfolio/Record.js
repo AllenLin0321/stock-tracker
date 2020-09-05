@@ -7,12 +7,17 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc';
 import { FormattedMessage } from 'react-intl';
-import { MenuOutlined } from '@ant-design/icons';
+import {
+  MenuOutlined,
+  DeleteOutlined,
+  RiseOutlined,
+  FallOutlined,
+} from '@ant-design/icons';
 import arrayMove from 'array-move';
-import { getStockPercent } from 'utils';
+import { getStockPercent, toCurrency } from 'utils';
 import * as actions from 'actions';
+
 import 'components/list/Record.scss';
-import { DeleteOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
@@ -51,7 +56,9 @@ class Record extends React.Component {
     {
       title: <FormattedMessage id="record.latestPrice" />,
       key: 'latestPrice',
-      dataIndex: 'latestPrice',
+      render: rowData => (
+        <span>{toCurrency({ num: rowData.latestPrice, hasSymbol: true })}</span>
+      ),
     },
     {
       title: <FormattedMessage id="record.change" />,
@@ -90,7 +97,7 @@ class Record extends React.Component {
               });
             }}
           >
-            {rowData.quantity}
+            {toCurrency({ num: rowData.quantity })}
           </Button>
         );
       },

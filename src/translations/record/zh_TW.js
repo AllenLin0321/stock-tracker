@@ -6,6 +6,8 @@ export default {
   'record.low': '最低',
   'record.updatedTime': '更新',
   'record.action': '行動',
-  'record.quantity': '#',
-  'record.percent': '比重',
+  'record.quantity': '股數',
+  'record.percent': '市值%',
+  'record.defaultPercent': '配重%',
+  'record.value': '市值',
 };

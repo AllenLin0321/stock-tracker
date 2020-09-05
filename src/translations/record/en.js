@@ -7,5 +7,6 @@ export default {
   'record.updatedTime': 'Updated Time',
   'record.action': 'Action',
   'record.quantity': 'Quantity',
-  'record.percent': 'Percent',
+  'record.percent': 'Default Percent',
+  'record.value': 'Value',
 };
