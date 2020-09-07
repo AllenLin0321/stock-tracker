@@ -15,13 +15,18 @@ export const getStoreData = ({ quote }) => ({
   updatedTime: moment().format('HH:mm'),
 });
 
-export const getPortfolioData = ({ quote }, quantity = 1) => ({
+export const getPortfolioData = ({
+  quote,
+  quantity = 1,
+  defaultPrecent = 1,
+}) => ({
   symbol: quote.symbol,
   latestPrice: quote.latestPrice,
   change: quote.change,
   previousClose: quote.previousClose,
   quantity,
   updatedTime: moment().format('HH:mm'),
+  defaultPrecent,
 });
 
 export const getStockPercent = ({ stock, stockArr }) => {
@@ -35,5 +40,5 @@ export const getStockPercent = ({ stock, stockArr }) => {
 export const toCurrency = ({ num, hasSymbol = false }) => {
   const parts = num.toString().split('.');
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `${hasSymbol ? '$ ' : ''}${parts.join('.')}`;
+  return `${hasSymbol ? '$' : ''}${parts.join('.')}`;
 };

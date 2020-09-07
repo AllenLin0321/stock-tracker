@@ -38,6 +38,15 @@ export default (state = initialState, { type, payload }) => {
       updateLocalStorage(newState);
       return newState;
 
+    case types.CHANGE_DEFAULT_PERCENT:
+      newState = state.map(stock =>
+        stock.symbol === payload.symbol
+          ? { ...payload, defaultPrecent: payload.defaultPrecent }
+          : stock
+      );
+      updateLocalStorage(newState);
+      return newState;
+
     default:
       return state;
   }

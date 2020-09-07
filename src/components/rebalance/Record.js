@@ -13,7 +13,6 @@ class Record extends React.Component {
     {
       title: <FormattedMessage id="record.name" />,
       key: 'symbol',
-      className: 'drag-visible',
       render: rowData => (
         <Button
           type="link"
@@ -29,14 +28,16 @@ class Record extends React.Component {
       title: <FormattedMessage id="record.defaultPercent" />,
       key: 'defaultPercent',
       render: rowData => {
-        const percent = getStockPercent({
-          stock: rowData,
-          stockArr: this.props.portfolio,
-        });
         return (
           <InputNumber
-            formatter={() => `${percent}%`}
+            value={rowData.defaultPrecent}
+            min={0}
+            max={100}
+            formatter={value => `${value}%`}
             parser={value => value.replace('%', '')}
+            onChange={newPercent =>
+              this.props.changeDefaultPercent({ rowData, newPercent })
+            }
           />
         );
       },
@@ -82,7 +83,8 @@ class Record extends React.Component {
             return (
               <InputNumber
                 disabled
-                formatter={() => `${percent}%`}
+                value={percent}
+                formatter={value => `${value}%`}
                 parser={value => value.replace('%', '')}
               />
             );
@@ -93,24 +95,25 @@ class Record extends React.Component {
   ];
 
   render() {
-    const { portfolio, loading } = this.props;
     return (
-      <>
-        <Table
-          bordered
-          pagination={false}
-          dataSource={portfolio}
-          columns={this.columns}
-          rowKey="symbol"
-          loading={loading.tableLoading}
-        />
-      </>
+      <Table
+        bordered
+        pagination={false}
+        dataSource={this.props.portfolio}
+        columns={this.columns}
+        rowKey="symbol"
+        loading={this.props.loading.tableLoading}
+      />
     );
   }
 }
 
 const mapStateToProps = state => {
-  return { portfolio: state.portfolio, loading: state.loading };
+  return {
+    portfolio: state.portfolio,
+    loading: state.loading,
+    rebalance: state.rebalance,
+  };
 };
 
 export default connect(mapStateToProps, actions)(Record);

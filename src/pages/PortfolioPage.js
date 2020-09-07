@@ -62,7 +62,11 @@ class Portfolio extends React.Component {
         );
 
         let quantity = matchStock ? matchStock.quantity : null;
-        onSavePortfolio(getPortfolioData(data, quantity));
+        let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
+
+        onSavePortfolio(
+          getPortfolioData({ ...data, quantity, defaultPrecent })
+        );
       });
     } catch (error) {
       console.log('error: ', error);
