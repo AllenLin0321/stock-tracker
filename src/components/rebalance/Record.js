@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Table, InputNumber, Typography } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import { getStockPercent, toCurrency } from 'utils';
 import * as actions from 'actions';
@@ -26,7 +27,26 @@ class Record extends React.Component {
       ),
     },
     {
-      title: <FormattedMessage id="record.defaultPercent" />,
+      title: () => {
+        const title = this.props.intl.formatMessage({
+          id: 'record.defaultPercent',
+        });
+        const totalPercent = this.props.portfolio.reduce(
+          (accumulator, currentValue) =>
+            accumulator + currentValue.defaultPrecent,
+          0
+        );
+        return (
+          <div>
+            <Text>{title}</Text>
+            <div>
+              <Text type={totalPercent === 100 ? 'secondary' : 'warning'}>
+                (總和{totalPercent}%)
+              </Text>
+            </div>
+          </div>
+        );
+      },
       key: 'defaultPercent',
       render: rowData => {
         return (
@@ -91,6 +111,24 @@ class Record extends React.Component {
             );
           },
         },
+        {
+          title: <FormattedMessage id="record.shiftPercent" />,
+          key: 'shiftPercent',
+          render: rowData => {
+            const percent = getStockPercent({
+              stock: rowData,
+              stockArr: this.props.portfolio,
+            });
+            const shiftPercent =
+              (percent - rowData.defaultPrecent) / rowData.defaultPrecent;
+
+            return (
+              <Text type={shiftPercent > 0 ? 'default' : 'danger'}>
+                {shiftPercent.toFixed(2)}%
+              </Text>
+            );
+          },
+        },
       ],
     },
   ];
@@ -113,8 +151,7 @@ const mapStateToProps = state => {
   return {
     portfolio: state.portfolio,
     loading: state.loading,
-    rebalance: state.rebalance,
   };
 };
 
-export default connect(mapStateToProps, actions)(Record);
+export default connect(mapStateToProps, actions)(injectIntl(Record));

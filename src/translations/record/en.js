@@ -9,4 +9,5 @@ export default {
   'record.quantity': 'Quantity',
   'record.percent': 'Default Percent',
   'record.value': 'Value',
+  'record.shiftPercent': 'Shift Percent%',
 };

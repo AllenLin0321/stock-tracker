@@ -10,4 +10,5 @@ export default {
   'record.percent': '市值%',
   'record.defaultPercent': '配重%',
   'record.value': '市值',
+  'record.shiftPercent': '偏離%',
 };

@@ -18,7 +18,8 @@ class Portfolio extends React.Component {
   render() {
     const chartData = this.props.portfolio.map(stock => ({
       type: stock.symbol,
-      value: getStockPercent({ stock, stockArr: this.props.portfolio }),
+      percent: getStockPercent({ stock, stockArr: this.props.portfolio }),
+      value: stock.latestPrice * stock.quantity,
     }));
 
     return (
