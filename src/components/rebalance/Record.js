@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, InputNumber } from 'antd';
+import { Table, InputNumber, Typography } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 import { getStockPercent, toCurrency } from 'utils';
 import * as actions from 'actions';
 
-import 'components/list/Record.scss';
+import 'components/common/Record.scss';
+
+const { Text, Link } = Typography;
 
 class Record extends React.Component {
   columns = [
@@ -14,14 +16,13 @@ class Record extends React.Component {
       title: <FormattedMessage id="record.name" />,
       key: 'symbol',
       render: rowData => (
-        <Button
-          type="link"
+        <Link
           href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
           target="_blank"
           rel="noopener noreferrer"
         >
           {rowData.symbol}
-        </Button>
+        </Link>
       ),
     },
     {
@@ -49,19 +50,19 @@ class Record extends React.Component {
           title: <FormattedMessage id="record.latestPrice" />,
           key: 'latestPrice',
           render: rowData => (
-            <span>
+            <Text>
               {toCurrency({
                 num: rowData.latestPrice.toFixed(2),
                 hasSymbol: true,
               })}
-            </span>
+            </Text>
           ),
         },
         {
           title: <FormattedMessage id="record.quantity" />,
           key: 'quantity',
           render: rowData => (
-            <span>{toCurrency({ num: rowData.quantity.toFixed(4) })}</span>
+            <Text>{toCurrency({ num: rowData.quantity.toFixed(4) })}</Text>
           ),
         },
         {
@@ -69,7 +70,7 @@ class Record extends React.Component {
           key: 'value',
           render: rowData => {
             const num = (rowData.latestPrice * rowData.quantity).toFixed(2);
-            return <span>{toCurrency({ num, hasSymbol: true })}</span>;
+            return <Text>{toCurrency({ num, hasSymbol: true })}</Text>;
           },
         },
         {

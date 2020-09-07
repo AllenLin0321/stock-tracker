@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, InputNumber, Space, Modal, Form } from 'antd';
+import { Table, Button, Tag, InputNumber, Modal, Form, Typography } from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -17,13 +17,14 @@ import arrayMove from 'array-move';
 import { getStockPercent, toCurrency } from 'utils';
 import * as actions from 'actions';
 
-import 'components/list/Record.scss';
+import 'components/common/Record.scss';
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
+const { Text, Link } = Typography;
 
 class Record extends React.Component {
   state = {
@@ -43,21 +44,38 @@ class Record extends React.Component {
       key: 'symbol',
       className: 'drag-visible',
       render: rowData => (
-        <Button
-          type="link"
+        <Link
           href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
           target="_blank"
           rel="noopener noreferrer"
         >
           {rowData.symbol}
-        </Button>
+        </Link>
       ),
+    },
+    {
+      title: <FormattedMessage id="record.quantity" />,
+      key: 'quantity',
+      render: rowData => {
+        return (
+          <Link
+            onClick={() => {
+              this.setState({
+                selectedStock: rowData,
+                modalVisible: true,
+              });
+            }}
+          >
+            {toCurrency({ num: rowData.quantity })}
+          </Link>
+        );
+      },
     },
     {
       title: <FormattedMessage id="record.latestPrice" />,
       key: 'latestPrice',
       render: rowData => (
-        <span>{toCurrency({ num: rowData.latestPrice, hasSymbol: true })}</span>
+        <Text>{toCurrency({ num: rowData.latestPrice, hasSymbol: true })}</Text>
       ),
     },
     {
@@ -83,25 +101,7 @@ class Record extends React.Component {
         );
       },
     },
-    {
-      title: <FormattedMessage id="record.quantity" />,
-      key: 'quantity',
-      render: rowData => {
-        return (
-          <Button
-            type="link"
-            onClick={() => {
-              this.setState({
-                selectedStock: rowData,
-                modalVisible: true,
-              });
-            }}
-          >
-            {toCurrency({ num: rowData.quantity })}
-          </Button>
-        );
-      },
-    },
+
     {
       title: <FormattedMessage id="record.percent" />,
       key: 'percent',
@@ -122,23 +122,21 @@ class Record extends React.Component {
     {
       title: <FormattedMessage id="record.updatedTime" />,
       key: 'updatedTime',
-      dataIndex: 'updatedTime',
+      render: rowData => <Text type="secondary">{rowData.updatedTime}</Text>,
     },
     {
       title: <FormattedMessage id="record.action" />,
       key: 'action',
       render: rowData => {
         return (
-          <Space>
-            <Button
-              type="danger"
-              shape="circle"
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                this.props.removePortfolio(rowData);
-              }}
-            />
-          </Space>
+          <Button
+            type="danger"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              this.props.removePortfolio(rowData);
+            }}
+          />
         );
       },
     },

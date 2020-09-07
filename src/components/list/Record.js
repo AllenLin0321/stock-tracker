@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag } from 'antd';
+import { Table, Button, Tag, Typography } from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -17,7 +17,7 @@ import arrayMove from 'array-move';
 
 import * as actions from 'actions';
 import { toCurrency } from 'utils';
-import 'components/list/Record.scss';
+import 'components/common/Record.scss';
 
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
@@ -25,7 +25,7 @@ const DragHandle = sortableHandle(() => (
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
-
+const { Text, Link } = Typography;
 class Record extends React.Component {
   state = {
     columns: [
@@ -41,23 +41,22 @@ class Record extends React.Component {
         key: 'symbol',
         className: 'drag-visible',
         render: rowData => (
-          <Button
-            type="link"
+          <Link
             href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
             target="_blank"
             rel="noopener noreferrer"
           >
             {rowData.symbol}
-          </Button>
+          </Link>
         ),
       },
       {
         title: <FormattedMessage id="record.latestPrice" />,
         key: 'latestPrice',
         render: rowData => (
-          <span>
+          <Text>
             {toCurrency({ num: rowData.latestPrice, hasSymbol: true })}
-          </span>
+          </Text>
         ),
       },
       {
@@ -87,19 +86,20 @@ class Record extends React.Component {
         title: <FormattedMessage id="record.high" />,
         key: 'high',
         render: rowData => (
-          <span>{toCurrency({ num: rowData.high, hasSymbol: true })}</span>
+          <Text>{toCurrency({ num: rowData.high, hasSymbol: true })}</Text>
         ),
       },
       {
         title: <FormattedMessage id="record.low" />,
         key: 'low',
         render: rowData => (
-          <span>{toCurrency({ num: rowData.low, hasSymbol: true })}</span>
+          <Text>{toCurrency({ num: rowData.low, hasSymbol: true })}</Text>
         ),
       },
       {
         title: <FormattedMessage id="record.updatedTime" />,
-        dataIndex: 'updatedTime',
+        key: 'updatedTime',
+        render: rowData => <Text type="secondary">{rowData.updatedTime}</Text>,
       },
       {
         title: <FormattedMessage id="record.action" />,

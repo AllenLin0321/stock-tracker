@@ -1,10 +1,10 @@
 import React from 'react';
 import { Donut } from '@ant-design/charts';
 
-const Chart = props => {
+const Chart = ({ data }) => {
   return (
     <Donut
-      data={props.data || []}
+      data={data || []}
       forceFit
       statistic={{
         totalLabel: '總計',
@@ -12,7 +12,7 @@ const Chart = props => {
       meta={{
         value: {
           formatter: val => {
-            return `${val}%`;
+            return `${val.toFixed(2)}%`;
           },
         },
       }}
