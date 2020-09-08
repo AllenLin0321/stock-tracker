@@ -12,6 +12,7 @@ class RebalancePage extends React.Component {
   state = {
     isAddNewFund: false,
     newFund: 0,
+    isExpandAll: false,
   };
 
   async componentDidMount() {
@@ -60,6 +61,10 @@ class RebalancePage extends React.Component {
     this.setState({ isAddNewFund });
   };
 
+  onisExpandAllChange = isExpandAll => {
+    this.setState({ isExpandAll });
+  };
+
   onInputNumberChange = newFund => {
     this.setState({ newFund });
   };
@@ -74,19 +79,34 @@ class RebalancePage extends React.Component {
               onChange={this.onSwitchChange}
             />
           </Form.Item>
-          <Form.Item label="注資金額" name="newFund">
-            <InputNumber
-              disabled={!this.state.isAddNewFund}
-              value={this.state.newFund}
-              formatter={value =>
-                `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              }
-              parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              onChange={this.onInputNumberChange}
-            />
-          </Form.Item>
+          {this.state.isAddNewFund && (
+            <>
+              <Form.Item label="注資金額" name="newFund">
+                <InputNumber
+                  value={this.state.newFund}
+                  formatter={value =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  onChange={this.onInputNumberChange}
+                />
+              </Form.Item>
+              <Form.Item label="是否全部展開" name="isExpandAll">
+                <Switch
+                  checked={this.state.isExpandAll}
+                  checkedChildren="展開"
+                  unCheckedChildren="關閉"
+                  onChange={this.onisExpandAllChange}
+                />
+              </Form.Item>
+            </>
+          )}
         </Form>
-        <Record />
+        <Record
+          isAddNewFund={this.state.isAddNewFund}
+          isExpandAll={this.state.isExpandAll}
+          newFund={this.state.newFund}
+        />
       </div>
     );
   }

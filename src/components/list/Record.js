@@ -85,16 +85,22 @@ class Record extends React.Component {
       {
         title: <FormattedMessage id="record.high" />,
         key: 'high',
-        render: rowData => (
-          <Text>{toCurrency({ num: rowData.high, hasSymbol: true })}</Text>
-        ),
+        render: rowData => {
+          if (!rowData.high) return <Text>-</Text>;
+          return (
+            <Text>{toCurrency({ num: rowData.high, hasSymbol: true })}</Text>
+          );
+        },
       },
       {
         title: <FormattedMessage id="record.low" />,
         key: 'low',
-        render: rowData => (
-          <Text>{toCurrency({ num: rowData.low, hasSymbol: true })}</Text>
-        ),
+        render: rowData => {
+          if (!rowData.low) return <Text>-</Text>;
+          return (
+            <Text>{toCurrency({ num: rowData.low, hasSymbol: true })}</Text>
+          );
+        },
       },
       {
         title: <FormattedMessage id="record.updatedTime" />,
