@@ -30,6 +30,11 @@ const Chart = ({ data }) => {
         },
       },
     },
+    yAxis: {
+      title: {
+        visible: false,
+      },
+    },
   };
 
   const donutChartConfig = {
