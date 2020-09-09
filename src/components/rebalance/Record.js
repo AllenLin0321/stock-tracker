@@ -11,6 +11,8 @@ import 'components/common/Record.scss';
 
 const { Text, Link } = Typography;
 
+const DEFAULT_DECIMAL = 2; // 小數點位數
+
 class Record extends React.Component {
   state = {
     expandedRowKeys: [],
@@ -28,93 +30,94 @@ class Record extends React.Component {
   }
 
   /**
-   * @description 目前投資市值
+   * @description 各別投資市值
    * @param {Number} record.latestPrice 股票市價
    * @param {Number} record.quantity 擁有股數
    * @param {Number} decimal 回傳資料的小數點位數
    */
-  getIndividualValue = (record, decimal = 2) => {
-    const value = (record.latestPrice * record.quantity).toFixed(2);
-    return parseFloat(parseFloat(value).toFixed(decimal));
+  getIndividualValue = record => {
+    const individualValue = record.latestPrice * record.quantity;
+    return parseFloat(individualValue.toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 總投資百分比
    * @param {Number} decimal
    */
-  getTotalPercent = (decimal = 2) => {
+  getTotalPercent = () => {
     if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
     const totalPercent = this.props.portfolio.reduce(
-      (accumulator, currentValue) => accumulator + currentValue.defaultPrecent,
+      (accumulator, currentValue) =>
+        accumulator + parseFloat(currentValue.defaultPrecent),
       0
     );
 
-    return parseFloat(parseFloat(totalPercent).toFixed(decimal));
+    return parseFloat(totalPercent.toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 總投資價值
    * @param {Number} decimal
    */
-  getTotalValue = (decimal = 2) => {
+  getTotalValue = () => {
     if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
     const totalValue = this.props.portfolio.reduce(
       (accumulator, currentValue) =>
         accumulator + this.getIndividualValue(currentValue),
       0
     );
-    return parseFloat(parseFloat(totalValue).toFixed(decimal));
+    return parseFloat(totalValue.toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 再平衡後市值
    * @param {Object} record 父層Row資料
    */
-  getInventedValue = (record, decimal = 2) => {
+  getInventedValue = record => {
     const inventedValue =
       ((this.getTotalValue() + this.props.newFund) * record.defaultPrecent) /
       this.getTotalPercent();
 
-    return parseFloat(parseFloat(inventedValue).toFixed(decimal));
+    return parseFloat(parseFloat(inventedValue).toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 應交易金額
    * @param {Object} record 父層Row資料
    */
-  getShouldInventAmount = (record, decimal = 2) => {
+  getShouldInventAmount = record => {
     const shouldInventAmount =
       this.getInventedValue(record) - this.getIndividualValue(record);
-    return parseFloat(parseFloat(shouldInventAmount).toFixed(decimal));
+    return parseFloat(parseFloat(shouldInventAmount).toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 建議買賣股數
    * @param {Object} record 父層Row資料
    */
-  getNewQuantity = (record, decimal = 2) => {
+  getNewQuantity = record => {
     const temp = this.getShouldInventAmount(record) / record.latestPrice;
     let newQuantity = Math.floor(temp);
     if (temp < 0) newQuantity++;
-    return parseFloat(parseFloat(newQuantity).toFixed(decimal));
+    return parseFloat(parseFloat(newQuantity).toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 交易後市值
    * @param {Object} record 父層Row資料
    */
-  getTradedValue = (record, decimal = 2) => {
+  getTradedValue = record => {
     const tradedValue =
       this.getNewQuantity(record) * record.latestPrice +
       this.getIndividualValue(record);
-    return parseFloat(parseFloat(tradedValue).toFixed(decimal));
+    return parseFloat(parseFloat(tradedValue).toFixed(DEFAULT_DECIMAL));
   };
 
   /**
    * @description 交易後比例
    * @param {Object} record 父層Row資料
    */
-  getTradedPercent = (record, decimal = 2) => {
+  getTradedPercent = record => {
     if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
     const totalTradedValue = this.props.portfolio.reduce(
       (accumulator, currentValue) =>
@@ -123,7 +126,7 @@ class Record extends React.Component {
     );
     const tradedPercent =
       (this.getTradedValue(record) / totalTradedValue) * 100;
-    return parseFloat(parseFloat(tradedPercent).toFixed(decimal));
+    return parseFloat(parseFloat(tradedPercent).toFixed(DEFAULT_DECIMAL));
   };
 
   onExpandClick = (expanded, { symbol }) => {
@@ -197,7 +200,7 @@ class Record extends React.Component {
             render: rowData => (
               <Text>
                 {toCurrency({
-                  num: rowData.latestPrice.toFixed(2),
+                  num: rowData.latestPrice.toFixed(DEFAULT_DECIMAL),
                   hasSymbol: true,
                 })}
               </Text>
@@ -250,12 +253,14 @@ class Record extends React.Component {
                 stock: rowData,
                 stockArr: this.props.portfolio,
               });
+
               const shiftPercent =
-                (percent - rowData.defaultPrecent) / rowData.defaultPrecent;
+                ((percent - rowData.defaultPrecent) / rowData.defaultPrecent) *
+                100;
 
               return (
                 <Text type={shiftPercent > 0 ? 'default' : 'danger'}>
-                  {shiftPercent.toFixed(2)}%
+                  {shiftPercent.toFixed(DEFAULT_DECIMAL)}%
                 </Text>
               );
             },
@@ -326,7 +331,7 @@ class Record extends React.Component {
               return (
                 <Text>
                   {toCurrency({
-                    num: this.getShouldInventAmount(record, 2),
+                    num: this.getShouldInventAmount(record),
                     hasSymbol: true,
                   })}
                 </Text>
@@ -362,20 +367,12 @@ class Record extends React.Component {
         ],
       },
     ];
-    const data = [
-      {
-        key: 0,
-        date: '2014-12-24 23:12:00',
-        name: 'This is production name',
-        upgradeNum: 'Upgraded: 56',
-      },
-    ];
 
     const tableConfig = {
       size: 'small',
       columns,
       bordered: true,
-      dataSource: data,
+      dataSource: [{ key: 0 }],
       pagination: false,
     };
 
