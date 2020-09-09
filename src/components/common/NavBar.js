@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs } from 'antd';
 import {
   LineChartOutlined,
-  PieChartOutlined,
+  UserOutlined,
   CalculatorOutlined,
   UnorderedListOutlined,
   CoffeeOutlined,
@@ -21,7 +21,7 @@ class NavBar extends React.Component {
         key: 'portfolio',
       },
       {
-        icon: <PieChartOutlined />,
+        icon: <UserOutlined />,
         key: 'chart',
       },
       {

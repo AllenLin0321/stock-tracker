@@ -1,5 +1,5 @@
 export default {
-  'record.name': '名稱',
+  'record.name': '代號',
   'record.latestPrice': '今價',
   'record.change': '漲跌',
   'record.high': '最高',

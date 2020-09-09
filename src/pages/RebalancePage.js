@@ -73,7 +73,7 @@ class RebalancePage extends React.Component {
     return (
       <div className="rebalance__wrapper">
         <Form>
-          <Form.Item label="是否注資" name="isAddNewFund">
+          <Form.Item label="是否再平衡" name="isAddNewFund">
             <Switch
               checked={this.state.isAddNewFund}
               onChange={this.onSwitchChange}

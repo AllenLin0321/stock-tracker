@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Tabs, Row, Col } from 'antd';
+import { BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Donut, Column } from '@ant-design/charts';
 import { toCurrency } from 'utils';
 
+const CHART_TYPE = {
+  column: 'column',
+  donut: 'donut',
+};
+const { TabPane } = Tabs;
+
 const Chart = ({ data }) => {
+  const [chartType, setChartType] = useState(CHART_TYPE.column);
   const commonConfig = {
     data,
     forceFit: true,
@@ -15,13 +24,9 @@ const Chart = ({ data }) => {
     ...commonConfig,
     xField: 'type',
     yField: 'value',
-    label: {
-      visible: true,
-    },
     meta: {
       type: { alias: '個股/ETF' },
       value: {
-        alias: '股價價值(美元)',
         formatter: val => {
           return `${toCurrency({
             num: val.toFixed(2),
@@ -35,6 +40,7 @@ const Chart = ({ data }) => {
         visible: false,
       },
     },
+    interactions: [{ type: 'scrollbar' }],
   };
 
   const donutChartConfig = {
@@ -52,12 +58,44 @@ const Chart = ({ data }) => {
         },
       },
     },
+    label: {
+      visible: true,
+      type: 'outer-center',
+    },
   };
 
   return (
     <>
-      <Column {...columnChartConfig} />
-      <Donut {...donutChartConfig} />
+      <Row>
+        <Col span={3}>
+          <Tabs
+            tabPosition="left"
+            defaultActiveKey={CHART_TYPE.column}
+            onTabClick={key => setChartType(key)}
+          >
+            <TabPane
+              tab={
+                <span>
+                  <BarChartOutlined />
+                </span>
+              }
+              key={CHART_TYPE.column}
+            ></TabPane>
+            <TabPane
+              tab={
+                <span>
+                  <PieChartOutlined />
+                </span>
+              }
+              key={CHART_TYPE.donut}
+            ></TabPane>
+          </Tabs>
+        </Col>
+        <Col span={21}>
+          {chartType === CHART_TYPE.column && <Column {...columnChartConfig} />}
+          {chartType === CHART_TYPE.donut && <Donut {...donutChartConfig} />}
+        </Col>
+      </Row>
     </>
   );
 };
