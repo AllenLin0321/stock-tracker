@@ -83,6 +83,7 @@ class RebalancePage extends React.Component {
             <>
               <Form.Item label="注資金額" name="newFund">
                 <InputNumber
+                  defaultValue={0}
                   value={this.state.newFund}
                   formatter={value =>
                     `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
