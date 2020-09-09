@@ -67,11 +67,10 @@ class ListPage extends React.Component {
     return (
       <div>
         <SearchBar
-          page="1"
           onClickSearch={this.onClickSearch}
           onClickReload={this.onClickReload}
         />
-        <Record page="1" />
+        <Record />
       </div>
     );
   }
