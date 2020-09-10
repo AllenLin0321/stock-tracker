@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Form, InputNumber } from 'antd';
+import { Switch, Form, InputNumber, Empty } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'actions';
@@ -70,6 +70,10 @@ class RebalancePage extends React.Component {
   };
 
   render() {
+    if (!this.props.portfolio || this.props.portfolio.length === 0) {
+      return <Empty />;
+    }
+
     return (
       <div className="rebalance__wrapper">
         <Form>

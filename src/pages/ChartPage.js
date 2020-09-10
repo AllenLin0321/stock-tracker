@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import { Empty } from 'antd';
 import * as actions from 'actions';
 import { getStockPercent } from 'utils';
 
@@ -16,15 +16,20 @@ class Portfolio extends React.Component {
   }
 
   render() {
-    const chartData = this.props.portfolio.map(stock => ({
+    const { portfolio } = this.props;
+    const chartData = portfolio.map(stock => ({
       type: stock.symbol,
-      percent: getStockPercent({ stock, stockArr: this.props.portfolio }),
+      percent: getStockPercent({ stock, stockArr: portfolio }),
       value: stock.latestPrice * stock.quantity,
     }));
 
+    if (!portfolio || portfolio.length === 0) {
+      return <Empty />;
+    }
+
     return (
       <div>
-        {this.props.portfolio.length !== 0 && <Chart data={chartData} />}
+        <Chart data={chartData} />
       </div>
     );
   }

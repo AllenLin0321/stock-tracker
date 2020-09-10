@@ -1,6 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, InputNumber, Modal, Form, Typography } from 'antd';
+import {
+  Table,
+  Button,
+  Tag,
+  InputNumber,
+  Modal,
+  Form,
+  Typography,
+  Empty,
+} from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -183,6 +192,10 @@ class Record extends React.Component {
       return <SortableItem index={index} {...restProps} />;
     };
 
+    if (!portfolio || portfolio.length === 0) {
+      return <Empty />;
+    }
+
     return (
       <>
         <Table
@@ -200,12 +213,13 @@ class Record extends React.Component {
           }}
         />
         <Modal
+          destroyOnClose
           centered
+          footer={null}
           title={
             this.state.selectedStock ? this.state.selectedStock.symbol : ''
           }
           visible={this.state.modalVisible}
-          footer={null}
           onCancel={() => this.setState({ modalVisible: false })}
         >
           <Form

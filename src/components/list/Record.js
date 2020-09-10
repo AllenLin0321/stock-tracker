@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, Typography } from 'antd';
+import { Table, Button, Tag, Typography, Empty } from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -146,6 +146,11 @@ class Record extends React.Component {
 
   render() {
     const { stocks, loading } = this.props;
+
+    if (!stocks || stocks.length === 0) {
+      return <Empty />;
+    }
+
     const DraggableContainer = props => (
       <SortableContainer
         {...props}
@@ -154,6 +159,7 @@ class Record extends React.Component {
         onSortEnd={this.onSortEnd}
       />
     );
+
     return (
       <Table
         pagination={false}
