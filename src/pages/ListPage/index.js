@@ -10,9 +10,8 @@ import Record from 'components/list/Record';
 
 class ListPage extends React.Component {
   async componentDidMount() {
-    const savedStock = localStorage.getItem('stocks');
-    if (savedStock) {
-      await this.props.initialStock(JSON.parse(savedStock));
+    await this.props.getLocalData('stocks');
+    if (this.props.stocks) {
       this.props.setTableLoading({ tableLoading: true });
       await this.onClickReload();
       this.props.setTableLoading({ tableLoading: false });

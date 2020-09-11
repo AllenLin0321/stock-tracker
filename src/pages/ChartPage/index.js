@@ -8,11 +8,7 @@ import Chart from 'components/portfolio/Chart';
 
 class Portfolio extends React.Component {
   componentDidMount() {
-    const savedPortfolio = localStorage.getItem('portfolio');
-
-    if (savedPortfolio) {
-      this.props.initialPortfolio(JSON.parse(savedPortfolio));
-    }
+    this.props.getLocalData('portfolio');
   }
 
   render() {

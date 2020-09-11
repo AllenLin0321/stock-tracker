@@ -16,3 +16,6 @@ export const CHANGE_STOCK_QUANTITY = 'CHANGE_STOCK_QUANTITY';
 
 // rebalance
 export const CHANGE_DEFAULT_PERCENT = 'CHANGE_DEFAULT_PERCENT';
+
+// local storage
+export const GET_LOCAL_DATA = 'GET_LOCAL_DATA';

@@ -1,11 +1,6 @@
 /* Portfolio */
 import * as types from 'store/actions/types';
 
-export const initialPortfolio = payload => ({
-  type: types.INITIAL_PORTFOLIO,
-  payload,
-});
-
 export const onSavePortfolio = payload => ({
   type: types.SAVE_PORTFOLIO,
   payload,

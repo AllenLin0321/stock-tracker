@@ -16,10 +16,8 @@ class RebalancePage extends React.Component {
   };
 
   async componentDidMount() {
-    const savedPortfolio = localStorage.getItem('portfolio');
-
-    if (savedPortfolio) {
-      await this.props.initialPortfolio(JSON.parse(savedPortfolio));
+    this.props.getLocalData('portfolio');
+    if (this.props.savedPortfolio) {
       this.props.setTableLoading({ tableLoading: true });
       await this.onClickReload();
       this.props.setTableLoading({ tableLoading: false });
