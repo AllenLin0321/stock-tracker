@@ -49,8 +49,9 @@ class Portfolio extends React.Component {
 
     let promiseArr = portfolio.map(async stock => {
       delay += delayIncrement;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return apiGetStock(stock.symbol);
+      return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
+        apiGetStock(stock.symbol)
+      );
     });
 
     try {
