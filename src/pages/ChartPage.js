@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Empty } from 'antd';
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 import { getStockPercent } from 'utils';
 
 import Chart from 'components/portfolio/Chart';

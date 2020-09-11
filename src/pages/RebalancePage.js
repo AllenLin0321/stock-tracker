@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Switch, Form, InputNumber, Empty } from 'antd';
 
 import { apiGetStock } from 'api';
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 import { getPortfolioData } from 'utils';
 import Record from 'components/rebalance/Record';
 

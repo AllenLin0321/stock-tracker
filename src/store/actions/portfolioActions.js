@@ -1,5 +1,5 @@
 /* Portfolio */
-import * as types from 'actions/types';
+import * as types from 'store/actions/types';
 
 export const initialPortfolio = payload => ({
   type: types.INITIAL_PORTFOLIO,

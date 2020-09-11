@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 import ListPage from 'pages/ListPage';
 import PortfolioPage from 'pages/PortfolioPage';
 import ChartPage from 'pages/ChartPage';

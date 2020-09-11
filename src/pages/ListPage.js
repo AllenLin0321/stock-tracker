@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { apiGetStock } from 'api';
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 import { message } from 'antd';
 import { getStoreData } from 'utils';
 

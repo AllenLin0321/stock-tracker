@@ -24,7 +24,7 @@ import {
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 import { getStockPercent, toCurrency } from 'utils';
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 
 import 'components/common/Record.scss';
 const DragHandle = sortableHandle(() => (

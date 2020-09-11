@@ -1,5 +1,5 @@
 /* Stock List */
-import * as types from 'actions/types';
+import * as types from 'store/actions/types';
 
 export const initialStock = payload => ({
   type: types.INITIAL_STOCK,

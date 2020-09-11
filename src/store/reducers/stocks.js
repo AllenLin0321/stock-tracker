@@ -1,9 +1,9 @@
-import * as types from "actions/types";
+import * as types from 'store/actions/types';
 const initialState = [];
 
 function updateLocalStorage(newData) {
-  localStorage.removeItem("stocks");
-  localStorage.setItem("stocks", JSON.stringify(newData));
+  localStorage.removeItem('stocks');
+  localStorage.setItem('stocks', JSON.stringify(newData));
 }
 
 export default (state = initialState, { type, payload }) => {

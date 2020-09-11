@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { injectIntl } from 'react-intl';
 
 import { getStockPercent, toCurrency } from 'utils';
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 
 import 'components/common/Record.scss';
 

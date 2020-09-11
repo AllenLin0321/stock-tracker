@@ -15,7 +15,7 @@ import {
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 
-import * as actions from 'actions';
+import * as actions from 'store/actions';
 import { toCurrency } from 'utils';
 import 'components/common/Record.scss';
 
@@ -159,7 +159,6 @@ class Record extends React.Component {
         onSortEnd={this.onSortEnd}
       />
     );
-
     return (
       <Table
         pagination={false}
