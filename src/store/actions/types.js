@@ -1,4 +1,4 @@
-// List
+﻿// List
 export const INITIAL_STOCK = 'INITIAL_STOCK';
 export const SAVE_STOCK = 'SAVE_STOCK';
 export const REMOVE_STOCK = 'REMOVE_STOCK';

@@ -1,12 +1,14 @@
 import React from 'react';
 import { Space, Modal, Image, Divider } from 'antd';
+
 import KoFi from 'components/common/KOFI';
 import Attribution from 'components/common/Attribution';
 import jkos_logo from 'assets/jkos_logo.png';
 import jkos_QR from 'assets/jkos_QR.jpg';
 import linePay_logo from 'assets/linePay_logo.jpg';
 import linePay_QR from 'assets/linePay_QR.jpg';
-import 'pages/DonatePage.scss';
+
+import 'pages/DonatePage/index.scss';
 
 const paymentGateway = {
   jkos: {

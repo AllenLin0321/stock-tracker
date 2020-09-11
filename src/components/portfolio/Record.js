@@ -23,7 +23,7 @@ import {
   FallOutlined,
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
-import { getStockPercent, toCurrency } from 'utils';
+import { getStockPercent, numberToCurrency } from 'utils';
 import * as actions from 'store/actions';
 
 import 'components/common/Record.scss';
@@ -75,7 +75,7 @@ class Record extends React.Component {
               });
             }}
           >
-            {toCurrency({ num: rowData.quantity })}
+            {numberToCurrency({ num: rowData.quantity })}
           </Link>
         );
       },
@@ -84,7 +84,9 @@ class Record extends React.Component {
       title: <FormattedMessage id="record.latestPrice" />,
       key: 'latestPrice',
       render: rowData => (
-        <Text>{toCurrency({ num: rowData.latestPrice, hasSymbol: true })}</Text>
+        <Text>
+          {numberToCurrency({ num: rowData.latestPrice, hasSymbol: true })}
+        </Text>
       ),
     },
     {

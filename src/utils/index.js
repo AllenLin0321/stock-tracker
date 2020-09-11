@@ -5,7 +5,7 @@ const stockValueReducer = (accumulator, currentValue) =>
     (accumulator + currentValue.quantity * currentValue.latestPrice).toFixed(2)
   );
 
-export const getStoreData = ({ quote }) => ({
+export const formatStockData = ({ quote }) => ({
   symbol: quote.symbol,
   change: quote.change,
   latestPrice: quote.latestPrice,
@@ -15,7 +15,7 @@ export const getStoreData = ({ quote }) => ({
   updatedTime: moment().format('HH:mm'),
 });
 
-export const getPortfolioData = ({
+export const formatPortfolioData = ({
   quote,
   quantity = 1,
   defaultPrecent = 1,
@@ -37,7 +37,7 @@ export const getStockPercent = ({ stock, stockArr }) => {
   return parseFloat(((stockValue / totalValue) * 100).toFixed(2));
 };
 
-export const toCurrency = ({ num, hasSymbol = false }) => {
+export const numberToCurrency = ({ num, hasSymbol = false }) => {
   if (!num) return '';
   const parts = num.toString().split('.');
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');

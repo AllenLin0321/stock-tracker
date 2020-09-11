@@ -3,11 +3,14 @@ import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import * as actions from 'store/actions';
+
+// Page
 import ListPage from 'pages/ListPage';
 import PortfolioPage from 'pages/PortfolioPage';
 import ChartPage from 'pages/ChartPage';
 import RebalancePage from 'pages/RebalancePage';
 import DonatePage from 'pages/DonatePage';
+
 import NavBar from 'components/common/NavBar';
 import history from 'history.js';
 

@@ -4,7 +4,7 @@ import { ReloadOutlined } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
 import { apiSeachSymbol } from 'api';
 
-import 'components/common/SearchBar.scss';
+import 'components/common/SearchBar/index.scss';
 export class SearchBar extends Component {
   state = {
     searchVal: null,

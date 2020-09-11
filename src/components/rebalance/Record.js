@@ -4,7 +4,7 @@ import { Table, InputNumber, Typography } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { injectIntl } from 'react-intl';
 
-import { getStockPercent, toCurrency } from 'utils';
+import { getStockPercent, numberToCurrency } from 'utils';
 import * as actions from 'store/actions';
 
 import 'components/common/Record.scss';
@@ -199,7 +199,7 @@ class Record extends React.Component {
             key: 'latestPrice',
             render: rowData => (
               <Text>
-                {toCurrency({
+                {numberToCurrency({
                   num: rowData.latestPrice.toFixed(DEFAULT_DECIMAL),
                   hasSymbol: true,
                 })}
@@ -210,7 +210,9 @@ class Record extends React.Component {
             title: <FormattedMessage id="record.quantity" />,
             key: 'quantity',
             render: rowData => (
-              <Text>{toCurrency({ num: rowData.quantity.toFixed(4) })}</Text>
+              <Text>
+                {numberToCurrency({ num: rowData.quantity.toFixed(4) })}
+              </Text>
             ),
           },
           {
@@ -219,7 +221,7 @@ class Record extends React.Component {
             render: rowData => {
               return (
                 <Text>
-                  {toCurrency({
+                  {numberToCurrency({
                     num: this.getIndividualValue(rowData),
                     hasSymbol: true,
                   })}
@@ -300,7 +302,7 @@ class Record extends React.Component {
 
               return (
                 <Text type={newQuantity > 0 ? 'success' : 'danger'}>
-                  {toCurrency({ num: newQuantity })}
+                  {numberToCurrency({ num: newQuantity })}
                 </Text>
               );
             },
@@ -316,7 +318,7 @@ class Record extends React.Component {
             render: () => {
               return (
                 <Text>
-                  {toCurrency({
+                  {numberToCurrency({
                     num: this.getInventedValue(record),
                     hasSymbol: true,
                   })}
@@ -330,7 +332,7 @@ class Record extends React.Component {
             render: () => {
               return (
                 <Text>
-                  {toCurrency({
+                  {numberToCurrency({
                     num: this.getShouldInventAmount(record),
                     hasSymbol: true,
                   })}
@@ -356,7 +358,7 @@ class Record extends React.Component {
             render: () => {
               return (
                 <Text>
-                  {toCurrency({
+                  {numberToCurrency({
                     num: this.getTradedValue(record),
                     hasSymbol: true,
                   })}

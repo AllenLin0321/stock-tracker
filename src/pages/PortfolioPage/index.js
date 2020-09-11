@@ -4,10 +4,11 @@ import { message } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
-import { getPortfolioData } from 'utils';
+import { formatPortfolioData } from 'utils';
 
 import SearchBar from 'components/common/SearchBar';
 import Record from 'components/portfolio/Record';
+
 class Portfolio extends React.Component {
   async componentDidMount() {
     const savedPortfolio = localStorage.getItem('portfolio');
@@ -28,7 +29,7 @@ class Portfolio extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSavePortfolio(getPortfolioData(data));
+        this.props.onSavePortfolio(formatPortfolioData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -65,7 +66,7 @@ class Portfolio extends React.Component {
         let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
 
         onSavePortfolio(
-          getPortfolioData({ ...data, quantity, defaultPrecent })
+          formatPortfolioData({ ...data, quantity, defaultPrecent })
         );
       });
     } catch (error) {

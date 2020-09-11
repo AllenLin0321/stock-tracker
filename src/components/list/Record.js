@@ -16,7 +16,7 @@ import {
 import arrayMove from 'array-move';
 
 import * as actions from 'store/actions';
-import { toCurrency } from 'utils';
+import { numberToCurrency } from 'utils';
 import 'components/common/Record.scss';
 
 const DragHandle = sortableHandle(() => (
@@ -55,7 +55,7 @@ class Record extends React.Component {
         key: 'latestPrice',
         render: rowData => (
           <Text>
-            {toCurrency({ num: rowData.latestPrice, hasSymbol: true })}
+            {numberToCurrency({ num: rowData.latestPrice, hasSymbol: true })}
           </Text>
         ),
       },
@@ -88,7 +88,9 @@ class Record extends React.Component {
         render: rowData => {
           if (!rowData.high) return <Text>-</Text>;
           return (
-            <Text>{toCurrency({ num: rowData.high, hasSymbol: true })}</Text>
+            <Text>
+              {numberToCurrency({ num: rowData.high, hasSymbol: true })}
+            </Text>
           );
         },
       },
@@ -98,7 +100,9 @@ class Record extends React.Component {
         render: rowData => {
           if (!rowData.low) return <Text>-</Text>;
           return (
-            <Text>{toCurrency({ num: rowData.low, hasSymbol: true })}</Text>
+            <Text>
+              {numberToCurrency({ num: rowData.low, hasSymbol: true })}
+            </Text>
           );
         },
       },

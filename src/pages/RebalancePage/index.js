@@ -4,10 +4,10 @@ import { Switch, Form, InputNumber, Empty } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
-import { getPortfolioData } from 'utils';
+import { formatPortfolioData } from 'utils';
 import Record from 'components/rebalance/Record';
 
-import 'pages/RebalancePage.scss';
+import 'pages/RebalancePage/index.scss';
 class RebalancePage extends React.Component {
   state = {
     isAddNewFund: false,
@@ -49,7 +49,7 @@ class RebalancePage extends React.Component {
         let quantity = matchStock ? matchStock.quantity : null;
         let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
         onSavePortfolio(
-          getPortfolioData({ ...data, quantity, defaultPrecent })
+          formatPortfolioData({ ...data, quantity, defaultPrecent })
         );
       });
     } catch (error) {

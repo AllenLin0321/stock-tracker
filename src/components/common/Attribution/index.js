@@ -1,5 +1,5 @@
 import React from 'react';
-import 'components/common/Attribution.scss';
+import 'components/common/Attribution/index.scss';
 
 const Attribution = () => {
   return (

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
 import { message } from 'antd';
-import { getStoreData } from 'utils';
+import { formatStockData } from 'utils';
 
 import SearchBar from 'components/common/SearchBar';
 import Record from 'components/list/Record';
@@ -27,7 +27,7 @@ class ListPage extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSaveStock(getStoreData(data));
+        this.props.onSaveStock(formatStockData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -56,7 +56,7 @@ class ListPage extends React.Component {
     try {
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSaveStock(getStoreData(data));
+        onSaveStock(formatStockData(data));
       });
     } catch (error) {
       console.log('error: ', error);

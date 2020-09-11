@@ -1,9 +1,9 @@
-import * as types from 'store/actions/types';
+import { TABLE_LOADING } from 'store/actions/types';
 export * from 'store/actions/listActions';
 export * from 'store/actions/portfolioActions';
 
 /* Loading */
 export const setTableLoading = payload => ({
-  type: types.TABLE_LOADING,
+  type: TABLE_LOADING,
   payload,
 });

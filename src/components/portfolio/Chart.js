@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Row, Col } from 'antd';
 import { BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Donut, Column } from '@ant-design/charts';
-import { toCurrency } from 'utils';
+import { numberToCurrency } from 'utils';
 
 const CHART_TYPE = {
   column: 'column',
@@ -28,7 +28,7 @@ const Chart = ({ data }) => {
       type: { alias: '個股/ETF' },
       value: {
         formatter: val => {
-          return `${toCurrency({
+          return `${numberToCurrency({
             num: val.toFixed(2),
             hasSymbol: true,
           })}美元`;
