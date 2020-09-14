@@ -2,83 +2,55 @@
 
 [![hackmd-github-sync-badge](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA/badge)](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA)
 
+這是一個簡單看美國股票/ETF 的小工具 :chart_with_upwards_trend:
 
+有任何操作或是功能上的建議，歡迎mail給我!
+glux7381@gmail.com
 
-這是一個簡單看美國股票/ETF 的小工具，功能包括:
+![](https://i.imgur.com/9Z6zYUW.gif)
 
+## 功能列表
 1. 依股票/ETF代碼或是公司名稱搜尋，建立觀察清單
 2. 建立自己的資產組合，隨時追蹤漲跌狀況
 3. 資產分布圖表
 4. 再平衡計算機
 5. 自行排序功能
 
-有任何操作或是功能上的建議，歡迎mail給我!
-glux7381@gmail.com
+## 功能畫面
+
+### 1. 搜尋 Auto Complete
+
+![](https://i.imgur.com/LYLavcl.png)
+
+### 2. 漲跌圖示化
+:::info
+:notebook_with_decorative_cover: 提供抓取最新價格以及刪除觀察股票功能。
+:::
+![](https://i.imgur.com/qFvcpO4.png)
+
+### 3. 拖移排序
+
+![](https://i.imgur.com/YvftP8m.png)
+
+### 4. 持倉紀錄、比例
+![](https://i.imgur.com/McYGCRI.png)
+
+### 5. 視覺化圖表
+![](https://i.imgur.com/ugZDIUj.png)
+
+### 6. 配重設定，顯示偏離狀況
+:::info
+:notebook_with_decorative_cover: 使用者可設定預期持倉的市值比重，系統自動計算目前比重以及預計比重的偏離百分比。
+:::
+![](https://i.imgur.com/Rf7nCCo.png)
+
+### 7. 注資買賣股數計算機
+:::info
+:notebook_with_decorative_cover: 針對使用者設定的預期以及目前資產市值的配重，建議使用者買/賣的股數將比例拉近設定的預期百分比。
+:::
+![](https://i.imgur.com/eH3gL6r.png)
 
 
-## Available Scripts
+## 下載連結
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+[Chrome Web Store](https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW&authuser=0)
