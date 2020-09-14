@@ -20,37 +20,31 @@ glux7381@gmail.com
 
 ### 1. 搜尋 Auto Complete
 
-![](https://i.imgur.com/LYLavcl.png)
+<img src="https://i.imgur.com/LYLavcl.png" width="50%">
 
 ### 2. 漲跌圖示化
-:::info
+
 :notebook_with_decorative_cover: 提供抓取最新價格以及刪除觀察股票功能。
-:::
-![](https://i.imgur.com/qFvcpO4.png)
-
+<img src="https://i.imgur.com/qFvcpO4.png" width="50%">
 ### 3. 拖移排序
-
-![](https://i.imgur.com/YvftP8m.png)
+<img src="https://i.imgur.com/YvftP8m.png" width="50%">
 
 ### 4. 持倉紀錄、比例
-![](https://i.imgur.com/McYGCRI.png)
+<img src="https://i.imgur.com/McYGCRI.png" width="50%">
 
 ### 5. 視覺化圖表
-![](https://i.imgur.com/ugZDIUj.png)
+<img src="https://i.imgur.com/ugZDIUj.png" width="50%">
 
 ### 6. 配重設定，顯示偏離狀況
-:::info
 :notebook_with_decorative_cover: 使用者可設定預期持倉的市值比重，系統自動計算目前比重以及預計比重的偏離百分比。
-:::
-![](https://i.imgur.com/Rf7nCCo.png)
+
+<img src="https://i.imgur.com/Rf7nCCo.png" width="50%">
 
 ### 7. 注資買賣股數計算機
-:::info
 :notebook_with_decorative_cover: 針對使用者設定的預期以及目前資產市值的配重，建議使用者買/賣的股數將比例拉近設定的預期百分比。
-:::
-![](https://i.imgur.com/eH3gL6r.png)
+<img src="https://i.imgur.com/eH3gL6r.png" width="50%">
 
 
 ## 下載連結
 
-[Chrome Web Store](https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW&authuser=0)
+:computer: [Chrome Web Store](https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW&authuser=0)
