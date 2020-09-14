@@ -7,7 +7,7 @@
 有任何操作或是功能上的建議，歡迎mail給我!
 glux7381@gmail.com
 
-![](https://i.imgur.com/9Z6zYUW.gif =50%x)
+![](https://i.imgur.com/9Z6zYUW.gif)
 
 ## 功能列表
 1. 依股票/ETF代碼或是公司名稱搜尋，建立觀察清單
@@ -20,7 +20,7 @@ glux7381@gmail.com
 
 ### 1. 搜尋 Auto Complete
 
-![](https://i.imgur.com/LYLavcl.png =70%x)
+![](https://i.imgur.com/LYLavcl.png)
 
 ### 2. 漲跌圖示化
 :::info
