@@ -16,6 +16,11 @@ glux7381@gmail.com
 4. 再平衡計算機
 5. 自行排序功能
 
+## 下載連結
+
+:computer: [Chrome Web Store](https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW&authuser=0)
+
+
 ## 功能畫面
 
 ### 1. 搜尋 Auto Complete
@@ -45,8 +50,3 @@ glux7381@gmail.com
 ### 7. 注資買賣股數計算機
 :notebook_with_decorative_cover: 針對使用者設定的預期以及目前資產市值的配重，建議使用者買/賣的股數將比例拉近設定的預期百分比。
 <img src="https://i.imgur.com/eH3gL6r.png" width="50%">
-
-
-## 下載連結
-
-:computer: [Chrome Web Store](https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW&authuser=0)
