@@ -25,7 +25,9 @@ glux7381@gmail.com
 ### 2. 漲跌圖示化
 
 :notebook_with_decorative_cover: 提供抓取最新價格以及刪除觀察股票功能。
+
 <img src="https://i.imgur.com/qFvcpO4.png" width="50%">
+
 ### 3. 拖移排序
 <img src="https://i.imgur.com/YvftP8m.png" width="50%">
 
