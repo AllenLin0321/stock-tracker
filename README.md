@@ -7,7 +7,7 @@
 有任何操作或是功能上的建議，歡迎mail給我!
 glux7381@gmail.com
 
-![](https://i.imgur.com/9Z6zYUW.gif)
+<img src="https://i.imgur.com/9Z6zYUW.gif" width="50%">
 
 ## 功能列表
 1. 依股票/ETF代碼或是公司名稱搜尋，建立觀察清單
