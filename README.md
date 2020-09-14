@@ -1,8 +1,6 @@
 # US Stock Tracker
 
-[![hackmd-github-sync-badge](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA/badge)](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA) ![version](https://img.shields.io/github/package-json/v/AllenLin0321/stock-tracker)
-
-
+[![hackmd-github-sync-badge](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA/badge)](https://hackmd.io/6OhNEUMERZ-vq8lYO-zLmA) ![version](https://img.shields.io/github/package-json/v/AllenLin0321/stock-tracker) ![code size](https://img.shields.io/github/languages/code-size/AllenLin0321/stock-tracker)
 
 這是一個簡單看美國股票/ETF 的小工具 :chart_with_upwards_trend:
 
