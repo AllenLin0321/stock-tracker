@@ -37,8 +37,9 @@ export const getStockPercent = ({ stock, stockArr }) => {
   return parseFloat(((stockValue / totalValue) * 100).toFixed(2));
 };
 
-export const numberToCurrency = ({ num, hasSymbol = false }) => {
+export const numberToCurrency = ({ num, hasSymbol = false, precision = 2 }) => {
   if (!num) return '';
+  if (typeof num === 'number') num = num.toFixed(precision);
   const parts = num.toString().split('.');
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return `${hasSymbol ? '$' : ''}${parts.join('.')}`;

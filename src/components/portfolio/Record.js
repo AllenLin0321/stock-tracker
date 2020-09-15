@@ -9,6 +9,7 @@ import {
   Form,
   Typography,
   Empty,
+  Statistic,
 } from 'antd';
 import {
   sortableContainer,
@@ -21,16 +22,19 @@ import {
   DeleteOutlined,
   RiseOutlined,
   FallOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 import { getStockPercent, numberToCurrency } from 'utils';
 import * as actions from 'store/actions';
-
 import 'components/common/Record.scss';
+
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
-
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
 const { Text, Link } = Typography;
@@ -39,6 +43,7 @@ class Record extends React.Component {
   state = {
     modalVisible: false,
     selectedStock: null,
+    isTotalValueVisable: true,
   };
 
   columns = [
@@ -75,7 +80,7 @@ class Record extends React.Component {
               });
             }}
           >
-            {numberToCurrency({ num: rowData.quantity })}
+            {numberToCurrency({ num: rowData.quantity, precision: 4 })}
           </Link>
         );
       },
@@ -176,6 +181,75 @@ class Record extends React.Component {
     });
   };
 
+  renderStatisticTitle = () => {
+    const { isTotalValueVisable } = this.state;
+    const iconConfig = {
+      onClick: () =>
+        this.setState({
+          isTotalValueVisable: !this.state.isTotalValueVisable,
+        }),
+    };
+
+    return (
+      <Text>
+        總資產{' '}
+        {isTotalValueVisable ? (
+          <EyeOutlined {...iconConfig} />
+        ) : (
+          <EyeInvisibleOutlined {...iconConfig} />
+        )}
+      </Text>
+    );
+  };
+
+  renderTableFooter = () => {
+    const { portfolio } = this.props;
+    const { isTotalValueVisable } = this.state;
+    if (!portfolio || portfolio.length === 0) return false;
+    const totalValue = portfolio.reduce(
+      (accu, { latestPrice, quantity }) => accu + latestPrice * quantity,
+      0
+    );
+    const totalChange = portfolio.reduce((accu, cuur) => {
+      const changePercent = (cuur.change / cuur.previousClose) * 100;
+      const percent = getStockPercent({
+        stock: cuur,
+        stockArr: portfolio,
+      });
+      return accu + (changePercent * percent) / 100;
+    }, 0);
+
+    const totalValueChange = portfolio.reduce((accu, cuur) => {
+      return accu + (cuur.latestPrice - cuur.previousClose) * cuur.quantity;
+    }, 0);
+
+    return (
+      <span>
+        <Statistic
+          title={this.renderStatisticTitle()}
+          value={
+            isTotalValueVisable
+              ? numberToCurrency({
+                  num: totalValue,
+                  hasSymbol: true,
+                })
+              : '$ *****'
+          }
+        />
+        {isTotalValueVisable && (
+          <Text style={{ color: totalValueChange > 0 ? '#3f8600' : '#cf1322' }}>
+            {totalValueChange > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            {numberToCurrency({
+              num: totalValueChange,
+              hasSymbol: true,
+            })}{' '}
+            ({totalChange.toFixed(2)}%)
+          </Text>
+        )}
+      </span>
+    );
+  };
+
   render() {
     const { portfolio, loading } = this.props;
     const DraggableContainer = props => (
@@ -213,6 +287,7 @@ class Record extends React.Component {
               row: DraggableBodyRow,
             },
           }}
+          footer={() => this.renderTableFooter()}
         />
         <Modal
           destroyOnClose
