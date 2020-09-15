@@ -62,6 +62,7 @@ class Record extends React.Component {
       {
         title: <FormattedMessage id="record.change" />,
         key: 'change',
+        sorter: (a, b) => a.change - b.change,
         render: rowData => {
           const changePercent = (rowData.change / rowData.previousClose) * 100;
           const isRise = changePercent > 0;
