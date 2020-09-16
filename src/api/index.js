@@ -7,6 +7,9 @@ const stockRequest = axios.create({
 const symbolRequest = axios.create({
   baseURL: process.env.REACT_APP_SYMBOL_API_URL,
 });
+const currencyRequest = axios.create({
+  baseURL: process.env.REACT_APP_CURRENCY_API_URL,
+});
 
 export const apiGetStock = symbol =>
   stockRequest.get(`/stock/${symbol}/book`, {
@@ -24,3 +27,12 @@ export const apiGetLogo = symbol =>
 
 export const apiSeachSymbol = keyword =>
   symbolRequest.get(`/keyword/${keyword}`);
+
+export const apiGetCurrency = () =>
+  currencyRequest.get('api/v7/convert', {
+    params: {
+      q: 'USD_TWD',
+      compact: 'ultra',
+      apiKey: process.env.REACT_APP_CURRENCY_API_TOKEN,
+    },
+  });

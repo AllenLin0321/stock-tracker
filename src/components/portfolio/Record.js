@@ -10,6 +10,8 @@ import {
   Typography,
   Empty,
   Statistic,
+  Space,
+  Tooltip,
 } from 'antd';
 import {
   sortableContainer,
@@ -26,10 +28,12 @@ import {
   ArrowDownOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
+  TransactionOutlined,
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 import { getStockPercent, numberToCurrency } from 'utils';
 import * as actions from 'store/actions';
+import { apiGetCurrency } from 'api';
 import 'components/common/Record.scss';
 
 const DragHandle = sortableHandle(() => (
@@ -38,12 +42,25 @@ const DragHandle = sortableHandle(() => (
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
 const { Text, Link } = Typography;
+const CURRENCY = {
+  USD: 'USD',
+  TWD: 'TWD',
+};
 
 class Record extends React.Component {
   state = {
     modalVisible: false,
     selectedStock: null,
     isTotalValueVisable: true,
+    currency: CURRENCY.USD,
+    exchangeRate: 1,
+  };
+
+  fetchCurrency = async () => {
+    const { data } = await apiGetCurrency();
+    this.setState({
+      exchangeRate: data.USD_TWD,
+    });
   };
 
   columns = [
@@ -184,30 +201,50 @@ class Record extends React.Component {
 
   renderStatisticTitle = () => {
     const { isTotalValueVisable } = this.state;
-    const iconConfig = {
+    const eyeIconConfig = {
       onClick: () =>
         this.setState({
           isTotalValueVisable: !this.state.isTotalValueVisable,
         }),
     };
 
+    const transferIconConfig = {
+      onClick: () => {
+        this.fetchCurrency();
+        this.setState({
+          currency:
+            this.state.currency === CURRENCY.USD ? CURRENCY.TWD : CURRENCY.USD,
+        });
+      },
+    };
+
     return (
       <Text>
         總資產{' '}
-        {isTotalValueVisable ? (
-          <EyeOutlined {...iconConfig} />
-        ) : (
-          <EyeInvisibleOutlined {...iconConfig} />
-        )}
+        <Space>
+          <Tooltip placement="top" title="顯示⇄隱藏">
+            {isTotalValueVisable ? (
+              <EyeOutlined {...eyeIconConfig} />
+            ) : (
+              <EyeInvisibleOutlined {...eyeIconConfig} />
+            )}
+          </Tooltip>
+
+          {
+            <Tooltip placement="top" title="美元⇄新台幣">
+              <TransactionOutlined {...transferIconConfig} />
+            </Tooltip>
+          }
+        </Space>
       </Text>
     );
   };
 
   renderTableFooter = () => {
     const { portfolio } = this.props;
-    const { isTotalValueVisable } = this.state;
+    const { isTotalValueVisable, currency, exchangeRate } = this.state;
     if (!portfolio || portfolio.length === 0) return false;
-    const totalValue = portfolio.reduce(
+    let totalValue = portfolio.reduce(
       (accu, { latestPrice, quantity }) => accu + latestPrice * quantity,
       0
     );
@@ -220,30 +257,33 @@ class Record extends React.Component {
       return accu + (changePercent * percent) / 100;
     }, 0);
 
-    const totalValueChange = portfolio.reduce((accu, cuur) => {
+    let totalValueChange = portfolio.reduce((accu, cuur) => {
       return accu + (cuur.latestPrice - cuur.previousClose) * cuur.quantity;
     }, 0);
-
+    const currencySymbol = currency === CURRENCY.USD ? '$ ' : 'NT$ ';
+    if (currency === CURRENCY.TWD) {
+      totalValue = totalValue * exchangeRate;
+      totalValueChange = totalValueChange * exchangeRate;
+    }
     return (
       <span>
         <Statistic
           title={this.renderStatisticTitle()}
-          value={
+          value={`${currencySymbol}${
             isTotalValueVisable
               ? numberToCurrency({
                   num: totalValue,
-                  hasSymbol: true,
                 })
-              : '$ *****'
-          }
+              : '*****'
+          }`}
         />
         {isTotalValueVisable && (
           <Text style={{ color: totalValueChange > 0 ? '#3f8600' : '#cf1322' }}>
             {totalValueChange > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-            {numberToCurrency({
-              num: totalValueChange,
-              hasSymbol: true,
-            })}{' '}
+            {currencySymbol +
+              numberToCurrency({
+                num: totalValueChange,
+              })}{' '}
             ({totalChange.toFixed(2)}%)
           </Text>
         )}

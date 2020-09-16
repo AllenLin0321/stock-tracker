@@ -41,7 +41,7 @@ class ListPage extends React.Component {
 
   onClickReload = async () => {
     const { stocks, onSaveStock } = this.props;
-    const delayIncrement = 200;
+    const delayIncrement = 250;
     let delay = 0;
 
     if (stocks.length === 0) return;
