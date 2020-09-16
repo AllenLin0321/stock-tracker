@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Row, Col } from 'antd';
+import { Tabs, Row, Col, Tooltip } from 'antd';
 import { BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Donut, Column } from '@ant-design/charts';
 import { numberToCurrency } from 'utils';
@@ -75,17 +75,17 @@ const Chart = ({ data }) => {
           >
             <TabPane
               tab={
-                <span>
+                <Tooltip placement="right" title="長條圖">
                   <BarChartOutlined />
-                </span>
+                </Tooltip>
               }
               key={CHART_TYPE.column}
             ></TabPane>
             <TabPane
               tab={
-                <span>
+                <Tooltip placement="right" title="環形圖">
                   <PieChartOutlined />
-                </span>
+                </Tooltip>
               }
               key={CHART_TYPE.donut}
             ></TabPane>
