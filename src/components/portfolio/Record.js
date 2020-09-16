@@ -56,13 +56,6 @@ class Record extends React.Component {
     exchangeRate: 1,
   };
 
-  fetchCurrency = async () => {
-    const { data } = await apiGetCurrency();
-    this.setState({
-      exchangeRate: data.USD_TWD,
-    });
-  };
-
   columns = [
     {
       title: '',
@@ -209,9 +202,11 @@ class Record extends React.Component {
     };
 
     const transferIconConfig = {
-      onClick: () => {
-        this.fetchCurrency();
+      onClick: async () => {
+        const { data } = await apiGetCurrency();
+
         this.setState({
+          exchangeRate: data.USD_TWD,
           currency:
             this.state.currency === CURRENCY.USD ? CURRENCY.TWD : CURRENCY.USD,
         });
