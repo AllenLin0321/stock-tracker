@@ -12,6 +12,7 @@ import {
   Statistic,
   Space,
   Tooltip,
+  message,
 } from 'antd';
 import {
   sortableContainer,
@@ -29,6 +30,7 @@ import {
   EyeOutlined,
   EyeInvisibleOutlined,
   TransactionOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 import { getStockPercent, numberToCurrency } from 'utils';
@@ -54,6 +56,7 @@ class Record extends React.Component {
     isTotalValueVisable: true,
     currency: CURRENCY.USD,
     exchangeRate: 1,
+    isTransferLoading: false,
   };
 
   columns = [
@@ -203,13 +206,25 @@ class Record extends React.Component {
 
     const transferIconConfig = {
       onClick: async () => {
-        const { data } = await apiGetCurrency();
+        this.setState({ isTransferLoading: true });
 
-        this.setState({
-          exchangeRate: data.USD_TWD,
-          currency:
-            this.state.currency === CURRENCY.USD ? CURRENCY.TWD : CURRENCY.USD,
-        });
+        try {
+          const { data } = await apiGetCurrency();
+          this.setState({
+            exchangeRate: data.USD_TWD,
+            currency:
+              this.state.currency === CURRENCY.USD
+                ? CURRENCY.TWD
+                : CURRENCY.USD,
+          });
+        } catch (error) {
+          console.log('error: ', error);
+          if (error.response) {
+            message.error(error.response.data);
+          }
+        } finally {
+          this.setState({ isTransferLoading: false });
+        }
       },
     };
 
@@ -230,6 +245,7 @@ class Record extends React.Component {
               <TransactionOutlined {...transferIconConfig} />
             </Tooltip>
           }
+          {this.state.isTransferLoading && <LoadingOutlined />}
         </Space>
       </Text>
     );
