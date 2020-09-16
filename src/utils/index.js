@@ -12,6 +12,7 @@ export const formatStockData = ({ quote }) => ({
   high: quote.high,
   low: quote.low,
   previousClose: quote.previousClose,
+  companyName: quote.companyName,
   updatedTime: moment().format('HH:mm'),
 });
 
