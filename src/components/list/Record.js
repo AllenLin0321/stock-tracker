@@ -177,7 +177,6 @@ class Record extends React.Component {
         onClose={() => this.setState({ visible: false })}
         visible={this.state.visible}
       >
-        // TODO: 添加股票資料
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
