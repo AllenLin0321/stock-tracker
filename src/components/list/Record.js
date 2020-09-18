@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Tag, Typography, Empty, Drawer, Space } from 'antd';
+import { Table, Button, Tag, Typography, Empty } from 'antd';
 import {
   sortableContainer,
   sortableElement,
@@ -17,18 +17,19 @@ import arrayMove from 'array-move';
 
 import * as actions from 'store/actions';
 import { numberToCurrency } from 'utils';
+import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
+const { Text } = Typography;
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
 ));
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
-const { Text } = Typography;
 class Record extends React.Component {
   state = {
-    visible: false,
+    drawerVisible: false,
     selectedStock: null,
   };
 
@@ -47,8 +48,9 @@ class Record extends React.Component {
       render: rowData => (
         <Button
           type="link"
+          style={{ padding: 0 }}
           onClick={() =>
-            this.setState({ visible: true, selectedStock: rowData })
+            this.setState({ drawerVisible: true, selectedStock: rowData })
           }
         >
           {rowData.symbol}
@@ -85,28 +87,6 @@ class Record extends React.Component {
               {changePercent.toFixed(2)}%
             </Tag>
           </div>
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id="record.high" />,
-      key: 'high',
-      render: rowData => {
-        if (!rowData.high) return <Text>-</Text>;
-        return (
-          <Text>
-            {numberToCurrency({ num: rowData.high, hasSymbol: true })}
-          </Text>
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id="record.low" />,
-      key: 'low',
-      render: rowData => {
-        if (!rowData.low) return <Text>-</Text>;
-        return (
-          <Text>{numberToCurrency({ num: rowData.low, hasSymbol: true })}</Text>
         );
       },
     },
@@ -151,39 +131,6 @@ class Record extends React.Component {
     return <SortableItem index={index} {...restProps} />;
   };
 
-  renderDrawerTitle = () => {
-    const { symbol, companyName } = this.state.selectedStock;
-    return (
-      <Space>
-        <img
-          src={`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`}
-          style={{ width: '30px' }}
-          alt={`${symbol}_Logo`}
-        ></img>
-        {companyName}
-      </Space>
-    );
-  };
-
-  renderDrawer = () => {
-    const { selectedStock } = this.state;
-    if (!selectedStock) return false;
-
-    return (
-      <Drawer
-        destroyOnClose
-        title={this.renderDrawerTitle()}
-        closable={false}
-        onClose={() => this.setState({ visible: false })}
-        visible={this.state.visible}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Drawer>
-    );
-  };
-
   render() {
     const { stocks, loading } = this.props;
 
@@ -216,7 +163,13 @@ class Record extends React.Component {
           }}
         />
 
-        {this.renderDrawer()}
+        <DetailDrawer
+          selectedStock={this.state.selectedStock}
+          drawerVisible={this.state.drawerVisible}
+          onClose={() => {
+            this.setState({ drawerVisible: false });
+          }}
+        />
       </>
     );
   }

@@ -36,6 +36,7 @@ import arrayMove from 'array-move';
 import { getStockPercent, numberToCurrency } from 'utils';
 import * as actions from 'store/actions';
 import { apiGetCurrency } from 'api';
+import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
 const DragHandle = sortableHandle(() => (
@@ -57,6 +58,7 @@ class Record extends React.Component {
     currency: CURRENCY.USD,
     exchangeRate: 1,
     isTransferLoading: false,
+    drawerVisible: false,
   };
 
   columns = [
@@ -71,13 +73,15 @@ class Record extends React.Component {
       key: 'symbol',
       className: 'drag-visible',
       render: rowData => (
-        <Link
-          href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button
+          type="link"
+          style={{ padding: 0 }}
+          onClick={() =>
+            this.setState({ drawerVisible: true, selectedStock: rowData })
+          }
         >
           {rowData.symbol}
-        </Link>
+        </Button>
       ),
     },
     {
@@ -340,6 +344,13 @@ class Record extends React.Component {
             },
           }}
           footer={() => this.renderTableFooter()}
+        />
+        <DetailDrawer
+          selectedStock={this.state.selectedStock}
+          drawerVisible={this.state.drawerVisible}
+          onClose={() => {
+            this.setState({ drawerVisible: false });
+          }}
         />
         <Modal
           destroyOnClose

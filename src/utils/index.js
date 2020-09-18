@@ -13,6 +13,8 @@ export const formatStockData = ({ quote }) => ({
   low: quote.low,
   previousClose: quote.previousClose,
   companyName: quote.companyName,
+  week52High: quote.week52High,
+  week52Low: quote.week52Low,
   updatedTime: moment().format('HH:mm'),
 });
 
@@ -20,15 +22,14 @@ export const formatPortfolioData = ({
   quote,
   quantity = 1,
   defaultPrecent = 1,
-}) => ({
-  symbol: quote.symbol,
-  latestPrice: quote.latestPrice,
-  change: quote.change,
-  previousClose: quote.previousClose,
-  quantity,
-  updatedTime: moment().format('HH:mm'),
-  defaultPrecent,
-});
+}) => {
+  const stockData = formatStockData({ quote });
+  return {
+    ...stockData,
+    quantity,
+    defaultPrecent,
+  };
+};
 
 export const getStockPercent = ({ stock, stockArr }) => {
   const stockValue = parseFloat(
