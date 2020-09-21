@@ -11,7 +11,7 @@ import Record from 'components/portfolio/Record';
 
 class Portfolio extends React.Component {
   async componentDidMount() {
-    this.props.getLocalData('portfolio');
+    await this.props.getLocalData('portfolio');
     if (this.props.portfolio) {
       this.props.setTableLoading({ tableLoading: true });
       await this.onClickReload();
