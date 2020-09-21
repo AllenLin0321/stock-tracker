@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Modal, Image, Divider } from 'antd';
+import { Space, Modal, Image, Divider, Rate } from 'antd';
 
 import KoFi from 'components/common/KOFI';
 import Attribution from 'components/common/Attribution';
@@ -7,6 +7,7 @@ import jkos_logo from 'assets/jkos_logo.png';
 import jkos_QR from 'assets/jkos_QR.jpg';
 import linePay_logo from 'assets/linePay_logo.jpg';
 import linePay_QR from 'assets/linePay_QR.jpg';
+import { FrownOutlined, MehOutlined, SmileOutlined } from '@ant-design/icons';
 
 import 'pages/DonatePage/index.scss';
 
@@ -23,6 +24,16 @@ const paymentGateway = {
   },
 };
 
+const tipsText = ['很不喜歡', '不喜歡', '普通', '喜歡', '超讚'];
+
+const customIcons = {
+  1: <FrownOutlined />,
+  2: <FrownOutlined />,
+  3: <MehOutlined />,
+  4: <SmileOutlined />,
+  5: <SmileOutlined />,
+};
+
 class DonatePage extends React.Component {
   state = {
     modalVisible: false,
@@ -35,14 +46,37 @@ class DonatePage extends React.Component {
     src: paymentGateway[type].logo,
   });
 
+  onRateChange = () => {
+    const rateUrl =
+      'https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW';
+    window.open(rateUrl);
+  };
+
   renderTopSide = () => {
     return (
       <div className="donate-content__wrapper">
         若您喜歡這個小工具，歡迎給我們評分以及建議
+        <span role="img" aria-label="clapping hands">
+          👏
+        </span>
         <br />
-        若有幫助到您，您的贊助是我們前進的動力
+        <span>
+          <Rate
+            tooltips={tipsText}
+            defaultValue={3}
+            onChange={this.onRateChange}
+            character={({ index }) => {
+              return customIcons[index + 1];
+            }}
+          />
+        </span>
         <Divider />
-        您可以幫我買杯咖啡提神😁
+        若有幫助到您，您的贊助是我們前進的動力
+        <br />
+        您可以幫我買杯咖啡提神{' '}
+        <span role="img" aria-label="smile">
+          😁
+        </span>
         <br />
         也可選擇使用「街口支付」或「LINE Pay」
       </div>
