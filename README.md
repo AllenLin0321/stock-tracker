@@ -39,7 +39,9 @@ glux7381@gmail.com
 <img src="https://i.imgur.com/MOw9kko.png" width="60%">
 
 ### 4. 持股紀錄，市值比例，單日總資產變化，幣別轉換
-<img src="https://i.imgur.com/Kn58mzT.png" width="60%">
+<img src="https://i.imgur.com/FRRMI5G.png" width="60%">
+<img src="https://i.imgur.com/HKpvBSm.gif" width="60%">
+
 
 ### 5. 視覺化圖表
 <img src="https://i.imgur.com/ugZDIUj.png" width="60%">
