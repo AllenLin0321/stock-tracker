@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "US Stock Tracker",
   "description": "This is an US Stock/ETF portfolio checker and rebalancing calculator APP.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "browser_action": {
     "default_popup": "index.html",
     "default_icon": "icon48.png",
