@@ -91,6 +91,7 @@ class DetailDrawer extends React.Component {
               disabled
               marks={todayMarks}
               included={false}
+              step={0.01}
               defaultValue={selectedStock.latestPrice}
               min={selectedStock.low}
               max={selectedStock.high}
@@ -104,6 +105,7 @@ class DetailDrawer extends React.Component {
               disabled
               marks={week52Marks}
               included={false}
+              step={0.01}
               defaultValue={selectedStock.latestPrice}
               min={selectedStock.week52Low}
               max={selectedStock.week52High}
