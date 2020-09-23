@@ -370,9 +370,16 @@ class Record extends React.Component {
             <Form.Item
               label="股數"
               name="quantity"
-              rules={[{ required: true, message: '請輸入股數' }]}
+              rules={[
+                { required: true, message: '請輸入股數' },
+                {
+                  type: 'number',
+                  min: 0.0001,
+                  message: '請勿輸入小於0股數',
+                },
+              ]}
             >
-              <InputNumber autoFocus size="large" step={0.0001} />
+              <InputNumber autoFocus size="large" step={0.0001} min={0.0001} />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
               <Button type="primary" htmlType="submit">
