@@ -200,7 +200,7 @@ class Record extends React.Component {
             render: rowData => (
               <Text>
                 {numberToCurrency({
-                  num: rowData.latestPrice.toFixed(DEFAULT_DECIMAL),
+                  num: rowData.latestPrice,
                   hasSymbol: true,
                 })}
               </Text>
@@ -211,7 +211,7 @@ class Record extends React.Component {
             key: 'quantity',
             render: rowData => (
               <Text>
-                {numberToCurrency({ num: rowData.quantity.toFixed(4) })}
+                {numberToCurrency({ num: rowData.quantity, precision: 4 })}
               </Text>
             ),
           },
@@ -302,7 +302,7 @@ class Record extends React.Component {
 
               return (
                 <Text type={newQuantity > 0 ? 'success' : 'danger'}>
-                  {numberToCurrency({ num: newQuantity })}
+                  {numberToCurrency({ num: newQuantity, precision: 0 })}
                 </Text>
               );
             },
