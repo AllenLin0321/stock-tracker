@@ -16,7 +16,7 @@ import {
 import arrayMove from 'array-move';
 
 import * as actions from 'store/actions';
-import { numberToCurrency } from 'utils';
+import { numberToCurrency, getStockChangePercent } from 'utils';
 import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
@@ -69,22 +69,22 @@ class Record extends React.Component {
     {
       title: <FormattedMessage id="record.change" />,
       key: 'change',
-      sorter: (a, b) => a.change - b.change,
-      render: rowData => {
-        const changePercent = (rowData.change / rowData.previousClose) * 100;
+      sorter: (a, b) => getStockChangePercent(a) - getStockChangePercent(b),
+      render: ({ change, previousClose }) => {
+        const changePercent = getStockChangePercent({ change, previousClose });
         const isRise = changePercent > 0;
         return (
           <div>
             <div style={{ color: isRise ? 'green' : 'red' }}>
               {isRise && '+'}
-              {rowData.change}
+              {change}
             </div>
             <Tag
               color={isRise ? 'green' : 'red'}
               icon={isRise ? <RiseOutlined /> : <FallOutlined />}
             >
               {isRise && '+'}
-              {changePercent.toFixed(2)}%
+              {changePercent}%
             </Tag>
           </div>
         );
