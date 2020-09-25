@@ -12,7 +12,6 @@ export class SearchBar extends Component {
 
     this.state = {
       searchVal: null,
-      isSearchBtnLoading: false,
       isReloadLoading: false,
       autoCompleteOption: [],
     };
@@ -43,12 +42,12 @@ export class SearchBar extends Component {
   };
 
   onOptionSelect = async symbol => {
-    this.setState({ isSearchBtnLoading: true });
+    this.props.setTableLoading({ tableLoading: true });
     const res = await this.props.onClickSearch(symbol);
     if (res.isSuccess) {
-      this.setState({ searchVal: '' });
+      this.setState({ searchVal: '', autoCompleteOption: [] });
     }
-    this.setState({ isSearchBtnLoading: false });
+    this.props.setTableLoading({ tableLoading: false });
   };
 
   onClickReload = async () => {
@@ -66,11 +65,9 @@ export class SearchBar extends Component {
           onSelect={this.onOptionSelect}
           value={this.state.searchVal}
         >
-          <Input.Search
-            enterButton
+          <Input
             type="text"
             size="large"
-            loading={this.state.isSearchBtnLoading}
             placeholder={this.props.intl.formatMessage({
               id: 'searchBar.placeholder',
             })}

@@ -69,6 +69,7 @@ class ListPage extends React.Component {
         <SearchBar
           onClickSearch={this.onClickSearch}
           onClickReload={this.onClickReload}
+          setTableLoading={this.props.setTableLoading}
         />
         <Record />
       </div>
