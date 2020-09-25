@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Form, InputNumber, Empty } from 'antd';
+import { Switch, Form, InputNumber, Empty, Space } from 'antd';
 
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
@@ -76,12 +76,24 @@ class RebalancePage extends React.Component {
     return (
       <div className="rebalance__wrapper">
         <Form>
-          <Form.Item label="是否再平衡" name="isAddNewFund">
-            <Switch
-              checked={this.state.isAddNewFund}
-              onChange={this.onSwitchChange}
-            />
-          </Form.Item>
+          <Space>
+            <Form.Item label="是否再平衡" name="isAddNewFund">
+              <Switch
+                checked={this.state.isAddNewFund}
+                onChange={this.onSwitchChange}
+              />
+            </Form.Item>
+            {this.state.isAddNewFund && (
+              <Form.Item label="是否全部展開" name="isExpandAll">
+                <Switch
+                  checked={this.state.isExpandAll}
+                  checkedChildren="展開"
+                  unCheckedChildren="關閉"
+                  onChange={this.onisExpandAllChange}
+                />
+              </Form.Item>
+            )}
+          </Space>
           {this.state.isAddNewFund && (
             <>
               <Form.Item label="注資金額" name="newFund">
@@ -93,14 +105,6 @@ class RebalancePage extends React.Component {
                   }
                   parser={value => value.replace(/\$\s?|(,*)/g, '')}
                   onChange={this.onInputNumberChange}
-                />
-              </Form.Item>
-              <Form.Item label="是否全部展開" name="isExpandAll">
-                <Switch
-                  checked={this.state.isExpandAll}
-                  checkedChildren="展開"
-                  unCheckedChildren="關閉"
-                  onChange={this.onisExpandAllChange}
                 />
               </Form.Item>
             </>

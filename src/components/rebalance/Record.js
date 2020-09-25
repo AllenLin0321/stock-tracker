@@ -103,6 +103,15 @@ class Record extends React.Component {
   };
 
   /**
+   * @description 實際交易金額
+   * @param {Object} record 父層Row資料
+   */
+  getInvestedValue = record => {
+    const investedValue = this.getNewQuantity(record) * record.latestPrice;
+    return investedValue;
+  };
+
+  /**
    * @description 交易後市值
    * @param {Object} record 父層Row資料
    */
@@ -312,28 +321,42 @@ class Record extends React.Component {
       {
         title: '再平衡後',
         children: [
+          // {
+          //   title: '再平衡後市值',
+          //   key: 'inventedValue',
+          //   render: () => {
+          //     return (
+          //       <Text>
+          //         {numberToCurrency({
+          //           num: this.getInventedValue(record),
+          //           hasSymbol: true,
+          //         })}
+          //       </Text>
+          //     );
+          //   },
+          // },
+          // {
+          //   title: '應交易金額',
+          //   key: 'shouldInventAmount',
+          //   render: () => {
+          //     return (
+          //       <Text>
+          //         {numberToCurrency({
+          //           num: this.getShouldInventAmount(record),
+          //           hasSymbol: true,
+          //         })}
+          //       </Text>
+          //     );
+          //   },
+          // },
           {
-            title: '再平衡後市值',
-            key: 'inventedValue',
+            title: '實際交易金額',
+            key: 'investedValue',
             render: () => {
               return (
                 <Text>
                   {numberToCurrency({
-                    num: this.getInventedValue(record),
-                    hasSymbol: true,
-                  })}
-                </Text>
-              );
-            },
-          },
-          {
-            title: '應交易金額',
-            key: 'shouldInventAmount',
-            render: () => {
-              return (
-                <Text>
-                  {numberToCurrency({
-                    num: this.getShouldInventAmount(record),
+                    num: this.getInvestedValue(record),
                     hasSymbol: true,
                   })}
                 </Text>
@@ -381,6 +404,26 @@ class Record extends React.Component {
     return <Table {...tableConfig} />;
   };
 
+  renderTableFooter = () => {
+    const reducer = (accu, curr) => accu + this.getInvestedValue(curr);
+    const totalInvested = this.props.portfolio.reduce(reducer, 0);
+    return (
+      <div>
+        <div>
+          總交易金額:{' '}
+          {numberToCurrency({ num: totalInvested, hasSymbol: true })}
+        </div>
+        <div>
+          餘額:{' '}
+          {numberToCurrency({
+            num: this.props.newFund - totalInvested,
+            hasSymbol: true,
+          })}
+        </div>
+      </div>
+    );
+  };
+
   render() {
     let tableConfig = {
       size: 'middle',
@@ -400,6 +443,7 @@ class Record extends React.Component {
           expandedRowKeys: this.state.expandedRowKeys,
           onExpand: this.onExpandClick,
         },
+        footer: () => this.renderTableFooter(),
       };
     }
 
