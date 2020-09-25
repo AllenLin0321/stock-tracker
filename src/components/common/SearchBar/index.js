@@ -35,10 +35,7 @@ export class SearchBar extends Component {
   }
 
   onInputChange = event => {
-    this.setState(
-      { searchVal: event.target.value.toUpperCase() },
-      this.inputSearch
-    );
+    this.setState({ searchVal: event.target.value }, this.inputSearch);
   };
 
   onOptionSelect = async symbol => {
