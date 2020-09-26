@@ -4,13 +4,18 @@ import { Table, InputNumber, Typography } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { injectIntl } from 'react-intl';
 
-import { getStockPercent, numberToCurrency } from 'utils';
+import {
+  numberToCurrency,
+  getStockPercent, //股票百分比
+  getIndividualValue, //股票市值
+  getTotalPercent, // 總投資百分比
+  getNewQuantity, // 建議買賣股數
+} from 'utils';
 import * as actions from 'store/actions';
 
 import 'components/common/Record.scss';
 
 const { Text, Link } = Typography;
-
 const DEFAULT_DECIMAL = 2; // 小數點位數
 
 class Record extends React.Component {
@@ -30,84 +35,16 @@ class Record extends React.Component {
   }
 
   /**
-   * @description 各別投資市值
-   * @param {Number} record.latestPrice 股票市價
-   * @param {Number} record.quantity 擁有股數
-   * @param {Number} decimal 回傳資料的小數點位數
-   */
-  getIndividualValue = record => {
-    const individualValue = record.latestPrice * record.quantity;
-    return parseFloat(individualValue.toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
-   * @description 總投資百分比
-   * @param {Number} decimal
-   */
-  getTotalPercent = () => {
-    if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
-    const totalPercent = this.props.portfolio.reduce(
-      (accumulator, currentValue) =>
-        accumulator + parseFloat(currentValue.defaultPrecent),
-      0
-    );
-
-    return parseFloat(totalPercent.toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
-   * @description 總投資價值
-   * @param {Number} decimal
-   */
-  getTotalValue = () => {
-    if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
-    const totalValue = this.props.portfolio.reduce(
-      (accumulator, currentValue) =>
-        accumulator + this.getIndividualValue(currentValue),
-      0
-    );
-    return parseFloat(totalValue.toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
-   * @description 再平衡後市值
-   * @param {Object} record 父層Row資料
-   */
-  getInventedValue = record => {
-    const inventedValue =
-      ((this.getTotalValue() + this.props.newFund) * record.defaultPrecent) /
-      this.getTotalPercent();
-
-    return parseFloat(parseFloat(inventedValue).toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
-   * @description 應交易金額
-   * @param {Object} record 父層Row資料
-   */
-  getShouldInventAmount = record => {
-    const shouldInventAmount =
-      this.getInventedValue(record) - this.getIndividualValue(record);
-    return parseFloat(parseFloat(shouldInventAmount).toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
-   * @description 建議買賣股數
-   * @param {Object} record 父層Row資料
-   */
-  getNewQuantity = record => {
-    const temp = this.getShouldInventAmount(record) / record.latestPrice;
-    let newQuantity = Math.floor(temp);
-    if (temp < 0) newQuantity++;
-    return parseFloat(parseFloat(newQuantity).toFixed(DEFAULT_DECIMAL));
-  };
-
-  /**
    * @description 實際交易金額
    * @param {Object} record 父層Row資料
    */
   getInvestedValue = record => {
-    const investedValue = this.getNewQuantity(record) * record.latestPrice;
+    const investedValue =
+      getNewQuantity({
+        portfolio: this.props.portfolio,
+        newFund: this.props.newFund,
+        record,
+      }) * record.latestPrice;
     return investedValue;
   };
 
@@ -117,8 +54,13 @@ class Record extends React.Component {
    */
   getTradedValue = record => {
     const tradedValue =
-      this.getNewQuantity(record) * record.latestPrice +
-      this.getIndividualValue(record);
+      getNewQuantity({
+        portfolio: this.props.portfolio,
+        newFund: this.props.newFund,
+        record,
+      }) *
+        record.latestPrice +
+      getIndividualValue(record);
     return parseFloat(parseFloat(tradedValue).toFixed(DEFAULT_DECIMAL));
   };
 
@@ -129,8 +71,7 @@ class Record extends React.Component {
   getTradedPercent = record => {
     if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
     const totalTradedValue = this.props.portfolio.reduce(
-      (accumulator, currentValue) =>
-        accumulator + this.getTradedValue(currentValue),
+      (accu, curr) => accu + this.getTradedValue(curr),
       0
     );
     const tradedPercent =
@@ -172,7 +113,7 @@ class Record extends React.Component {
           const title = this.props.intl.formatMessage({
             id: 'record.defaultPercent',
           });
-          const totalPercent = this.getTotalPercent();
+          const totalPercent = getTotalPercent(this.props.portfolio);
           return (
             <div>
               <Text>{title}</Text>
@@ -231,7 +172,7 @@ class Record extends React.Component {
               return (
                 <Text>
                   {numberToCurrency({
-                    num: this.getIndividualValue(rowData),
+                    num: getIndividualValue(rowData),
                     hasSymbol: true,
                   })}
                 </Text>
@@ -292,7 +233,11 @@ class Record extends React.Component {
             title: <FormattedMessage id="record.action" />,
             key: 'action',
             render: () => {
-              const newQuantity = this.getNewQuantity(record);
+              const newQuantity = getNewQuantity({
+                portfolio: this.props.portfolio,
+                newFund: this.props.newFund,
+                record,
+              });
               let displayText = '';
               if (newQuantity > 0) displayText = '買入';
               if (newQuantity < 0) displayText = '賣出';
@@ -307,7 +252,11 @@ class Record extends React.Component {
             title: <FormattedMessage id="record.quantity" />,
             key: 'newQuantity',
             render: () => {
-              const newQuantity = this.getNewQuantity(record);
+              const newQuantity = getNewQuantity({
+                portfolio: this.props.portfolio,
+                newFund: this.props.newFund,
+                record,
+              });
 
               return (
                 <Text type={newQuantity > 0 ? 'success' : 'danger'}>
@@ -321,34 +270,6 @@ class Record extends React.Component {
       {
         title: '再平衡後',
         children: [
-          // {
-          //   title: '再平衡後市值',
-          //   key: 'inventedValue',
-          //   render: () => {
-          //     return (
-          //       <Text>
-          //         {numberToCurrency({
-          //           num: this.getInventedValue(record),
-          //           hasSymbol: true,
-          //         })}
-          //       </Text>
-          //     );
-          //   },
-          // },
-          // {
-          //   title: '應交易金額',
-          //   key: 'shouldInventAmount',
-          //   render: () => {
-          //     return (
-          //       <Text>
-          //         {numberToCurrency({
-          //           num: this.getShouldInventAmount(record),
-          //           hasSymbol: true,
-          //         })}
-          //       </Text>
-          //     );
-          //   },
-          // },
           {
             title: '實際交易金額',
             key: 'investedValue',

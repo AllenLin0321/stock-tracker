@@ -1,9 +1,5 @@
 import moment from 'moment';
-
-const stockValueReducer = (accumulator, currentValue) =>
-  parseFloat(
-    (accumulator + currentValue.quantity * currentValue.latestPrice).toFixed(2)
-  );
+export * from 'utils/stock';
 
 export const formatStockData = ({ quote }) => ({
   symbol: quote.symbol,
@@ -29,27 +25,6 @@ export const formatPortfolioData = ({
     quantity,
     defaultPrecent,
   };
-};
-
-export const getStockPercent = ({ stock, stockArr }) => {
-  const stockValue = parseFloat(
-    (stock.quantity * stock.latestPrice).toFixed(2)
-  );
-  const totalValue = stockArr.reduce(stockValueReducer, 0);
-  return parseFloat(((stockValue / totalValue) * 100).toFixed(2));
-};
-
-/**
- * @description 取得漲跌幅
- * @param {Number} change  當日變化
- * @param {Number} previousClose  前一日收盤價
- */
-export const getStockChangePercent = (
-  { change, previousClose },
-  precision = 2
-) => {
-  const changePercent = (change / previousClose) * 100;
-  return parseFloat(changePercent.toFixed(precision));
 };
 
 export const numberToCurrency = ({ num, hasSymbol = false, precision = 2 }) => {
