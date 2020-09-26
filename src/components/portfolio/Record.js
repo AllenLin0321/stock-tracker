@@ -139,24 +139,6 @@ class Record extends React.Component {
         );
       },
     },
-
-    {
-      title: <FormattedMessage id="record.percent" />,
-      key: 'percent',
-      render: rowData => {
-        const percent = getStockPercent({
-          stock: rowData,
-          stockArr: this.props.portfolio,
-        });
-        return (
-          <InputNumber
-            disabled
-            formatter={() => `${percent}%`}
-            parser={value => value.replace('%', '')}
-          />
-        );
-      },
-    },
     {
       title: <FormattedMessage id="record.updatedTime" />,
       key: 'updatedTime',
