@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, InputNumber, Typography } from 'antd';
+import { Table, InputNumber, Typography, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { injectIntl } from 'react-intl';
 
@@ -12,15 +12,17 @@ import {
   getNewQuantity, // 建議買賣股數
 } from 'utils';
 import * as actions from 'store/actions';
-
+import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 const DEFAULT_DECIMAL = 2; // 小數點位數
 
 class Record extends React.Component {
   state = {
     expandedRowKeys: [],
+    drawerVisible: false,
+    selectedStock: null,
   };
 
   componentDidUpdate(prevProps) {
@@ -99,13 +101,15 @@ class Record extends React.Component {
         title: <FormattedMessage id="record.name" />,
         key: 'symbol',
         render: rowData => (
-          <Link
-            href={`https://www.google.com/search?q=${rowData.symbol}+stock`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Button
+            type="link"
+            style={{ padding: 0 }}
+            onClick={() =>
+              this.setState({ drawerVisible: true, selectedStock: rowData })
+            }
           >
             {rowData.symbol}
-          </Link>
+          </Button>
         ),
       },
       {
@@ -368,7 +372,18 @@ class Record extends React.Component {
       };
     }
 
-    return <Table {...tableConfig} />;
+    return (
+      <>
+        <Table {...tableConfig} />
+        <DetailDrawer
+          selectedStock={this.state.selectedStock}
+          drawerVisible={this.state.drawerVisible}
+          onClose={() => {
+            this.setState({ drawerVisible: false });
+          }}
+        />
+      </>
+    );
   }
 }
 
