@@ -63,6 +63,7 @@ class Record extends React.Component {
     exchangeRate: 1,
     isTransferLoading: false,
     drawerVisible: false,
+    showExchangeRate: false,
   };
 
   columns = [
@@ -186,7 +187,12 @@ class Record extends React.Component {
   };
 
   renderStatisticTitle = () => {
-    const { isTotalValueVisable } = this.state;
+    const {
+      isTotalValueVisable,
+      exchangeRate,
+      isTransferLoading,
+      showExchangeRate,
+    } = this.state;
     const eyeIconConfig = {
       onClick: () =>
         this.setState({
@@ -196,11 +202,12 @@ class Record extends React.Component {
 
     const transferIconConfig = {
       onClick: async () => {
-        this.setState({ isTransferLoading: true });
+        this.setState({ isTransferLoading: true, showExchangeRate: false });
 
         try {
           const { data } = await apiGetCurrency();
           this.setState({
+            showExchangeRate: this.state.currency === CURRENCY.USD,
             exchangeRate: data.USD_TWD,
             currency:
               this.state.currency === CURRENCY.USD
@@ -229,13 +236,15 @@ class Record extends React.Component {
               <EyeInvisibleOutlined {...eyeIconConfig} />
             )}
           </Tooltip>
-
           {
             <Tooltip placement="top" title="美元⇄新台幣">
               <TransactionOutlined {...transferIconConfig} />
             </Tooltip>
           }
-          {this.state.isTransferLoading && <LoadingOutlined />}
+          {isTransferLoading && <LoadingOutlined />}
+          {showExchangeRate && (
+            <Text type="secondary">1 USD = TWD {exchangeRate.toFixed(3)}</Text>
+          )}
         </Space>
       </Text>
     );
