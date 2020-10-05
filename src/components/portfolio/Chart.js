@@ -65,7 +65,7 @@ const Chart = ({ data }) => {
   };
 
   return (
-    <>
+    <div id="portoflio__chart" style={{ width: '418px' }}>
       <Row>
         <Col span={3}>
           <Tabs
@@ -96,7 +96,7 @@ const Chart = ({ data }) => {
           {chartType === CHART_TYPE.donut && <Donut {...donutChartConfig} />}
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
