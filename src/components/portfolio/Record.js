@@ -242,7 +242,7 @@ class Record extends React.Component {
             </Tooltip>
           }
           {isTransferLoading && <LoadingOutlined />}
-          {showExchangeRate && (
+          {showExchangeRate && isTotalValueVisable && (
             <Text type="secondary">1 USD = TWD {exchangeRate.toFixed(3)}</Text>
           )}
         </Space>
@@ -275,17 +275,18 @@ class Record extends React.Component {
       totalValue = totalValue * exchangeRate;
       totalValueChange = totalValueChange * exchangeRate;
     }
+
     return (
       <span>
         <Statistic
           title={this.renderStatisticTitle()}
-          value={`${currencySymbol}${
+          value={
             isTotalValueVisable
-              ? numberToCurrency({
+              ? `${currencySymbol}${numberToCurrency({
                   num: totalValue,
-                })
+                })}`
               : '*****'
-          }`}
+          }
         />
         {isTotalValueVisable && (
           <Text style={{ color: totalValueChange > 0 ? '#3f8600' : '#cf1322' }}>
