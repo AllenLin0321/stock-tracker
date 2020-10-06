@@ -46,17 +46,14 @@ class DetailDrawer extends React.Component {
       },
     };
 
-    const change = parseFloat(
-      (selectedStock.latestPrice - selectedStock.previousClose).toFixed(2)
-    );
-
-    const changePercent = (change / selectedStock.previousClose) * 100;
+    const changePercent =
+      (selectedStock.change / selectedStock.previousClose) * 100;
     const isRise = changePercent > 0;
     const renderChange = () => (
       <Space>
         <span style={{ color: isRise ? 'green' : 'red' }}>
           {isRise && '+'}
-          {numberToCurrency({ num: change })}
+          {numberToCurrency({ num: selectedStock.change })}
         </span>
         <Tag
           color={isRise ? 'green' : 'red'}
