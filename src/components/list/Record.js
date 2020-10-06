@@ -70,7 +70,8 @@ class Record extends React.Component {
       title: <FormattedMessage id="record.change" />,
       key: 'change',
       sorter: (a, b) => getStockChangePercent(a) - getStockChangePercent(b),
-      render: ({ change, previousClose }) => {
+      render: ({ previousClose, latestPrice }) => {
+        const change = parseFloat((latestPrice - previousClose).toFixed(2));
         const changePercent = getStockChangePercent({ change, previousClose });
         const isRise = changePercent > 0;
         return (

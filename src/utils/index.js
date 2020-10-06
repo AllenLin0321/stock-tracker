@@ -3,7 +3,6 @@ export * from 'utils/stock';
 
 export const formatStockData = ({ quote }) => ({
   symbol: quote.symbol,
-  change: quote.change,
   latestPrice: quote.latestPrice,
   high: quote.high,
   low: quote.low,

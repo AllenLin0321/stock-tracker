@@ -120,7 +120,8 @@ class Record extends React.Component {
       title: <FormattedMessage id="record.change" />,
       key: 'change',
       sorter: (a, b) => getStockChangePercent(a) - getStockChangePercent(b),
-      render: ({ change, previousClose }) => {
+      render: ({ previousClose, latestPrice }) => {
+        const change = parseFloat((latestPrice - previousClose).toFixed(2));
         const changePercent = getStockChangePercent({ change, previousClose });
         const isRise = changePercent > 0;
         return (
@@ -259,7 +260,10 @@ class Record extends React.Component {
       0
     );
     const totalChange = portfolio.reduce((accu, cuur) => {
-      const changePercent = (cuur.change / cuur.previousClose) * 100;
+      const change = parseFloat(
+        (cuur.latestPrice - cuur.previousClose).toFixed(2)
+      );
+      const changePercent = (change / cuur.previousClose) * 100;
       const percent = getStockPercent({
         stock: cuur,
         stockArr: portfolio,
