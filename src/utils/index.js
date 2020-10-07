@@ -3,8 +3,8 @@ export * from 'utils/stock';
 
 export const formatStockData = ({ quote }) => ({
   symbol: quote.symbol,
-  change: quote.change,
   latestPrice: quote.latestPrice,
+  change: parseFloat((quote.latestPrice - quote.previousClose).toFixed(2)),
   high: quote.high,
   low: quote.low,
   previousClose: quote.previousClose,
