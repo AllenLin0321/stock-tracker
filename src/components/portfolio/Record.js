@@ -201,27 +201,34 @@ class Record extends React.Component {
     };
 
     const transferIconConfig = {
-      onClick: async () => {
-        this.setState({ isTransferLoading: true, showExchangeRate: false });
-
-        try {
-          const { data } = await apiGetCurrency();
-          this.setState({
+      onClick: () => {
+        this.setState(
+          {
+            isTransferLoading: true,
             showExchangeRate: this.state.currency === CURRENCY.USD,
-            exchangeRate: data.USD_TWD,
             currency:
               this.state.currency === CURRENCY.USD
                 ? CURRENCY.TWD
                 : CURRENCY.USD,
-          });
-        } catch (error) {
-          console.log('error: ', error);
-          if (error.response) {
-            message.error(error.response.data);
+          },
+          async () => {
+            if (this.state.currency === CURRENCY.TWD) {
+              try {
+                const { data } = await apiGetCurrency();
+                this.setState({
+                  exchangeRate: data.quotes.USDTWD,
+                });
+              } catch (error) {
+                console.log('error: ', error);
+                if (error.response) {
+                  message.error(error.response.data);
+                }
+              } finally {
+              }
+            }
+            this.setState({ isTransferLoading: false });
           }
-        } finally {
-          this.setState({ isTransferLoading: false });
-        }
+        );
       },
     };
 

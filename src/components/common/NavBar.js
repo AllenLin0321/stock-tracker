@@ -11,12 +11,12 @@ import { injectIntl } from 'react-intl';
 
 const tabs = [
   {
-    icon: <LineChartOutlined />,
-    key: 'list',
-  },
-  {
     icon: <UnorderedListOutlined />,
     key: 'portfolio',
+  },
+  {
+    icon: <LineChartOutlined />,
+    key: 'list',
   },
   {
     icon: <UserOutlined />,
@@ -56,7 +56,7 @@ const renderTabPane = props => {
 const NavBar = props => {
   const tabsConfig = {
     type: 'card',
-    defaultActiveKey: 'list',
+    defaultActiveKey: 'portfolio',
     size: 'large',
     tabBarGutter: 2,
     onChange: key => props.history.push(`/${key}`),

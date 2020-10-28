@@ -29,10 +29,10 @@ export const apiSeachSymbol = keyword =>
   symbolRequest.get(`/keyword/${keyword}`);
 
 export const apiGetCurrency = () =>
-  currencyRequest.get('api/v7/convert', {
+  currencyRequest.get('live', {
     params: {
-      q: 'USD_TWD',
-      compact: 'ultra',
-      apiKey: process.env.REACT_APP_CURRENCY_API_TOKEN,
+      access_key: process.env.REACT_APP_CURRENCY_API_TOKEN,
+      currencies: 'USD,TWD',
+      format: '1',
     },
   });

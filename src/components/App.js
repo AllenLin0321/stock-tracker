@@ -18,7 +18,7 @@ import 'components/App.scss';
 
 class App extends React.Component {
   componentDidMount() {
-    history.push('/list');
+    history.push('/portfolio');
   }
 
   render() {
