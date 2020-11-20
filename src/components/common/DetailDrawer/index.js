@@ -102,13 +102,16 @@ class DetailDrawer extends React.Component {
           <Title level={5}>{renderChange()}</Title>
         </Row>
         <Row justify="center">
-          <Text type="secondary">收盤價:{selectedStock.extendedPrice}</Text>
+          {selectedStock.extendedPrice && (
+            <Text type="secondary">收盤價:{selectedStock.extendedPrice}</Text>
+          )}
         </Row>
-        {selectedStock.extendedPrice !== selectedStock.latestPrice && (
-          <Row justify="center">
-            <Title level={5}>{renderExtendedChange()}</Title>
-          </Row>
-        )}
+        {selectedStock.extendedPrice &&
+          selectedStock.extendedPrice !== selectedStock.latestPrice && (
+            <Row justify="center">
+              <Title level={5}>{renderExtendedChange()}</Title>
+            </Row>
+          )}
         {selectedStock.low && selectedStock.high && (
           <>
             <Title level={5}>今日價格範圍</Title>
