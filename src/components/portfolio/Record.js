@@ -204,8 +204,6 @@ class Record extends React.Component {
       onClick: () => {
         this.setState(
           {
-            isTransferLoading: true,
-            showExchangeRate: this.state.currency === CURRENCY.USD,
             currency:
               this.state.currency === CURRENCY.USD
                 ? CURRENCY.TWD
@@ -214,9 +212,11 @@ class Record extends React.Component {
           async () => {
             if (this.state.currency === CURRENCY.TWD) {
               try {
+                this.setState({ isTransferLoading: true });
                 const { data } = await apiGetCurrency();
                 this.setState({
                   exchangeRate: data.quotes.USDTWD,
+                  showExchangeRate: true,
                 });
               } catch (error) {
                 console.log('error: ', error);
@@ -224,9 +224,11 @@ class Record extends React.Component {
                   message.error(error.response.data);
                 }
               } finally {
+                this.setState({ isTransferLoading: false });
               }
+            } else {
+              this.setState({ showExchangeRate: false });
             }
-            this.setState({ isTransferLoading: false });
           }
         );
       },
