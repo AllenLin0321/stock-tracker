@@ -65,6 +65,23 @@ class DetailDrawer extends React.Component {
       </Space>
     );
 
+    const isExtendedRise = selectedStock.extendedChangePercent > 0;
+    const renderExtendedChange = () => (
+      <Space>
+        <span style={{ color: isExtendedRise ? 'green' : 'red' }}>
+          {isExtendedRise && '+'}
+          {numberToCurrency({ num: selectedStock.extendedChange })}
+        </span>
+        <Tag
+          color={isExtendedRise ? 'green' : 'red'}
+          icon={isExtendedRise ? <RiseOutlined /> : <FallOutlined />}
+        >
+          {isExtendedRise && '+'}
+          {(selectedStock.extendedChangePercent * 100).toFixed(2)}%
+        </Tag>
+      </Space>
+    );
+
     return (
       <Drawer
         destroyOnClose
@@ -84,6 +101,14 @@ class DetailDrawer extends React.Component {
         <Row justify="center">
           <Title level={5}>{renderChange()}</Title>
         </Row>
+        <Row justify="center">
+          <Text type="secondary">收盤價:{selectedStock.extendedPrice}</Text>
+        </Row>
+        {selectedStock.extendedPrice !== selectedStock.latestPrice && (
+          <Row justify="center">
+            <Title level={5}>{renderExtendedChange()}</Title>
+          </Row>
+        )}
         {selectedStock.low && selectedStock.high && (
           <>
             <Title level={5}>今日價格範圍</Title>

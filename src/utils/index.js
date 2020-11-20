@@ -11,6 +11,9 @@ export const formatStockData = ({ quote }) => ({
   companyName: quote.companyName,
   week52High: quote.week52High,
   week52Low: quote.week52Low,
+  extendedPrice: quote.extendedPrice, //盤後價
+  extendedChange: quote.extendedChange, //盤後價差
+  extendedChangePercent: quote.extendedChangePercent, //盤後價差百分比
   updatedTime: moment().format('HH:mm'),
 });
 
