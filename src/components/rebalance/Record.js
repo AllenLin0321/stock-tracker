@@ -278,8 +278,13 @@ class Record extends React.Component {
             title: '實際交易金額',
             key: 'investedValue',
             render: () => {
+              const newQuantity = getNewQuantity({
+                portfolio: this.props.portfolio,
+                newFund: this.props.newFund,
+                record,
+              });
               return (
-                <Text>
+                <Text type={newQuantity > 0 ? 'success' : 'danger'}>
                   {numberToCurrency({
                     num: this.getInvestedValue(record),
                     hasSymbol: true,
