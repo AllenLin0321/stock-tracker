@@ -27,8 +27,6 @@ import {
   FallOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
-  EyeOutlined,
-  EyeInvisibleOutlined,
   TransactionOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
@@ -58,7 +56,6 @@ class Record extends React.Component {
   state = {
     modalVisible: false,
     selectedStock: null,
-    isTotalValueVisable: true,
     currency: CURRENCY.USD,
     exchangeRate: 1,
     isTransferLoading: false,
@@ -187,18 +184,7 @@ class Record extends React.Component {
   };
 
   renderStatisticTitle = () => {
-    const {
-      isTotalValueVisable,
-      exchangeRate,
-      isTransferLoading,
-      showExchangeRate,
-    } = this.state;
-    const eyeIconConfig = {
-      onClick: () =>
-        this.setState({
-          isTotalValueVisable: !this.state.isTotalValueVisable,
-        }),
-    };
+    const { exchangeRate, isTransferLoading, showExchangeRate } = this.state;
 
     const transferIconConfig = {
       onClick: () => {
@@ -238,20 +224,13 @@ class Record extends React.Component {
       <Text>
         總資產{' '}
         <Space>
-          <Tooltip placement="top" title="顯示⇄隱藏">
-            {isTotalValueVisable ? (
-              <EyeOutlined {...eyeIconConfig} />
-            ) : (
-              <EyeInvisibleOutlined {...eyeIconConfig} />
-            )}
-          </Tooltip>
           {
             <Tooltip placement="top" title="美元⇄新台幣">
               <TransactionOutlined {...transferIconConfig} />
             </Tooltip>
           }
           {isTransferLoading && <LoadingOutlined />}
-          {showExchangeRate && isTotalValueVisable && (
+          {showExchangeRate && (
             <Text type="secondary">1 USD = TWD {exchangeRate.toFixed(3)}</Text>
           )}
         </Space>
@@ -261,7 +240,7 @@ class Record extends React.Component {
 
   renderTableFooter = () => {
     const { portfolio } = this.props;
-    const { isTotalValueVisable, currency, exchangeRate } = this.state;
+    const { currency, exchangeRate } = this.state;
     if (!portfolio || portfolio.length === 0) return false;
     let totalValue = portfolio.reduce(
       (accu, { latestPrice, quantity }) => accu + latestPrice * quantity,
@@ -289,15 +268,11 @@ class Record extends React.Component {
       <span>
         <Statistic
           title={this.renderStatisticTitle()}
-          value={
-            isTotalValueVisable
-              ? `${currencySymbol}${numberToCurrency({
-                  num: totalValue,
-                })}`
-              : '*****'
-          }
+          value={`${currencySymbol}${numberToCurrency({
+            num: totalValue,
+          })}`}
         />
-        {isTotalValueVisable && (
+        {
           <Text style={{ color: totalValueChange > 0 ? '#3f8600' : '#cf1322' }}>
             {totalValueChange > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
             {currencySymbol +
@@ -306,7 +281,7 @@ class Record extends React.Component {
               })}{' '}
             ({totalChange.toFixed(2)}%)
           </Text>
-        )}
+        }
       </span>
     );
   };
