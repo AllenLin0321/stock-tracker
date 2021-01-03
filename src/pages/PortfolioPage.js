@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { message } from 'antd';
+
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
-import { message } from 'antd';
-import { formatStockData } from 'utils';
+import { formatPortfolioData } from 'utils';
 
-import SearchBar from 'components/common/SearchBar';
-import Record from 'components/list/Record';
+import SearchBar from 'components/common/SearchBar.js';
+import Record from 'components/portfolio/Record';
 
-class ListPage extends React.Component {
+class Portfolio extends React.Component {
   async componentDidMount() {
-    await this.props.getLocalData('stocks');
-    if (this.props.stocks) {
+    await this.props.getLocalData('portfolio');
+    if (this.props.portfolio) {
       this.props.setTableLoading({ tableLoading: true });
       await this.onClickReload();
       this.props.setTableLoading({ tableLoading: false });
@@ -26,7 +27,7 @@ class ListPage extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSaveStock(formatStockData(data));
+        this.props.onSavePortfolio(formatPortfolioData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -40,13 +41,13 @@ class ListPage extends React.Component {
   };
 
   onClickReload = async () => {
-    const { stocks, onSaveStock } = this.props;
-    const delayIncrement = 250;
+    const { portfolio, onSavePortfolio } = this.props;
+    const delayIncrement = 200;
     let delay = 0;
 
-    if (stocks.length === 0) return;
+    if (portfolio.length === 0) return;
 
-    let promiseArr = stocks.map(async stock => {
+    let promiseArr = portfolio.map(async stock => {
       delay += delayIncrement;
       return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
         apiGetStock(stock.symbol)
@@ -56,7 +57,16 @@ class ListPage extends React.Component {
     try {
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSaveStock(formatStockData(data));
+        let matchStock = portfolio.find(
+          stock => stock.symbol === data.quote.symbol
+        );
+
+        let quantity = matchStock ? matchStock.quantity : null;
+        let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
+
+        onSavePortfolio(
+          formatPortfolioData({ ...data, quantity, defaultPrecent })
+        );
       });
     } catch (error) {
       console.log('error: ', error);
@@ -78,7 +88,7 @@ class ListPage extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { stocks: state.stocks };
+  return { portfolio: state.portfolio };
 };
 
-export default connect(mapStateToProps, actions)(ListPage);
+export default connect(mapStateToProps, actions)(Portfolio);

@@ -1,15 +1,13 @@
 import React from 'react';
 import { Space, Modal, Image, Divider, Rate } from 'antd';
-
+import styled from 'styled-components';
 import KoFi from 'components/common/KOFI';
-import Attribution from 'components/common/Attribution';
+import Attribution from 'components/common/Attribution.js';
 import jkos_logo from 'assets/jkos_logo.png';
 import jkos_QR from 'assets/jkos_QR.jpg';
 import linePay_logo from 'assets/linePay_logo.jpg';
 import linePay_QR from 'assets/linePay_QR.jpg';
 import { FrownOutlined, MehOutlined, SmileOutlined } from '@ant-design/icons';
-
-import 'pages/DonatePage/index.scss';
 
 const paymentGateway = {
   jkos: {
@@ -34,6 +32,10 @@ const customIcons = {
   5: <SmileOutlined />,
 };
 
+const DonateContent = styled.div`
+  line-height: 25px;
+`;
+
 class DonatePage extends React.Component {
   state = {
     modalVisible: false,
@@ -54,7 +56,7 @@ class DonatePage extends React.Component {
 
   renderTopSide = () => {
     return (
-      <div className="donate-content__wrapper">
+      <DonateContent>
         若您喜歡這個小工具，歡迎給我們評分以及建議
         <span role="img" aria-label="clapping hands">
           👏
@@ -79,7 +81,7 @@ class DonatePage extends React.Component {
         </span>
         <br />
         也可選擇使用「街口支付」或「LINE Pay」
-      </div>
+      </DonateContent>
     );
   };
 

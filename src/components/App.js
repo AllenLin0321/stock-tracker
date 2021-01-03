@@ -5,16 +5,14 @@ import { connect } from 'react-redux';
 import * as actions from 'store/actions';
 
 // Page
-import ListPage from 'pages/ListPage';
-import PortfolioPage from 'pages/PortfolioPage';
-import ChartPage from 'pages/ChartPage';
+import ListPage from 'pages/ListPage.js';
+import PortfolioPage from 'pages/PortfolioPage.js';
+import ChartPage from 'pages/ChartPage.js';
 import RebalancePage from 'pages/RebalancePage';
-import DonatePage from 'pages/DonatePage';
+import DonatePage from 'pages/DonatePage.js';
 
 import NavBar from 'components/common/NavBar';
 import history from 'history.js';
-
-import 'components/App.scss';
 
 class App extends React.Component {
   componentDidMount() {

@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import styled from 'styled-components';
 import { Input, Button, AutoComplete } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
 import { apiSeachSymbol } from 'api';
-import 'components/common/SearchBar/index.scss';
+
+const SearchBarWrapper = styled.div`
+  display: flex;
+`;
+
+const apiDelaySecond = 300;
 
 export class SearchBar extends Component {
   constructor(props) {
@@ -31,7 +37,7 @@ export class SearchBar extends Component {
         }));
         this.setState({ autoCompleteOption: newOption });
       }
-    }, 300);
+    }, apiDelaySecond);
   }
 
   onInputChange = event => {
@@ -55,7 +61,7 @@ export class SearchBar extends Component {
 
   render() {
     return (
-      <div className="searchBar__wrapper">
+      <SearchBarWrapper>
         <AutoComplete
           options={this.state.autoCompleteOption}
           style={{ width: '100%' }}
@@ -75,11 +81,11 @@ export class SearchBar extends Component {
           size="large"
           type="primary"
           icon={<ReloadOutlined />}
-          className="searchBar__reload-btn"
           loading={this.state.isReloadLoading}
           onClick={this.onClickReload}
+          style={{ marginLeft: '5px' }}
         />
-      </div>
+      </SearchBarWrapper>
     );
   }
 }
