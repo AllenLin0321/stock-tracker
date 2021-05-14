@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Table,
@@ -52,18 +52,39 @@ const CURRENCY = {
   TWD: 'TWD',
 };
 
-class Record extends React.Component {
-  state = {
-    modalVisible: false,
-    selectedStock: null,
-    currency: CURRENCY.USD,
-    exchangeRate: 1,
-    isTransferLoading: false,
-    drawerVisible: false,
-    showExchangeRate: false,
-  };
+const Record = props => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedStock, setSelectedStock] = useState();
+  const [currency, setCurrency] = useState(CURRENCY.USD);
+  const [exchangeRate, setExchangeRate] = useState(1);
+  const [isTransferLoading, setIsTransferLoading] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [showExchangeRate, setShowExchangeRate] = useState(false);
+  const { portfolio, loading } = props;
 
-  columns = [
+  useLayoutEffect(() => {
+    const onUpdateCurrency = async () => {
+      if (currency === CURRENCY.TWD) {
+        try {
+          setIsTransferLoading(true);
+          const { data } = await apiGetCurrency();
+          setExchangeRate(data.quotes.USDTWD);
+          setShowExchangeRate(true);
+        } catch (error) {
+          if (error.response) {
+            message.error(error.response.data);
+          }
+        } finally {
+          setIsTransferLoading(false);
+        }
+      } else {
+        setShowExchangeRate(false);
+      }
+    };
+    onUpdateCurrency();
+  }, [currency]);
+
+  const columns = [
     {
       title: '',
       dataIndex: 'sort',
@@ -78,9 +99,10 @@ class Record extends React.Component {
         <Button
           type="link"
           style={{ padding: 0 }}
-          onClick={() =>
-            this.setState({ drawerVisible: true, selectedStock: rowData })
-          }
+          onClick={() => {
+            setDrawerVisible(true);
+            setSelectedStock(rowData);
+          }}
         >
           {rowData.symbol}
         </Button>
@@ -93,10 +115,8 @@ class Record extends React.Component {
         return (
           <Link
             onClick={() => {
-              this.setState({
-                selectedStock: rowData,
-                modalVisible: true,
-              });
+              setModalVisible(true);
+              setSelectedStock(rowData);
             }}
           >
             {numberToCurrency({ num: rowData.quantity, precision: 4 })}
@@ -152,7 +172,7 @@ class Record extends React.Component {
             shape="circle"
             icon={<DeleteOutlined />}
             onClick={() => {
-              this.props.removePortfolio(rowData);
+              props.removePortfolio(rowData);
             }}
           />
         );
@@ -160,63 +180,34 @@ class Record extends React.Component {
     },
   ];
 
-  onSortEnd = ({ oldIndex, newIndex }) => {
+  const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
-        [].concat(this.props.portfolio),
+        [].concat(props.portfolio),
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      this.props.changePortfolioOrder({ newStockArr });
+      props.changePortfolioOrder({ newStockArr });
     }
   };
 
-  onModalFormSubmit = ({ quantity }) => {
-    this.onQuantityChange(this.state.selectedStock, quantity);
-    this.setState({ modalVisible: false, selectedStock: null });
+  const onModalFormSubmit = ({ quantity }) => {
+    onQuantityChange(selectedStock, quantity);
+    setModalVisible(false);
+    setSelectedStock(null);
   };
 
-  onQuantityChange = (rowData, newQuantity) => {
-    this.props.changeStockQuantity({
+  const onQuantityChange = (rowData, newQuantity) => {
+    props.changeStockQuantity({
       ...rowData,
       quantity: newQuantity,
     });
   };
 
-  renderStatisticTitle = () => {
-    const { exchangeRate, isTransferLoading, showExchangeRate } = this.state;
-
+  const renderStatisticTitle = () => {
     const transferIconConfig = {
       onClick: () => {
-        this.setState(
-          {
-            currency:
-              this.state.currency === CURRENCY.USD
-                ? CURRENCY.TWD
-                : CURRENCY.USD,
-          },
-          async () => {
-            if (this.state.currency === CURRENCY.TWD) {
-              try {
-                this.setState({ isTransferLoading: true });
-                const { data } = await apiGetCurrency();
-                this.setState({
-                  exchangeRate: data.quotes.USDTWD,
-                  showExchangeRate: true,
-                });
-              } catch (error) {
-                console.log('error: ', error);
-                if (error.response) {
-                  message.error(error.response.data);
-                }
-              } finally {
-                this.setState({ isTransferLoading: false });
-              }
-            } else {
-              this.setState({ showExchangeRate: false });
-            }
-          }
-        );
+        setCurrency(currency === CURRENCY.USD ? CURRENCY.TWD : CURRENCY.USD);
       },
     };
 
@@ -238,24 +229,22 @@ class Record extends React.Component {
     );
   };
 
-  renderTableFooter = () => {
-    const { portfolio } = this.props;
-    const { currency, exchangeRate } = this.state;
-    if (!portfolio || portfolio.length === 0) return false;
-    let totalValue = portfolio.reduce(
+  const renderTableFooter = () => {
+    if (!props.portfolio || props.portfolio.length === 0) return false;
+    let totalValue = props.portfolio.reduce(
       (accu, { latestPrice, quantity }) => accu + latestPrice * quantity,
       0
     );
-    const totalChange = portfolio.reduce((accu, cuur) => {
+    const totalChange = props.portfolio.reduce((accu, cuur) => {
       const changePercent = (cuur.change / cuur.previousClose) * 100;
       const percent = getStockPercent({
         stock: cuur,
-        stockArr: portfolio,
+        stockArr: props.portfolio,
       });
       return accu + (changePercent * percent) / 100;
     }, 0);
 
-    let totalValueChange = portfolio.reduce((accu, cuur) => {
+    let totalValueChange = props.portfolio.reduce((accu, cuur) => {
       return accu + (cuur.latestPrice - cuur.previousClose) * cuur.quantity;
     }, 0);
     const currencySymbol = currency === CURRENCY.USD ? '$ ' : 'NT$ ';
@@ -267,7 +256,7 @@ class Record extends React.Component {
     return (
       <span>
         <Statistic
-          title={this.renderStatisticTitle()}
+          title={renderStatisticTitle()}
           value={`${currencySymbol}${numberToCurrency({
             num: totalValue,
           })}`}
@@ -286,92 +275,89 @@ class Record extends React.Component {
     );
   };
 
-  render() {
-    const { portfolio, loading } = this.props;
-    const DraggableContainer = props => (
-      <SortableContainer
-        {...props}
-        useDragHandle
-        helperClass="row-dragging"
-        onSortEnd={this.onSortEnd}
-      />
+  const DraggableContainer = props => (
+    <SortableContainer
+      {...props}
+      useDragHandle
+      helperClass="row-dragging"
+      onSortEnd={onSortEnd}
+    />
+  );
+
+  const DraggableBodyRow = ({ className, style, ...restProps }) => {
+    const index = props.portfolio.findIndex(
+      x => x.symbol === restProps['data-row-key']
     );
+    return <SortableItem index={index} {...restProps} />;
+  };
 
-    const DraggableBodyRow = ({ className, style, ...restProps }) => {
-      const index = this.props.portfolio.findIndex(
-        x => x.symbol === restProps['data-row-key']
-      );
-      return <SortableItem index={index} {...restProps} />;
-    };
-
-    if (!portfolio || portfolio.length === 0) {
-      return <Empty />;
-    }
-
-    return (
-      <>
-        <Table
-          pagination={false}
-          dataSource={portfolio}
-          columns={this.columns}
-          rowKey="symbol"
-          scroll={{ y: 200 }}
-          loading={loading.tableLoading}
-          components={{
-            body: {
-              wrapper: DraggableContainer,
-              row: DraggableBodyRow,
-            },
-          }}
-          footer={() => this.renderTableFooter()}
-        />
-        <DetailDrawer
-          selectedStock={this.state.selectedStock}
-          drawerVisible={this.state.drawerVisible}
-          onClose={() => {
-            this.setState({ drawerVisible: false });
-          }}
-        />
-        <Modal
-          destroyOnClose
-          centered
-          footer={null}
-          title={
-            this.state.selectedStock ? this.state.selectedStock.symbol : ''
-          }
-          visible={this.state.modalVisible}
-          onCancel={() => this.setState({ modalVisible: false })}
-        >
-          <Form
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            onFinish={this.onModalFormSubmit}
-          >
-            <Form.Item
-              label="股數"
-              name="quantity"
-              rules={[
-                { required: true, message: '請輸入股數' },
-                {
-                  type: 'number',
-                  min: 0.0001,
-                  message: '請勿輸入小於0股數',
-                },
-              ]}
-            >
-              <InputNumber autoFocus size="large" step={0.0001} min={0.0001} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                更新
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </>
-    );
+  if (!portfolio || portfolio.length === 0) {
+    return <Empty />;
   }
-}
+
+  return (
+    <>
+      <Table
+        pagination={false}
+        dataSource={portfolio}
+        columns={columns}
+        rowKey="symbol"
+        scroll={{ y: 200 }}
+        loading={loading.tableLoading}
+        components={{
+          body: {
+            wrapper: DraggableContainer,
+            row: DraggableBodyRow,
+          },
+        }}
+        footer={() => renderTableFooter()}
+      />
+      <DetailDrawer
+        selectedStock={selectedStock}
+        drawerVisible={drawerVisible}
+        onClose={() => {
+          setDrawerVisible(false);
+        }}
+      />
+      <Modal
+        destroyOnClose
+        centered
+        footer={null}
+        title={selectedStock ? selectedStock.symbol : ''}
+        visible={modalVisible}
+        onCancel={() => {
+          setModalVisible(false);
+        }}
+      >
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          onFinish={onModalFormSubmit}
+        >
+          <Form.Item
+            label="股數"
+            name="quantity"
+            rules={[
+              { required: true, message: '請輸入股數' },
+              {
+                type: 'number',
+                min: 0.0001,
+                message: '請勿輸入小於0股數',
+              },
+            ]}
+          >
+            <InputNumber autoFocus size="large" step={0.0001} min={0.0001} />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              更新
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+};
 
 const mapStateToProps = state => {
   return { portfolio: state.portfolio, loading: state.loading };

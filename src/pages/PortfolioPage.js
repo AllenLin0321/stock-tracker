@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { message } from 'antd';
 
@@ -9,17 +9,20 @@ import { formatPortfolioData } from 'utils';
 import SearchBar from 'components/common/SearchBar.js';
 import Record from 'components/portfolio/Record';
 
-class Portfolio extends React.Component {
-  async componentDidMount() {
-    await this.props.getLocalData('portfolio');
-    if (this.props.portfolio) {
-      this.props.setTableLoading({ tableLoading: true });
-      await this.onClickReload();
-      this.props.setTableLoading({ tableLoading: false });
-    }
-  }
+const Portfolio = props => {
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      await props.getLocalData('portfolio');
+      if (props.portfolio) {
+        props.setTableLoading({ tableLoading: true });
+        await onClickReload();
+        props.setTableLoading({ tableLoading: false });
+      }
+    };
+    fetchPortfolio();
+  }, []);
 
-  onClickSearch = async symbol => {
+  const onClickSearch = async symbol => {
     if (symbol === '') return;
     let res = { isSuccess: false };
 
@@ -27,7 +30,7 @@ class Portfolio extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSavePortfolio(formatPortfolioData(data));
+        props.onSavePortfolio(formatPortfolioData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -40,8 +43,8 @@ class Portfolio extends React.Component {
     }
   };
 
-  onClickReload = async () => {
-    const { portfolio, onSavePortfolio } = this.props;
+  const onClickReload = async () => {
+    const { portfolio, onSavePortfolio } = props;
     const delayIncrement = 200;
     let delay = 0;
 
@@ -73,19 +76,17 @@ class Portfolio extends React.Component {
     }
   };
 
-  render() {
-    return (
-      <div>
-        <SearchBar
-          onClickSearch={this.onClickSearch}
-          onClickReload={this.onClickReload}
-          setTableLoading={this.props.setTableLoading}
-        />
-        <Record />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <SearchBar
+        onClickSearch={onClickSearch}
+        onClickReload={onClickReload}
+        setTableLoading={props.setTableLoading}
+      />
+      <Record />
+    </div>
+  );
+};
 
 const mapStateToProps = state => {
   return { portfolio: state.portfolio };

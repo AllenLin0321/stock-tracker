@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
@@ -8,17 +8,20 @@ import { formatStockData } from 'utils';
 import SearchBar from 'components/common/SearchBar.js';
 import Record from 'components/list/Record';
 
-class ListPage extends React.Component {
-  async componentDidMount() {
-    await this.props.getLocalData('stocks');
-    if (this.props.stocks) {
-      this.props.setTableLoading({ tableLoading: true });
-      await this.onClickReload();
-      this.props.setTableLoading({ tableLoading: false });
-    }
-  }
+const ListPage = props => {
+  useEffect(() => {
+    const fetchStocks = async () => {
+      await props.getLocalData('stocks');
+      if (props.stocks) {
+        props.setTableLoading({ tableLoading: true });
+        await onClickReload();
+        props.setTableLoading({ tableLoading: false });
+      }
+    };
+    fetchStocks();
+  }, []);
 
-  onClickSearch = async symbol => {
+  const onClickSearch = async symbol => {
     if (symbol === '') return;
     let res = { isSuccess: false };
 
@@ -26,7 +29,7 @@ class ListPage extends React.Component {
       const { data } = await apiGetStock(symbol);
 
       if (data.quote) {
-        this.props.onSaveStock(formatStockData(data));
+        props.onSaveStock(formatStockData(data));
       }
       res.isSuccess = true;
     } catch (error) {
@@ -39,8 +42,8 @@ class ListPage extends React.Component {
     }
   };
 
-  onClickReload = async () => {
-    const { stocks, onSaveStock } = this.props;
+  const onClickReload = async () => {
+    const { stocks, onSaveStock } = props;
     const delayIncrement = 250;
     let delay = 0;
 
@@ -62,20 +65,17 @@ class ListPage extends React.Component {
       console.log('error: ', error);
     }
   };
-
-  render() {
-    return (
-      <div>
-        <SearchBar
-          onClickSearch={this.onClickSearch}
-          onClickReload={this.onClickReload}
-          setTableLoading={this.props.setTableLoading}
-        />
-        <Record />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <SearchBar
+        onClickSearch={onClickSearch}
+        onClickReload={onClickReload}
+        setTableLoading={props.setTableLoading}
+      />
+      <Record />
+    </div>
+  );
+};
 
 const mapStateToProps = state => {
   return { stocks: state.stocks };

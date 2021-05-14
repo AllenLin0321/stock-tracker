@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Tag, Typography, Empty } from 'antd';
 import {
@@ -27,13 +27,16 @@ const DragHandle = sortableHandle(() => (
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
-class Record extends React.Component {
-  state = {
-    drawerVisible: false,
-    selectedStock: null,
-  };
 
-  columns = [
+const Record = props => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedStock, setSelectedStock] = useState();
+
+  const { stocks, loading } = props;
+
+  if (!stocks || stocks.length === 0) return <Empty />;
+
+  const columns = [
     {
       title: '',
       dataIndex: 'sort',
@@ -49,9 +52,10 @@ class Record extends React.Component {
         <Button
           type="link"
           style={{ padding: 0 }}
-          onClick={() =>
-            this.setState({ drawerVisible: true, selectedStock: rowData })
-          }
+          onClick={() => {
+            setDrawerVisible(true);
+            setSelectedStock(rowData);
+          }}
         >
           {rowData.symbol}
         </Button>
@@ -105,7 +109,7 @@ class Record extends React.Component {
             shape="circle"
             icon={<DeleteOutlined />}
             onClick={() => {
-              this.props.removeStock(rowData);
+              props.removeStock(rowData);
             }}
           />
         );
@@ -113,67 +117,60 @@ class Record extends React.Component {
     },
   ];
 
-  onSortEnd = ({ oldIndex, newIndex }) => {
+  const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
-        [].concat(this.props.stocks),
+        [].concat(props.stocks),
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      this.props.changeStockOrder({ newStockArr });
+      props.changeStockOrder({ newStockArr });
     }
   };
 
-  DraggableBodyRow = ({ className, style, ...restProps }) => {
-    const { stocks } = this.props;
+  const DraggableBodyRow = ({ className, style, ...restProps }) => {
+    const { stocks } = props;
     // function findIndex base on Table rowKey props and should always be a right array index
     const index = stocks.findIndex(x => x.symbol === restProps['data-row-key']);
     return <SortableItem index={index} {...restProps} />;
   };
 
-  render() {
-    const { stocks, loading } = this.props;
+  const DraggableContainer = props => (
+    <SortableContainer
+      {...props}
+      useDragHandle
+      helperClass="row-dragging"
+      onSortEnd={onSortEnd}
+    />
+  );
 
-    if (!stocks || stocks.length === 0) {
-      return <Empty />;
-    }
-
-    const DraggableContainer = props => (
-      <SortableContainer
-        {...props}
-        useDragHandle
-        helperClass="row-dragging"
-        onSortEnd={this.onSortEnd}
+  return (
+    <>
+      <Table
+        pagination={false}
+        dataSource={stocks}
+        columns={columns}
+        rowKey="symbol"
+        scroll={{ y: 200 }}
+        loading={loading.tableLoading}
+        components={{
+          body: {
+            wrapper: DraggableContainer,
+            row: DraggableBodyRow,
+          },
+        }}
       />
-    );
-    return (
-      <>
-        <Table
-          pagination={false}
-          dataSource={stocks}
-          columns={this.columns}
-          rowKey="symbol"
-          scroll={{ y: 200 }}
-          loading={loading.tableLoading}
-          components={{
-            body: {
-              wrapper: DraggableContainer,
-              row: this.DraggableBodyRow,
-            },
-          }}
-        />
 
-        <DetailDrawer
-          selectedStock={this.state.selectedStock}
-          drawerVisible={this.state.drawerVisible}
-          onClose={() => {
-            this.setState({ drawerVisible: false });
-          }}
-        />
-      </>
-    );
-  }
-}
+      <DetailDrawer
+        selectedStock={selectedStock}
+        drawerVisible={drawerVisible}
+        onClose={() => {
+          setDrawerVisible(false);
+        }}
+      />
+    </>
+  );
+};
 
 const mapStateToProps = state => {
   return { stocks: state.stocks, loading: state.loading };

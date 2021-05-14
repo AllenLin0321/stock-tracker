@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, InputNumber, Typography, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
@@ -18,33 +18,26 @@ import 'components/common/Record.scss';
 const { Text } = Typography;
 const DEFAULT_DECIMAL = 2; // 小數點位數
 
-class Record extends React.Component {
-  state = {
-    expandedRowKeys: [],
-    drawerVisible: false,
-    selectedStock: null,
-  };
+const Record = props => {
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedStock, setSelectedStock] = useState();
 
-  componentDidUpdate(prevProps) {
-    const { isExpandAll, portfolio } = this.props;
-    if (isExpandAll !== prevProps.isExpandAll) {
-      this.setState({
-        expandedRowKeys: isExpandAll
-          ? portfolio.map(stock => stock.symbol)
-          : [],
-      });
-    }
-  }
+  useEffect(() => {
+    setExpandedRowKeys(
+      props.isExpandAll ? props.portfolio.map(stock => stock.symbol) : []
+    );
+  }, [props.isExpandAll]);
 
   /**
    * @description 實際交易金額
    * @param {Object} record 父層Row資料
    */
-  getInvestedValue = record => {
+  const getInvestedValue = record => {
     const investedValue =
       getNewQuantity({
-        portfolio: this.props.portfolio,
-        newFund: this.props.newFund,
+        portfolio: props.portfolio,
+        newFund: props.newFund,
         record,
       }) * record.latestPrice;
     return investedValue;
@@ -54,11 +47,11 @@ class Record extends React.Component {
    * @description 交易後市值
    * @param {Object} record 父層Row資料
    */
-  getTradedValue = record => {
+  const getTradedValue = record => {
     const tradedValue =
       getNewQuantity({
-        portfolio: this.props.portfolio,
-        newFund: this.props.newFund,
+        portfolio: props.portfolio,
+        newFund: props.newFund,
         record,
       }) *
         record.latestPrice +
@@ -70,32 +63,25 @@ class Record extends React.Component {
    * @description 交易後比例
    * @param {Object} record 父層Row資料
    */
-  getTradedPercent = record => {
-    if (!this.props.portfolio || this.props.portfolio.length === 0) return 0;
-    const totalTradedValue = this.props.portfolio.reduce(
-      (accu, curr) => accu + this.getTradedValue(curr),
+  const getTradedPercent = record => {
+    if (!props.portfolio || props.portfolio.length === 0) return 0;
+    const totalTradedValue = props.portfolio.reduce(
+      (accu, curr) => accu + getTradedValue(curr),
       0
     );
-    const tradedPercent =
-      (this.getTradedValue(record) / totalTradedValue) * 100;
+    const tradedPercent = (getTradedValue(record) / totalTradedValue) * 100;
     return parseFloat(parseFloat(tradedPercent).toFixed(DEFAULT_DECIMAL));
   };
 
-  onExpandClick = (expanded, { symbol }) => {
+  const onExpandClick = (expanded, { symbol }) => {
     if (expanded) {
-      this.setState({
-        expandedRowKeys: [...this.state.expandedRowKeys, symbol],
-      });
+      setExpandedRowKeys([...expandedRowKeys, symbol]);
     } else {
-      this.setState({
-        expandedRowKeys: this.state.expandedRowKeys.filter(
-          rowKey => rowKey !== symbol
-        ),
-      });
+      setExpandedRowKeys(expandedRowKeys.filter(rowKey => rowKey !== symbol));
     }
   };
 
-  renderColumns = () => {
+  const renderColumns = () => {
     let columns = [
       {
         title: <FormattedMessage id="record.name" />,
@@ -104,9 +90,10 @@ class Record extends React.Component {
           <Button
             type="link"
             style={{ padding: 0 }}
-            onClick={() =>
-              this.setState({ drawerVisible: true, selectedStock: rowData })
-            }
+            onClick={() => {
+              setDrawerVisible(true);
+              setSelectedStock(rowData);
+            }}
           >
             {rowData.symbol}
           </Button>
@@ -114,10 +101,10 @@ class Record extends React.Component {
       },
       {
         title: () => {
-          const title = this.props.intl.formatMessage({
+          const title = props.intl.formatMessage({
             id: 'record.defaultPercent',
           });
-          const totalPercent = getTotalPercent(this.props.portfolio);
+          const totalPercent = getTotalPercent(props.portfolio);
           return (
             <div>
               <Text>{title}</Text>
@@ -139,7 +126,7 @@ class Record extends React.Component {
               formatter={value => `${value}%`}
               parser={value => value.replace('%', '')}
               onChange={newPercent =>
-                this.props.changeDefaultPercent({ rowData, newPercent })
+                props.changeDefaultPercent({ rowData, newPercent })
               }
             />
           );
@@ -189,7 +176,7 @@ class Record extends React.Component {
             render: rowData => {
               const percent = getStockPercent({
                 stock: rowData,
-                stockArr: this.props.portfolio,
+                stockArr: props.portfolio,
               });
               return (
                 <InputNumber
@@ -207,7 +194,7 @@ class Record extends React.Component {
             render: rowData => {
               const percent = getStockPercent({
                 stock: rowData,
-                stockArr: this.props.portfolio,
+                stockArr: props.portfolio,
               });
 
               const shiftPercent =
@@ -228,7 +215,7 @@ class Record extends React.Component {
     return columns;
   };
 
-  renderInvestTable = record => {
+  const renderInvestTable = record => {
     const columns = [
       {
         title: '建議買賣股數',
@@ -238,8 +225,8 @@ class Record extends React.Component {
             key: 'action',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: this.props.portfolio,
-                newFund: this.props.newFund,
+                portfolio: props.portfolio,
+                newFund: props.newFund,
                 record,
               });
               let displayText = '';
@@ -257,8 +244,8 @@ class Record extends React.Component {
             key: 'newQuantity',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: this.props.portfolio,
-                newFund: this.props.newFund,
+                portfolio: props.portfolio,
+                newFund: props.newFund,
                 record,
               });
 
@@ -279,14 +266,14 @@ class Record extends React.Component {
             key: 'investedValue',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: this.props.portfolio,
-                newFund: this.props.newFund,
+                portfolio: props.portfolio,
+                newFund: props.newFund,
                 record,
               });
               return (
                 <Text type={newQuantity > 0 ? 'success' : 'danger'}>
                   {numberToCurrency({
-                    num: this.getInvestedValue(record),
+                    num: getInvestedValue(record),
                     hasSymbol: true,
                   })}
                 </Text>
@@ -299,7 +286,7 @@ class Record extends React.Component {
             render: () => (
               <InputNumber
                 disabled
-                value={this.getTradedPercent(record)}
+                value={getTradedPercent(record)}
                 formatter={value => `${value}%`}
                 parser={value => value.replace('%', '')}
               />
@@ -312,7 +299,7 @@ class Record extends React.Component {
               return (
                 <Text>
                   {numberToCurrency({
-                    num: this.getTradedValue(record),
+                    num: getTradedValue(record),
                     hasSymbol: true,
                   })}
                 </Text>
@@ -334,9 +321,9 @@ class Record extends React.Component {
     return <Table {...tableConfig} />;
   };
 
-  renderTableFooter = () => {
-    const reducer = (accu, curr) => accu + this.getInvestedValue(curr);
-    const totalInvested = this.props.portfolio.reduce(reducer, 0);
+  const renderTableFooter = () => {
+    const reducer = (accu, curr) => accu + getInvestedValue(curr);
+    const totalInvested = props.portfolio.reduce(reducer, 0);
     return (
       <div>
         <div>
@@ -346,7 +333,7 @@ class Record extends React.Component {
         <div>
           餘額:{' '}
           {numberToCurrency({
-            num: this.props.newFund - totalInvested,
+            num: props.newFund - totalInvested,
             hasSymbol: true,
           })}
         </div>
@@ -354,43 +341,41 @@ class Record extends React.Component {
     );
   };
 
-  render() {
-    let tableConfig = {
-      size: 'middle',
-      rowKey: 'symbol',
-      bordered: true,
-      pagination: false,
-      dataSource: this.props.portfolio,
-      columns: this.renderColumns(),
-      loading: this.props.loading.tableLoading,
+  let tableConfig = {
+    size: 'middle',
+    rowKey: 'symbol',
+    bordered: true,
+    pagination: false,
+    dataSource: props.portfolio,
+    columns: renderColumns(),
+    loading: props.loading.tableLoading,
+  };
+
+  if (props.isAddNewFund) {
+    tableConfig = {
+      ...tableConfig,
+      expandable: {
+        expandedRowRender: renderInvestTable,
+        expandedRowKeys: expandedRowKeys,
+        onExpand: onExpandClick,
+      },
+      footer: () => renderTableFooter(),
     };
-
-    if (this.props.isAddNewFund) {
-      tableConfig = {
-        ...tableConfig,
-        expandable: {
-          expandedRowRender: this.renderInvestTable,
-          expandedRowKeys: this.state.expandedRowKeys,
-          onExpand: this.onExpandClick,
-        },
-        footer: () => this.renderTableFooter(),
-      };
-    }
-
-    return (
-      <>
-        <Table {...tableConfig} />
-        <DetailDrawer
-          selectedStock={this.state.selectedStock}
-          drawerVisible={this.state.drawerVisible}
-          onClose={() => {
-            this.setState({ drawerVisible: false });
-          }}
-        />
-      </>
-    );
   }
-}
+
+  return (
+    <>
+      <Table {...tableConfig} />
+      <DetailDrawer
+        selectedStock={selectedStock}
+        drawerVisible={drawerVisible}
+        onClose={() => {
+          setDrawerVisible(false);
+        }}
+      />
+    </>
+  );
+};
 
 const mapStateToProps = state => {
   return {

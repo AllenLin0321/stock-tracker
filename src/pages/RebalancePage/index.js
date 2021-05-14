@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Form, InputNumber, Empty, Space } from 'antd';
 
@@ -8,24 +8,26 @@ import { formatPortfolioData } from 'utils';
 import Record from 'components/rebalance/Record';
 
 import 'pages/RebalancePage/index.scss';
-class RebalancePage extends React.Component {
-  state = {
-    isAddNewFund: false,
-    newFund: 0,
-    isExpandAll: false,
-  };
 
-  async componentDidMount() {
-    this.props.getLocalData('portfolio');
-    if (this.props.savedPortfolio) {
-      this.props.setTableLoading({ tableLoading: true });
-      await this.onClickReload();
-      this.props.setTableLoading({ tableLoading: false });
-    }
-  }
+const RebalancePage = props => {
+  const [isAddNewFund, setIsAddNewFund] = useState(false);
+  const [newFund, setNewFund] = useState(0);
+  const [isExpandAll, setIsExpandAll] = useState(false);
 
-  onClickReload = async () => {
-    const { portfolio, onSavePortfolio } = this.props;
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      props.getLocalData('portfolio');
+      if (props.savedPortfolio) {
+        props.setTableLoading({ tableLoading: true });
+        await onClickReload();
+        props.setTableLoading({ tableLoading: false });
+      }
+    };
+    fetchPortfolio();
+  }, []);
+
+  const onClickReload = async () => {
+    const { portfolio, onSavePortfolio } = props;
     const delayIncrement = 200;
     let delay = 0;
 
@@ -56,69 +58,61 @@ class RebalancePage extends React.Component {
     }
   };
 
-  onSwitchChange = isAddNewFund => {
-    this.setState({ isAddNewFund });
-  };
+  if (!props.portfolio || props.portfolio.length === 0) {
+    return <Empty />;
+  }
 
-  onisExpandAllChange = isExpandAll => {
-    this.setState({ isExpandAll });
-  };
-
-  onInputNumberChange = newFund => {
-    this.setState({ newFund });
-  };
-
-  render() {
-    if (!this.props.portfolio || this.props.portfolio.length === 0) {
-      return <Empty />;
-    }
-
-    return (
-      <div className="rebalance__wrapper">
-        <Form>
-          <Space>
-            <Form.Item label="是否再平衡" name="isAddNewFund">
+  return (
+    <div className="rebalance__wrapper">
+      <Form>
+        <Space>
+          <Form.Item label="是否再平衡" name="isAddNewFund">
+            <Switch
+              checked={isAddNewFund}
+              onChange={isAddNewFund => {
+                setIsAddNewFund(isAddNewFund);
+              }}
+            />
+          </Form.Item>
+          {isAddNewFund && (
+            <Form.Item label="是否全部展開" name="isExpandAll">
               <Switch
-                checked={this.state.isAddNewFund}
-                onChange={this.onSwitchChange}
+                checked={isExpandAll}
+                checkedChildren="展開"
+                unCheckedChildren="關閉"
+                onChange={isExpandAll => {
+                  setIsExpandAll(isExpandAll);
+                }}
               />
             </Form.Item>
-            {this.state.isAddNewFund && (
-              <Form.Item label="是否全部展開" name="isExpandAll">
-                <Switch
-                  checked={this.state.isExpandAll}
-                  checkedChildren="展開"
-                  unCheckedChildren="關閉"
-                  onChange={this.onisExpandAllChange}
-                />
-              </Form.Item>
-            )}
-          </Space>
-          {this.state.isAddNewFund && (
-            <>
-              <Form.Item label="注資金額" name="newFund">
-                <InputNumber
-                  defaultValue={0}
-                  value={this.state.newFund}
-                  formatter={value =>
-                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                  }
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  onChange={this.onInputNumberChange}
-                />
-              </Form.Item>
-            </>
           )}
-        </Form>
-        <Record
-          isAddNewFund={this.state.isAddNewFund}
-          isExpandAll={this.state.isExpandAll}
-          newFund={this.state.newFund}
-        />
-      </div>
-    );
-  }
-}
+        </Space>
+        {isAddNewFund && (
+          <>
+            <Form.Item label="注資金額" name="newFund">
+              <InputNumber
+                defaultValue={0}
+                value={newFund}
+                formatter={value =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                onChange={newFund => {
+                  setNewFund(newFund);
+                }}
+              />
+            </Form.Item>
+          </>
+        )}
+      </Form>
+      <Record
+        isAddNewFund={isAddNewFund}
+        isExpandAll={isExpandAll}
+        newFund={newFund}
+      />
+    </div>
+  );
+};
 
 const mapStateToProps = state => {
   return { portfolio: state.portfolio };
