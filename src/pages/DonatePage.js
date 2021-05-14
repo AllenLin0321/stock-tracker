@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Space, Modal, Image, Divider, Rate } from 'antd';
 import styled from 'styled-components';
 import KoFi from 'components/common/KOFI';
@@ -36,25 +36,20 @@ const DonateContent = styled.div`
   line-height: 25px;
 `;
 
-class DonatePage extends React.Component {
-  state = {
-    modalVisible: false,
-    selectedPaymentGateway: 'jkos',
-  };
+const rateUrl =
+  'https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW';
 
-  getLogoProps = type => ({
+const DonatePage = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPaymentGateway, setSelectedPaymentGateway] = useState('jkos');
+
+  const getLogoProps = type => ({
     width: 60,
     style: { cursor: 'pointer' },
     src: paymentGateway[type].logo,
   });
 
-  onRateChange = () => {
-    const rateUrl =
-      'https://chrome.google.com/webstore/detail/us-stock-tracker/jjkiinjlfddnfbpmegolhhibgpcmmfdi?hl=zh-TW';
-    window.open(rateUrl);
-  };
-
-  renderTopSide = () => {
+  const renderTopSide = () => {
     return (
       <DonateContent>
         若您喜歡這個小工具，歡迎給我們評分以及建議
@@ -66,7 +61,9 @@ class DonatePage extends React.Component {
           <Rate
             tooltips={tipsText}
             defaultValue={3}
-            onChange={this.onRateChange}
+            onChange={() => {
+              window.open(rateUrl);
+            }}
             character={({ index }) => {
               return customIcons[index + 1];
             }}
@@ -85,31 +82,27 @@ class DonatePage extends React.Component {
     );
   };
 
-  renderBottomtSide = () => {
+  const renderBottomtSide = () => {
     return (
       <>
         <KoFi color="#29abe0" id="S6S022GTJ" label="請喝一杯咖啡" />
         <span>
           <Space size="middle">
             <img
-              {...this.getLogoProps('jkos')}
+              {...getLogoProps('jkos')}
               alt="jkos_logo"
               onClick={() => {
-                this.setState({
-                  modalVisible: true,
-                  selectedPaymentGateway: 'jkos',
-                });
+                setModalVisible(true);
+                setSelectedPaymentGateway('jkos');
               }}
             />
 
             <img
-              {...this.getLogoProps('linePay')}
+              {...getLogoProps('linePay')}
               alt="linePay_logo"
               onClick={() => {
-                this.setState({
-                  modalVisible: true,
-                  selectedPaymentGateway: 'linePay',
-                });
+                setModalVisible(true);
+                setSelectedPaymentGateway('linePay');
               }}
             />
           </Space>
@@ -118,33 +111,26 @@ class DonatePage extends React.Component {
     );
   };
 
-  render() {
-    return (
-      <div className="donate__wrapper">
-        <Space direction="vertical" size="middle">
-          {this.renderTopSide()}
-          {this.renderBottomtSide()}
-        </Space>
-        <Attribution />
-        <Modal
-          width={200}
-          visible={this.state.modalVisible}
-          title={paymentGateway[this.state.selectedPaymentGateway].title}
-          footer={null}
-          onCancel={() =>
-            this.setState({
-              modalVisible: false,
-              selectedPaymentGateway: 'jkos',
-            })
-          }
-        >
-          <Image
-            src={paymentGateway[this.state.selectedPaymentGateway].qrCode}
-          ></Image>
-        </Modal>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="donate__wrapper">
+      <Space direction="vertical" size="middle">
+        {renderTopSide()}
+        {renderBottomtSide()}
+      </Space>
+      <Attribution />
+      <Modal
+        width={200}
+        visible={modalVisible}
+        title={paymentGateway[selectedPaymentGateway].title}
+        footer={null}
+        onCancel={() => {
+          setModalVisible(false);
+        }}
+      >
+        <Image src={paymentGateway[selectedPaymentGateway].qrCode}></Image>
+      </Modal>
+    </div>
+  );
+};
 
 export default DonatePage;

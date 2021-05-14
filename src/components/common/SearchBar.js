@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
+import React, { useState, useCallback } from 'react';
+import { debounce } from 'lodash';
 import styled from 'styled-components';
 import { Input, Button, AutoComplete } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
@@ -10,84 +10,85 @@ const SearchBarWrapper = styled.div`
   display: flex;
 `;
 
-const apiDelaySecond = 300;
+const apiDelaySecond = 500;
 
-export class SearchBar extends Component {
-  constructor(props) {
-    super(props);
+const SearchBar = props => {
+  const [searchKeyword, setSearchKeyword] = useState();
+  const [isReloadLoading, setIsReloadLoading] = useState(false);
+  const [autoCompleteOption, setAutoCompleteOption] = useState([]);
 
-    this.state = {
-      searchVal: null,
-      isReloadLoading: false,
-      autoCompleteOption: [],
-    };
+  const debouncedSave = useCallback(
+    debounce(newSearchValue => fetchOptions(newSearchValue), apiDelaySecond),
+    []
+  );
 
-    this.inputSearch = _.debounce(async () => {
-      if (this.state.searchVal !== '') {
-        const { data } = await apiSeachSymbol(this.state.searchVal);
-        if (data.length === 0) this.setState({ autoCompleteOption: [] });
-        const newOption = data.map(symbolInfo => ({
-          value: symbolInfo.symbol,
-          label: (
-            <div>
-              <div style={{ fontWeight: 'bold' }}>{symbolInfo.name}</div>
-              <div>{symbolInfo.symbol}</div>
-            </div>
-          ),
-        }));
-        this.setState({ autoCompleteOption: newOption });
+  const fetchOptions = async newSearchValue => {
+    if (newSearchValue !== '') {
+      const { data } = await apiSeachSymbol(newSearchValue);
+      if (data.length === 0) {
+        setAutoCompleteOption([]);
       }
-    }, apiDelaySecond);
-  }
-
-  onInputChange = event => {
-    this.setState({ searchVal: event.target.value }, this.inputSearch);
-  };
-
-  onOptionSelect = async symbol => {
-    this.props.setTableLoading({ tableLoading: true });
-    const res = await this.props.onClickSearch(symbol);
-    if (res.isSuccess) {
-      this.setState({ searchVal: '', autoCompleteOption: [] });
+      const newOption = data.map(symbolInfo => ({
+        value: symbolInfo.symbol,
+        label: (
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{symbolInfo.name}</div>
+            <div>{symbolInfo.symbol}</div>
+          </div>
+        ),
+      }));
+      setAutoCompleteOption(newOption);
     }
-    this.props.setTableLoading({ tableLoading: false });
   };
 
-  onClickReload = async () => {
-    this.setState({ isReloadLoading: true });
-    await this.props.onClickReload();
-    this.setState({ isReloadLoading: false });
+  const onInputChange = event => {
+    setSearchKeyword(event.target.value);
+    debouncedSave(event.target.value);
   };
 
-  render() {
-    return (
-      <SearchBarWrapper>
-        <AutoComplete
-          options={this.state.autoCompleteOption}
-          style={{ width: '100%' }}
-          onSelect={this.onOptionSelect}
-          value={this.state.searchVal}
-        >
-          <Input
-            type="text"
-            size="large"
-            placeholder={this.props.intl.formatMessage({
-              id: 'searchBar.placeholder',
-            })}
-            onChange={this.onInputChange}
-          />
-        </AutoComplete>
-        <Button
+  const onOptionSelect = async symbol => {
+    props.setTableLoading({ tableLoading: true });
+    const res = await props.onClickSearch(symbol);
+    if (res.isSuccess) {
+      setSearchKeyword('');
+      setAutoCompleteOption([]);
+    }
+    props.setTableLoading({ tableLoading: false });
+  };
+
+  const onClickReload = async () => {
+    setIsReloadLoading(true);
+    await props.onClickReload();
+    setIsReloadLoading(false);
+  };
+
+  return (
+    <SearchBarWrapper>
+      <AutoComplete
+        options={autoCompleteOption}
+        style={{ width: '100%' }}
+        onSelect={onOptionSelect}
+        value={searchKeyword}
+      >
+        <Input
+          type="text"
           size="large"
-          type="primary"
-          icon={<ReloadOutlined />}
-          loading={this.state.isReloadLoading}
-          onClick={this.onClickReload}
-          style={{ marginLeft: '5px' }}
+          placeholder={props.intl.formatMessage({
+            id: 'searchBar.placeholder',
+          })}
+          onChange={onInputChange}
         />
-      </SearchBarWrapper>
-    );
-  }
-}
+      </AutoComplete>
+      <Button
+        size="large"
+        type="primary"
+        icon={<ReloadOutlined />}
+        loading={isReloadLoading}
+        onClick={onClickReload}
+        style={{ marginLeft: '5px' }}
+      />
+    </SearchBarWrapper>
+  );
+};
 
 export default injectIntl(SearchBar);

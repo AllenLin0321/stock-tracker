@@ -3,9 +3,10 @@ import { Tag, Drawer, Space, Slider, Row, Typography } from 'antd';
 import { numberToCurrency } from 'utils';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 const { Text, Title } = Typography;
-class DetailDrawer extends React.Component {
-  renderDrawerTitle = () => {
-    const { symbol, companyName } = this.props.selectedStock;
+
+const DetailDrawer = props => {
+  const renderDrawerTitle = () => {
+    const { symbol, companyName } = props.selectedStock;
     return (
       <Space>
         <img
@@ -18,8 +19,8 @@ class DetailDrawer extends React.Component {
     );
   };
 
-  renderDrawer = () => {
-    const { selectedStock } = this.props;
+  const renderDrawer = () => {
+    const { selectedStock } = props;
     if (!selectedStock) return false;
 
     const todayMarks = {
@@ -85,10 +86,10 @@ class DetailDrawer extends React.Component {
     return (
       <Drawer
         destroyOnClose
-        title={this.renderDrawerTitle()}
+        title={renderDrawerTitle()}
         closable={false}
-        onClose={() => this.props.onClose()}
-        visible={this.props.drawerVisible}
+        onClose={() => props.onClose()}
+        visible={props.drawerVisible}
       >
         <Row justify="center">
           <Title level={4}>
@@ -143,9 +144,8 @@ class DetailDrawer extends React.Component {
       </Drawer>
     );
   };
-  render() {
-    return this.renderDrawer();
-  }
-}
+
+  return renderDrawer();
+};
 
 export default DetailDrawer;
