@@ -1,28 +1,31 @@
 import React, { useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
 import { message } from 'antd';
+
+// REDUX
+import { useDispatch, useSelector } from 'react-redux';
 import { setTableLoading } from '../redux/slice/loadingSlice';
+import { onSavePortfolio } from '../redux/slice/portfolioSlice';
+
 import { apiGetStock } from 'api';
-import * as actions from 'store/actions';
 import { formatPortfolioData } from 'utils';
 
+// COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
 import Record from 'components/portfolio/Record';
 
-const Portfolio = props => {
+const Portfolio = () => {
   const dispatch = useDispatch();
+  const portfolio = useSelector(state => state.portfolio.stocks);
 
   useEffect(() => {
-    const fetchPortfolio = async () => {
-      dispatch(setTableLoading({ tableLoading: true }));
-      // await props.getLocalData('portfolio');
-      if (props.portfolio) {
-        await onClickReload();
-        dispatch(setTableLoading({ tableLoading: false }));
-      }
-    };
     fetchPortfolio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchPortfolio = async () => {
+    await onClickReload();
+    // await props.getLocalData('portfolio');
+  };
 
   const onClickSearch = async symbol => {
     if (symbol === '') return;
@@ -30,23 +33,22 @@ const Portfolio = props => {
 
     try {
       const { data } = await apiGetStock(symbol);
-
-      if (data.quote) {
-        props.onSavePortfolio(formatPortfolioData(data));
-      }
+      data.quote && dispatch(onSavePortfolio(formatPortfolioData(data)));
       res.isSuccess = true;
     } catch (error) {
-      console.log('error: ', error);
-      if (error.response) {
-        message.error(error.response.data);
-      }
+      error.response && message.error(error.response.data);
     } finally {
       return res;
     }
   };
 
+  /**
+   * @description 當點擊全部股票重新整理
+   * @returns
+   */
   const onClickReload = async () => {
-    const { portfolio, onSavePortfolio } = props;
+    dispatch(setTableLoading(true));
+
     const delayIncrement = 200;
     let delay = 0;
 
@@ -69,29 +71,25 @@ const Portfolio = props => {
         let quantity = matchStock ? matchStock.quantity : null;
         let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
 
-        onSavePortfolio(
-          formatPortfolioData({ ...data, quantity, defaultPrecent })
+        dispatch(
+          onSavePortfolio(
+            formatPortfolioData({ ...data, quantity, defaultPrecent })
+          )
         );
       });
     } catch (error) {
-      console.log('error: ', error);
+      error.response && message.error(error.response.data);
+    } finally {
+      dispatch(setTableLoading(false));
     }
   };
 
   return (
     <div>
-      <SearchBar
-        onClickSearch={onClickSearch}
-        onClickReload={onClickReload}
-        setTableLoading={props.setTableLoading}
-      />
+      <SearchBar onClickSearch={onClickSearch} onClickReload={onClickReload} />
       <Record />
     </div>
   );
-};
-
-const mapStateToProps = state => {
-  return { portfolio: state.portfolio };
 };
 
 export default Portfolio;

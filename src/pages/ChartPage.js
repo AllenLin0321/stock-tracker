@@ -11,6 +11,7 @@ const ChartPage = props => {
 
   useEffect(() => {
     props.getLocalData('portfolio');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const chartData = portfolio.map(stock => ({
@@ -31,7 +32,7 @@ const ChartPage = props => {
 };
 
 const mapStateToProps = state => {
-  return { portfolio: state.portfolio };
+  return { portfolio: state.portfolio.stocks };
 };
 
 export default connect(mapStateToProps, actions)(ChartPage);

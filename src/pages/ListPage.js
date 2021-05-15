@@ -19,6 +19,7 @@ const ListPage = props => {
       }
     };
     fetchStocks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickSearch = async symbol => {

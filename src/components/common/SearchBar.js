@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
+import { setTableLoading } from '../../redux/slice/loadingSlice';
 import styled from 'styled-components';
-import { Input, Button, AutoComplete } from 'antd';
+import { Input, Button, AutoComplete, message } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { injectIntl } from 'react-intl';
 import { apiSeachSymbol } from 'api';
@@ -13,6 +15,7 @@ const SearchBarWrapper = styled.div`
 const apiDelaySecond = 500;
 
 const SearchBar = props => {
+  const dispatch = useDispatch();
   const [searchKeyword, setSearchKeyword] = useState();
   const [isReloadLoading, setIsReloadLoading] = useState(false);
   const [autoCompleteOption, setAutoCompleteOption] = useState([]);
@@ -47,19 +50,24 @@ const SearchBar = props => {
   };
 
   const onOptionSelect = async symbol => {
-    props.setTableLoading({ tableLoading: true });
-    const res = await props.onClickSearch(symbol);
-    if (res.isSuccess) {
-      setSearchKeyword('');
-      setAutoCompleteOption([]);
+    dispatch(setTableLoading(true));
+    try {
+      const res = await props.onClickSearch(symbol);
+      if (res.isSuccess) {
+        setSearchKeyword('');
+        setAutoCompleteOption([]);
+      }
+    } catch (error) {
+      if (error.response) {
+        message.error(error.response.data);
+      }
+    } finally {
+      dispatch(setTableLoading(false));
     }
-    props.setTableLoading({ tableLoading: false });
   };
 
-  const onClickReload = async () => {
-    setIsReloadLoading(true);
-    await props.onClickReload();
-    setIsReloadLoading(false);
+  const onClickReload = () => {
+    props.onClickReload();
   };
 
   return (

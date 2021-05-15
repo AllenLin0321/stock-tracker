@@ -27,6 +27,7 @@ const Record = props => {
     setExpandedRowKeys(
       props.isExpandAll ? props.portfolio.map(stock => stock.symbol) : []
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isExpandAll]);
 
   /**
@@ -379,7 +380,7 @@ const Record = props => {
 
 const mapStateToProps = state => {
   return {
-    portfolio: state.portfolio,
+    portfolio: state.portfolio.stocks,
     loading: state.loading,
   };
 };

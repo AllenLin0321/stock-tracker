@@ -1,5 +1,13 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { connect } from 'react-redux';
+
+// REDUX
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  onChangeStockQuantity,
+  onRemovePortfolio,
+  onChangeOrder,
+} from '../../redux/slice/portfolioSlice';
+
 import {
   Table,
   Button,
@@ -14,6 +22,7 @@ import {
   Tooltip,
   message,
 } from 'antd';
+
 import {
   sortableContainer,
   sortableElement,
@@ -36,8 +45,8 @@ import {
   numberToCurrency,
   getStockChangePercent,
 } from 'utils';
-import * as actions from 'store/actions';
 import { apiGetCurrency } from 'api';
+
 import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
@@ -52,7 +61,7 @@ const CURRENCY = {
   TWD: 'TWD',
 };
 
-const Record = props => {
+const Record = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStock, setSelectedStock] = useState();
   const [currency, setCurrency] = useState(CURRENCY.USD);
@@ -60,7 +69,9 @@ const Record = props => {
   const [isTransferLoading, setIsTransferLoading] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [showExchangeRate, setShowExchangeRate] = useState(false);
-  const { portfolio, loading } = props;
+  const dispatch = useDispatch();
+  const portfolio = useSelector(state => state.portfolio.stocks);
+  const tableLoading = useSelector(state => state.loading.tableLoading);
 
   useLayoutEffect(() => {
     const onUpdateCurrency = async () => {
@@ -71,9 +82,7 @@ const Record = props => {
           setExchangeRate(data.quotes.USDTWD);
           setShowExchangeRate(true);
         } catch (error) {
-          if (error.response) {
-            message.error(error.response.data);
-          }
+          error.response && message.error(error.response.data);
         } finally {
           setIsTransferLoading(false);
         }
@@ -172,7 +181,7 @@ const Record = props => {
             shape="circle"
             icon={<DeleteOutlined />}
             onClick={() => {
-              props.removePortfolio(rowData);
+              dispatch(onRemovePortfolio(rowData));
             }}
           />
         );
@@ -183,11 +192,11 @@ const Record = props => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
-        [].concat(props.portfolio),
+        [].concat(portfolio),
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      props.changePortfolioOrder({ newStockArr });
+      dispatch(onChangeOrder(newStockArr));
     }
   };
 
@@ -198,10 +207,12 @@ const Record = props => {
   };
 
   const onQuantityChange = (rowData, newQuantity) => {
-    props.changeStockQuantity({
-      ...rowData,
-      quantity: newQuantity,
-    });
+    dispatch(
+      onChangeStockQuantity({
+        symbol: rowData.symbol,
+        quantity: newQuantity,
+      })
+    );
   };
 
   const renderStatisticTitle = () => {
@@ -230,21 +241,21 @@ const Record = props => {
   };
 
   const renderTableFooter = () => {
-    if (!props.portfolio || props.portfolio.length === 0) return false;
-    let totalValue = props.portfolio.reduce(
+    if (!portfolio || portfolio.length === 0) return false;
+    let totalValue = portfolio.reduce(
       (accu, { latestPrice, quantity }) => accu + latestPrice * quantity,
       0
     );
-    const totalChange = props.portfolio.reduce((accu, cuur) => {
+    const totalChange = portfolio.reduce((accu, cuur) => {
       const changePercent = (cuur.change / cuur.previousClose) * 100;
       const percent = getStockPercent({
         stock: cuur,
-        stockArr: props.portfolio,
+        stockArr: portfolio,
       });
       return accu + (changePercent * percent) / 100;
     }, 0);
 
-    let totalValueChange = props.portfolio.reduce((accu, cuur) => {
+    let totalValueChange = portfolio.reduce((accu, cuur) => {
       return accu + (cuur.latestPrice - cuur.previousClose) * cuur.quantity;
     }, 0);
     const currencySymbol = currency === CURRENCY.USD ? '$ ' : 'NT$ ';
@@ -285,7 +296,7 @@ const Record = props => {
   );
 
   const DraggableBodyRow = ({ className, style, ...restProps }) => {
-    const index = props.portfolio.findIndex(
+    const index = portfolio.findIndex(
       x => x.symbol === restProps['data-row-key']
     );
     return <SortableItem index={index} {...restProps} />;
@@ -303,7 +314,7 @@ const Record = props => {
         columns={columns}
         rowKey="symbol"
         scroll={{ y: 200 }}
-        loading={loading.tableLoading}
+        loading={tableLoading}
         components={{
           body: {
             wrapper: DraggableContainer,
@@ -359,8 +370,4 @@ const Record = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return { portfolio: state.portfolio, loading: state.loading };
-};
-
-export default connect(mapStateToProps, actions)(Record);
+export default Record;

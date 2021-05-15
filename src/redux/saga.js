@@ -1,27 +1,45 @@
-﻿import * as types from 'store/actions/types';
+﻿import { initStock, initStockSuccess, initStockFail } from './slice/stockSlice';
+import {
+  initPortfolio,
+  initPortfolioSuccess,
+  initPortfolioFail,
+} from './slice/portfolioSlice';
 import { call, put, takeEvery, all } from 'redux-saga/effects';
 
-const lOCAL_TYPE = {
-  stocks: types.INITIAL_STOCK,
-  portfolio: types.INITIAL_PORTFOLIO,
-};
-
-function* getLocalStock({ payload: key }) {
-  const localData = yield call([localStorage, 'getItem'], key);
-  if (localData) {
-    yield put({
-      type: lOCAL_TYPE[key],
-      payload: JSON.parse(localData),
-    });
+function* initStockSaga({ payload: key }) {
+  try {
+    const localData = yield call([localStorage, 'getItem'], key);
+    if (localData) {
+      yield put({
+        type: initStockSuccess.type,
+        payload: JSON.parse(localData),
+      });
+    }
+  } catch (error) {
+    yield put({ type: initStockFail.type, payload: error });
   }
 }
 
-function* watchLocalStock() {
-  yield takeEvery(types.GET_LOCAL_DATA, getLocalStock);
+export function* initPortfolioSaga({ payload: key }) {
+  console.log('key: ', key);
+  try {
+    const localData = yield call([localStorage, 'getItem'], key);
+    if (localData) {
+      yield put({
+        type: initPortfolioSuccess.type,
+        payload: JSON.parse(localData),
+      });
+    }
+  } catch (error) {
+    yield put({ type: initPortfolioFail.type, payload: error });
+  }
 }
 
 function* rootSaga() {
-  yield all([watchLocalStock()]);
+  yield all(
+    [takeEvery(initStock.type, initStockSaga)],
+    [takeEvery(initPortfolio.type, initPortfolioSaga)]
+  );
 }
 
 export default rootSaga;

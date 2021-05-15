@@ -8,9 +8,21 @@ const updateLocalStorage = newData => {
 const stockSlice = createSlice({
   name: 'stock',
   initialState: {},
-  reducers: {},
+  reducers: {
+    initStock(state, { payload }) {},
+    initStockSuccess(state, { payload }) {
+      console.log('payload: ', payload);
+    },
+    initStockFail(state, { payload }) {
+      console.log('payload: ', payload);
+    },
+  },
 });
 
-export const {} = stockSlice.actions;
+export const {
+  initStock,
+  initStockSuccess,
+  initStockFail,
+} = stockSlice.actions;
 
 export default stockSlice;

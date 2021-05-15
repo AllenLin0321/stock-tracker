@@ -1,24 +1,15 @@
 import React from 'react';
+
+// REDUX
 import { Provider } from 'react-redux';
-import { createStore, compose, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import reducers from 'store/reducers';
-import { IntlProvider } from 'react-intl';
 import { ConfigProvider } from 'antd';
+import store from './redux/store';
+
+// MULTI-LANGUAGE
+import { IntlProvider } from 'react-intl';
 import zhTW from 'antd/es/locale/zh_TW';
 import locale_en from './translations/en.js';
 import locale_zhTW from './translations/zh_TW.js';
-import rootSaga from 'store/saga';
-import newStore from './redux/store';
-
-const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-// const store = createStore(
-//   reducers,
-//   composeEnhancers(applyMiddleware(sagaMiddleware))
-// );
-// sagaMiddleware.run(rootSaga);
 
 const locale = navigator.language;
 const data = {
@@ -29,7 +20,7 @@ const data = {
 export default ({ children }) => {
   return (
     <ConfigProvider locale={zhTW}>
-      <Provider store={newStore}>
+      <Provider store={store}>
         <IntlProvider
           locale={locale}
           messages={data[locale]}

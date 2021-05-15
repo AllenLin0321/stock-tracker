@@ -24,6 +24,7 @@ const RebalancePage = props => {
       }
     };
     fetchPortfolio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickReload = async () => {
@@ -115,7 +116,7 @@ const RebalancePage = props => {
 };
 
 const mapStateToProps = state => {
-  return { portfolio: state.portfolio };
+  return { portfolio: state.portfolio.stocks };
 };
 
 export default connect(mapStateToProps, actions)(RebalancePage);
