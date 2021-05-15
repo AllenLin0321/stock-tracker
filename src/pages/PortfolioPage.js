@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { message } from 'antd';
-
+import { setTableLoading } from '../redux/slice/loadingSlice';
 import { apiGetStock } from 'api';
 import * as actions from 'store/actions';
 import { formatPortfolioData } from 'utils';
@@ -10,13 +10,15 @@ import SearchBar from 'components/common/SearchBar.js';
 import Record from 'components/portfolio/Record';
 
 const Portfolio = props => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchPortfolio = async () => {
-      await props.getLocalData('portfolio');
+      dispatch(setTableLoading({ tableLoading: true }));
+      // await props.getLocalData('portfolio');
       if (props.portfolio) {
-        props.setTableLoading({ tableLoading: true });
         await onClickReload();
-        props.setTableLoading({ tableLoading: false });
+        dispatch(setTableLoading({ tableLoading: false }));
       }
     };
     fetchPortfolio();
@@ -92,4 +94,4 @@ const mapStateToProps = state => {
   return { portfolio: state.portfolio };
 };
 
-export default connect(mapStateToProps, actions)(Portfolio);
+export default Portfolio;

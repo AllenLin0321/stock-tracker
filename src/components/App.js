@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Router, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 // Page
 import ListPage from 'pages/ListPage.js';
@@ -31,8 +30,4 @@ const App = () => {
   );
 };
 
-const mapStateToProps = state => {
-  return { stocks: state.stocks };
-};
-
-export default connect(mapStateToProps)(App);
+export default App;
