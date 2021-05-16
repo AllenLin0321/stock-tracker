@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
-import { setTableLoading } from '../../redux/slice/loadingSlice';
 import styled from 'styled-components';
 import { Input, Button, AutoComplete, message } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
@@ -15,7 +13,6 @@ const SearchBarWrapper = styled.div`
 const apiDelaySecond = 500;
 
 const SearchBar = props => {
-  const dispatch = useDispatch();
   const [searchKeyword, setSearchKeyword] = useState();
   const [isReloadLoading, setIsReloadLoading] = useState(false);
   const [autoCompleteOption, setAutoCompleteOption] = useState([]);
@@ -50,7 +47,6 @@ const SearchBar = props => {
   };
 
   const onOptionSelect = async symbol => {
-    dispatch(setTableLoading(true));
     try {
       const res = await props.onClickSearch(symbol);
       if (res.isSuccess) {
@@ -61,8 +57,6 @@ const SearchBar = props => {
       if (error.response) {
         message.error(error.response.data);
       }
-    } finally {
-      dispatch(setTableLoading(false));
     }
   };
 

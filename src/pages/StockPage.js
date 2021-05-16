@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { initStock, onSaveStock } from 'redux/slice/stockSlice';
 import { setTableLoading } from 'redux/slice/loadingSlice';
 
+// HOOKS
+import useClickSearch from 'hooks/useClickSearch';
+
 // COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
 import ListRecord from 'components/list/ListRecord';
@@ -17,29 +20,13 @@ const StockPage = () => {
   const stocks = useSelector(state => state.stock.stocks);
 
   useEffect(() => {
-    dispatch(initStock()); // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(initStock());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    onClickReload();
-  }, [stocks.length]);
-
-  const onClickSearch = async symbol => {
-    if (symbol === '') return;
-    let res = { isSuccess: false };
-
-    try {
-      const { data } = await apiGetStock(symbol);
-      data.quote && dispatch(onSaveStock(formatStockData(data)));
-      res.isSuccess = true;
-    } catch (error) {
-      if (error.response) {
-        message.error(error.response.data);
-      }
-    } finally {
-      return res;
-    }
-  };
+  const onClickSearch = useClickSearch({
+    dispatchMethod: data => onSaveStock(formatStockData(data)),
+  });
 
   const onClickReload = async () => {
     dispatch(setTableLoading(true));

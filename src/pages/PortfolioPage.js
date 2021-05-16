@@ -9,6 +9,9 @@ import { onSavePortfolio, initPortfolio } from 'redux/slice/portfolioSlice';
 import { apiGetStock } from 'api';
 import { formatPortfolioData } from 'utils';
 
+// HOOKS
+import useClickSearch from 'hooks/useClickSearch';
+
 // COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
 import PortfolioRecord from 'components/portfolio/PortfolioRecord';
@@ -21,24 +24,9 @@ const Portfolio = () => {
     dispatch(initPortfolio()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    onClickReload();
-  }, [portfolio.length]);
-
-  const onClickSearch = async symbol => {
-    if (symbol === '') return;
-    let res = { isSuccess: false };
-
-    try {
-      const { data } = await apiGetStock(symbol);
-      data.quote && dispatch(onSavePortfolio(formatPortfolioData(data)));
-      res.isSuccess = true;
-    } catch (error) {
-      error.response && message.error(error.response.data);
-    } finally {
-      return res;
-    }
-  };
+  const onClickSearch = useClickSearch({
+    dispatchMethod: data => onSavePortfolio(formatPortfolioData(data)),
+  });
 
   /**
    * @description 當點擊全部股票重新整理
