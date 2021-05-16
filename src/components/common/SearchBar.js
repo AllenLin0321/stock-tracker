@@ -88,7 +88,11 @@ const SearchBar = props => {
         type="primary"
         icon={<ReloadOutlined />}
         loading={isReloadLoading}
-        onClick={props.onClickReload}
+        onClick={async () => {
+          setIsReloadLoading(true);
+          await props.onClickReload();
+          setIsReloadLoading(false);
+        }}
         style={{ marginLeft: '5px' }}
       />
     </SearchBarWrapper>
