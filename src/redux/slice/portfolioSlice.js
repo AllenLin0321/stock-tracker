@@ -9,11 +9,13 @@ const portfolioSlice = createSlice({
   name: 'portfolio',
   initialState: {
     stocks: [],
+    triggerReload: false,
   },
   reducers: {
     initPortfolio(state, { payload }) {},
     initPortfolioSuccess(state, { payload }) {
       state.stocks = payload;
+      state.triggerReload = true;
     },
     initPortfolioFail(state, { payload }) {
       console.log('fail: ', payload);
@@ -56,6 +58,11 @@ const portfolioSlice = createSlice({
       }
       updateLocalStorage(state.stocks);
     },
+    onUpdateTriggerReload(state, { payload }) {
+      if (state.triggerReload !== payload) {
+        state.triggerReload = payload;
+      }
+    },
   },
 });
 
@@ -68,6 +75,7 @@ export const {
   onRemovePortfolio,
   onChangeOrder,
   onChangeStockPercent,
+  onUpdateTriggerReload,
 } = portfolioSlice.actions;
 
 export default portfolioSlice;

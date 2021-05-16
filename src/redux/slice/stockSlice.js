@@ -9,11 +9,13 @@ const stockSlice = createSlice({
   name: 'stock',
   initialState: {
     stocks: [],
+    triggerReload: false,
   },
   reducers: {
     initStock(state, { payload }) {},
     initStockSuccess(state, { payload }) {
       state.stocks = payload;
+      state.triggerReload = true;
     },
     initStockFail(state, { payload }) {
       console.log('payload: ', payload);
@@ -40,6 +42,11 @@ const stockSlice = createSlice({
       state.stocks = payload;
       updateLocalStorage(state.stocks);
     },
+    onUpdateTriggerReload(state, { payload }) {
+      if (state.triggerReload !== payload) {
+        state.triggerReload = payload;
+      }
+    },
   },
 });
 
@@ -50,6 +57,7 @@ export const {
   onSaveStock,
   onRemoveStock,
   onChangeOrder,
+  onUpdateTriggerReload,
 } = stockSlice.actions;
 
 export default stockSlice;

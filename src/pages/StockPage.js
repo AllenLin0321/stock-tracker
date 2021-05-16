@@ -5,7 +5,11 @@ import { formatStockData } from 'utils';
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
-import { initStock, onSaveStock } from 'redux/slice/stockSlice';
+import {
+  initStock,
+  onSaveStock,
+  onUpdateTriggerReload,
+} from 'redux/slice/stockSlice';
 import { setTableLoading } from 'redux/slice/loadingSlice';
 
 // HOOKS
@@ -18,11 +22,18 @@ import ListRecord from 'components/list/ListRecord';
 const StockPage = () => {
   const dispatch = useDispatch();
   const stocks = useSelector(state => state.stock.stocks);
+  const triggerReload = useSelector(state => state.stock.triggerReload);
 
   useEffect(() => {
     dispatch(initStock());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (triggerReload) {
+      onClickReload();
+    }
+  }, [triggerReload]);
 
   const onClickSearch = useClickSearch({
     dispatchMethod: data => onSaveStock(formatStockData(data)),
@@ -52,6 +63,7 @@ const StockPage = () => {
       error.response && message.error(error.response.data);
     } finally {
       dispatch(setTableLoading(false));
+      dispatch(onUpdateTriggerReload(false));
     }
   };
   return (

@@ -4,7 +4,11 @@ import { message } from 'antd';
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
 import { setTableLoading } from 'redux/slice/loadingSlice';
-import { onSavePortfolio, initPortfolio } from 'redux/slice/portfolioSlice';
+import {
+  onSavePortfolio,
+  initPortfolio,
+  onUpdateTriggerReload,
+} from 'redux/slice/portfolioSlice';
 
 import { apiGetStock } from 'api';
 import { formatPortfolioData } from 'utils';
@@ -19,10 +23,17 @@ import PortfolioRecord from 'components/portfolio/PortfolioRecord';
 const Portfolio = () => {
   const dispatch = useDispatch();
   const portfolio = useSelector(state => state.portfolio.stocks);
+  const triggerReload = useSelector(state => state.portfolio.triggerReload);
 
   useEffect(() => {
     dispatch(initPortfolio()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (triggerReload) {
+      onClickReload();
+    }
+  }, [triggerReload]);
 
   const onClickSearch = useClickSearch({
     dispatchMethod: data => onSavePortfolio(formatPortfolioData(data)),
@@ -68,6 +79,7 @@ const Portfolio = () => {
       error.response && message.error(error.response.data);
     } finally {
       dispatch(setTableLoading(false));
+      dispatch(onUpdateTriggerReload(false));
     }
   };
 
