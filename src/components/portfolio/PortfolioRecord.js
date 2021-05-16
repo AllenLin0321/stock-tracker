@@ -48,7 +48,6 @@ import {
 import { apiGetCurrency } from 'api';
 
 import DetailDrawer from 'components/common/DetailDrawer';
-import 'components/common/Record.scss';
 
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />

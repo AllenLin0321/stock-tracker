@@ -6,6 +6,6 @@ export function* initStockSaga() {
     const localData = yield call([localStorage, 'getItem'], 'stocks');
     if (localData) yield put(initStockSuccess(JSON.parse(localData)));
   } catch (error) {
-    yield put({ type: initStockFail.type, payload: error });
+    yield put(initStockFail(error));
   }
 }

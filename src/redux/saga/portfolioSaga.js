@@ -9,6 +9,6 @@ export function* initPortfolioSaga() {
     const localData = yield call([localStorage, 'getItem'], 'portfolio');
     if (localData) yield put(initPortfolioSuccess(JSON.parse(localData)));
   } catch (error) {
-    yield put({ type: initPortfolioFail.type, payload: error });
+    yield put(initPortfolioFail(error));
   }
 }

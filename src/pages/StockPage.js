@@ -10,9 +10,9 @@ import { setTableLoading } from 'redux/slice/loadingSlice';
 
 // COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
-import Record from 'components/list/Record';
+import ListRecord from 'components/list/ListRecord';
 
-const StockPage = props => {
+const StockPage = () => {
   const dispatch = useDispatch();
   const stocks = useSelector(state => state.stock.stocks);
 
@@ -70,7 +70,7 @@ const StockPage = props => {
   return (
     <div>
       <SearchBar onClickSearch={onClickSearch} onClickReload={onClickReload} />
-      <Record />
+      <ListRecord />
     </div>
   );
 };

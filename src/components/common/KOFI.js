@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import './index.scss';
 
 const KoFI = ({ color, id, label }) => {
   return (

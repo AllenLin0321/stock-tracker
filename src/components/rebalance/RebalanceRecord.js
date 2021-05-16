@@ -13,7 +13,6 @@ import {
 } from 'utils';
 import { onChangeStockPercent } from 'redux/slice/portfolioSlice';
 import DetailDrawer from 'components/common/DetailDrawer';
-import 'components/common/Record.scss';
 
 const { Text } = Typography;
 const DEFAULT_DECIMAL = 2; // 小數點位數

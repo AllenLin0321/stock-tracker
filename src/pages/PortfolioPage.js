@@ -11,7 +11,7 @@ import { formatPortfolioData } from 'utils';
 
 // COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
-import Record from 'components/portfolio/Record';
+import PortfolioRecord from 'components/portfolio/PortfolioRecord';
 
 const Portfolio = () => {
   const dispatch = useDispatch();
@@ -86,7 +86,7 @@ const Portfolio = () => {
   return (
     <div>
       <SearchBar onClickSearch={onClickSearch} onClickReload={onClickReload} />
-      <Record />
+      <PortfolioRecord />
     </div>
   );
 };

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Form, InputNumber, Empty, Space } from 'antd';
 
-import Record from 'components/rebalance/Record';
-
-import 'pages/RebalancePage/index.scss';
+import RebalanceRecord from 'components/rebalance/RebalanceRecord';
 
 const RebalancePage = () => {
   const [isAddNewFund, setIsAddNewFund] = useState(false);
@@ -59,7 +57,7 @@ const RebalancePage = () => {
           </>
         )}
       </Form>
-      <Record
+      <RebalanceRecord
         isAddNewFund={isAddNewFund}
         isExpandAll={isExpandAll}
         newFund={newFund}

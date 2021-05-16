@@ -18,7 +18,6 @@ import arrayMove from 'array-move';
 import { onRemoveStock, onChangeOrder } from 'redux/slice/stockSlice';
 import { numberToCurrency, getStockChangePercent } from 'utils';
 import DetailDrawer from 'components/common/DetailDrawer';
-import 'components/common/Record.scss';
 
 const { Text } = Typography;
 const DragHandle = sortableHandle(() => (
@@ -28,7 +27,7 @@ const DragHandle = sortableHandle(() => (
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
 
-const Record = () => {
+const ListRecord = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedStock, setSelectedStock] = useState();
   const dispatch = useDispatch();
@@ -172,4 +171,4 @@ const Record = () => {
   );
 };
 
-export default Record;
+export default ListRecord;

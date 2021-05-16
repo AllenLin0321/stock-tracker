@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Router, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+
 // Page
 import StockPage from 'pages/StockPage.js';
 import PortfolioPage from 'pages/PortfolioPage.js';
