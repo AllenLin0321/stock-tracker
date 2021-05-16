@@ -3,8 +3,8 @@ import { message } from 'antd';
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
-import { setTableLoading } from '../redux/slice/loadingSlice';
-import { onSavePortfolio } from '../redux/slice/portfolioSlice';
+import { setTableLoading } from 'redux/slice/loadingSlice';
+import { onSavePortfolio, initPortfolio } from 'redux/slice/portfolioSlice';
 
 import { apiGetStock } from 'api';
 import { formatPortfolioData } from 'utils';
@@ -18,14 +18,12 @@ const Portfolio = () => {
   const portfolio = useSelector(state => state.portfolio.stocks);
 
   useEffect(() => {
-    fetchPortfolio();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(initPortfolio()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchPortfolio = async () => {
-    await onClickReload();
-    // await props.getLocalData('portfolio');
-  };
+  useEffect(() => {
+    onClickReload();
+  }, [portfolio.length]);
 
   const onClickSearch = async symbol => {
     if (symbol === '') return;
@@ -56,6 +54,7 @@ const Portfolio = () => {
 
     let promiseArr = portfolio.map(async stock => {
       delay += delayIncrement;
+
       return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
         apiGetStock(stock.symbol)
       );

@@ -1,65 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Switch, Form, InputNumber, Empty, Space } from 'antd';
 
-import { apiGetStock } from 'api';
-import * as actions from 'store/actions';
-import { formatPortfolioData } from 'utils';
 import Record from 'components/rebalance/Record';
 
 import 'pages/RebalancePage/index.scss';
 
-const RebalancePage = props => {
+const RebalancePage = () => {
   const [isAddNewFund, setIsAddNewFund] = useState(false);
   const [newFund, setNewFund] = useState(0);
   const [isExpandAll, setIsExpandAll] = useState(false);
+  const portfolio = useSelector(state => state.portfolio.stocks);
 
-  useEffect(() => {
-    const fetchPortfolio = async () => {
-      props.getLocalData('portfolio');
-      if (props.savedPortfolio) {
-        props.setTableLoading({ tableLoading: true });
-        await onClickReload();
-        props.setTableLoading({ tableLoading: false });
-      }
-    };
-    fetchPortfolio();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onClickReload = async () => {
-    const { portfolio, onSavePortfolio } = props;
-    const delayIncrement = 200;
-    let delay = 0;
-
-    if (portfolio.length === 0) return;
-
-    let promiseArr = portfolio.map(async stock => {
-      delay += delayIncrement;
-      return new Promise(resolve => setTimeout(resolve, delay)).then(() =>
-        apiGetStock(stock.symbol)
-      );
-    });
-
-    try {
-      const res = await Promise.all(promiseArr);
-      res.forEach(({ data }) => {
-        let matchStock = portfolio.find(
-          stock => stock.symbol === data.quote.symbol
-        );
-
-        let quantity = matchStock ? matchStock.quantity : null;
-        let defaultPrecent = matchStock ? matchStock.defaultPrecent : null;
-        onSavePortfolio(
-          formatPortfolioData({ ...data, quantity, defaultPrecent })
-        );
-      });
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
-
-  if (!props.portfolio || props.portfolio.length === 0) {
+  if (!portfolio || portfolio.length === 0) {
     return <Empty />;
   }
 
@@ -115,8 +68,4 @@ const RebalancePage = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return { portfolio: state.portfolio.stocks };
-};
-
-export default connect(mapStateToProps, actions)(RebalancePage);
+export default RebalancePage;

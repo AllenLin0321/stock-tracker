@@ -6,7 +6,7 @@ import {
   onChangeStockQuantity,
   onRemovePortfolio,
   onChangeOrder,
-} from '../../redux/slice/portfolioSlice';
+} from 'redux/slice/portfolioSlice';
 
 import {
   Table,

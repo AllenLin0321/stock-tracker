@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
-import * as actions from 'store/actions';
 import { getStockPercent } from 'utils';
 
 import Chart from 'components/portfolio/Chart';
 
-const ChartPage = props => {
-  const { portfolio } = props;
-
-  useEffect(() => {
-    props.getLocalData('portfolio');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+const ChartPage = () => {
+  const portfolio = useSelector(state => state.portfolio.stocks);
 
   const chartData = portfolio.map(stock => ({
     type: stock.symbol,
@@ -31,8 +25,4 @@ const ChartPage = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return { portfolio: state.portfolio.stocks };
-};
-
-export default connect(mapStateToProps, actions)(ChartPage);
+export default ChartPage;

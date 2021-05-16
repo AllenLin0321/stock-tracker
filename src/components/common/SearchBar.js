@@ -66,10 +66,6 @@ const SearchBar = props => {
     }
   };
 
-  const onClickReload = () => {
-    props.onClickReload();
-  };
-
   return (
     <SearchBarWrapper>
       <AutoComplete
@@ -92,7 +88,7 @@ const SearchBar = props => {
         type="primary"
         icon={<ReloadOutlined />}
         loading={isReloadLoading}
-        onClick={onClickReload}
+        onClick={props.onClickReload}
         style={{ marginLeft: '5px' }}
       />
     </SearchBarWrapper>

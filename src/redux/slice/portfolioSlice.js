@@ -11,14 +11,12 @@ const portfolioSlice = createSlice({
     stocks: [],
   },
   reducers: {
-    initPortfolio(state, { payload }) {
-      console.log('payload: ', payload);
-    },
+    initPortfolio(state, { payload }) {},
     initPortfolioSuccess(state, { payload }) {
-      console.log('payload: ', payload);
+      state.stocks = payload;
     },
     initPortfolioFail(state, { payload }) {
-      console.log('payload: ', payload);
+      console.log('fail: ', payload);
     },
     onSavePortfolio(state, { payload }) {
       let stockIndex = state.stocks.findIndex(
@@ -29,23 +27,34 @@ const portfolioSlice = createSlice({
       } else {
         state.stocks.push(payload);
       }
+      updateLocalStorage(state.stocks);
+    },
+    onRemovePortfolio(state, { payload }) {
+      const newStocks = state.stocks.filter(
+        stock => stock.symbol !== payload.symbol
+      );
+      state.stocks = newStocks;
+      updateLocalStorage(state.stocks);
     },
     onChangeStockQuantity(state, { payload }) {
       const stock = state.stocks.find(stock => stock.symbol === payload.symbol);
       if (stock) {
         stock.quantity = payload.quantity;
       }
-    },
-
-    onRemovePortfolio(state, { payload }) {
-      const newStocks = state.stocks.filter(
-        stock => stock.symbol !== payload.symbol
-      );
-      state.stocks = newStocks;
+      updateLocalStorage(state.stocks);
     },
 
     onChangeOrder(state, { payload }) {
       state.stocks = payload;
+      updateLocalStorage(state.stocks);
+    },
+
+    onChangeStockPercent(state, { payload }) {
+      const stock = state.stocks.find(stock => stock.symbol === payload.symbol);
+      if (stock) {
+        stock.defaultPrecent = payload.newPercent;
+      }
+      updateLocalStorage(state.stocks);
     },
   },
 });
@@ -58,6 +67,7 @@ export const {
   onChangeStockQuantity,
   onRemovePortfolio,
   onChangeOrder,
+  onChangeStockPercent,
 } = portfolioSlice.actions;
 
 export default portfolioSlice;

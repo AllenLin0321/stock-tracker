@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Table, InputNumber, Typography, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { injectIntl } from 'react-intl';
@@ -11,7 +11,7 @@ import {
   getTotalPercent, // 總投資百分比
   getNewQuantity, // 建議買賣股數
 } from 'utils';
-import * as actions from 'store/actions';
+import { onChangeStockPercent } from 'redux/slice/portfolioSlice';
 import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
 
@@ -19,13 +19,16 @@ const { Text } = Typography;
 const DEFAULT_DECIMAL = 2; // 小數點位數
 
 const Record = props => {
+  const dispatch = useDispatch();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedStock, setSelectedStock] = useState();
+  const portfolio = useSelector(state => state.portfolio.stocks);
+  const tableLoading = useSelector(state => state.loading.tableLoading);
 
   useEffect(() => {
     setExpandedRowKeys(
-      props.isExpandAll ? props.portfolio.map(stock => stock.symbol) : []
+      props.isExpandAll ? portfolio.map(stock => stock.symbol) : []
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isExpandAll]);
@@ -37,7 +40,7 @@ const Record = props => {
   const getInvestedValue = record => {
     const investedValue =
       getNewQuantity({
-        portfolio: props.portfolio,
+        portfolio: portfolio,
         newFund: props.newFund,
         record,
       }) * record.latestPrice;
@@ -51,7 +54,7 @@ const Record = props => {
   const getTradedValue = record => {
     const tradedValue =
       getNewQuantity({
-        portfolio: props.portfolio,
+        portfolio: portfolio,
         newFund: props.newFund,
         record,
       }) *
@@ -65,8 +68,8 @@ const Record = props => {
    * @param {Object} record 父層Row資料
    */
   const getTradedPercent = record => {
-    if (!props.portfolio || props.portfolio.length === 0) return 0;
-    const totalTradedValue = props.portfolio.reduce(
+    if (!portfolio || portfolio.length === 0) return 0;
+    const totalTradedValue = portfolio.reduce(
       (accu, curr) => accu + getTradedValue(curr),
       0
     );
@@ -105,7 +108,7 @@ const Record = props => {
           const title = props.intl.formatMessage({
             id: 'record.defaultPercent',
           });
-          const totalPercent = getTotalPercent(props.portfolio);
+          const totalPercent = getTotalPercent(portfolio);
           return (
             <div>
               <Text>{title}</Text>
@@ -126,9 +129,11 @@ const Record = props => {
               max={100}
               formatter={value => `${value}%`}
               parser={value => value.replace('%', '')}
-              onChange={newPercent =>
-                props.changeDefaultPercent({ rowData, newPercent })
-              }
+              onChange={newPercent => {
+                dispatch(
+                  onChangeStockPercent({ symbol: rowData.symbol, newPercent })
+                );
+              }}
             />
           );
         },
@@ -177,7 +182,7 @@ const Record = props => {
             render: rowData => {
               const percent = getStockPercent({
                 stock: rowData,
-                stockArr: props.portfolio,
+                stockArr: portfolio,
               });
               return (
                 <InputNumber
@@ -195,7 +200,7 @@ const Record = props => {
             render: rowData => {
               const percent = getStockPercent({
                 stock: rowData,
-                stockArr: props.portfolio,
+                stockArr: portfolio,
               });
 
               const shiftPercent =
@@ -226,7 +231,7 @@ const Record = props => {
             key: 'action',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: props.portfolio,
+                portfolio: portfolio,
                 newFund: props.newFund,
                 record,
               });
@@ -245,7 +250,7 @@ const Record = props => {
             key: 'newQuantity',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: props.portfolio,
+                portfolio: portfolio,
                 newFund: props.newFund,
                 record,
               });
@@ -267,7 +272,7 @@ const Record = props => {
             key: 'investedValue',
             render: () => {
               const newQuantity = getNewQuantity({
-                portfolio: props.portfolio,
+                portfolio: portfolio,
                 newFund: props.newFund,
                 record,
               });
@@ -324,7 +329,7 @@ const Record = props => {
 
   const renderTableFooter = () => {
     const reducer = (accu, curr) => accu + getInvestedValue(curr);
-    const totalInvested = props.portfolio.reduce(reducer, 0);
+    const totalInvested = portfolio.reduce(reducer, 0);
     return (
       <div>
         <div>
@@ -347,9 +352,9 @@ const Record = props => {
     rowKey: 'symbol',
     bordered: true,
     pagination: false,
-    dataSource: props.portfolio,
+    dataSource: portfolio,
     columns: renderColumns(),
-    loading: props.loading.tableLoading,
+    loading: tableLoading,
   };
 
   if (props.isAddNewFund) {
@@ -378,11 +383,4 @@ const Record = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    portfolio: state.portfolio.stocks,
-    loading: state.loading,
-  };
-};
-
-export default connect(mapStateToProps, actions)(injectIntl(Record));
+export default injectIntl(Record);
