@@ -1,26 +1,28 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
 import { apiGetStock } from 'api';
-import * as actions from 'store/actions';
 import { message } from 'antd';
 import { formatStockData } from 'utils';
 
+// REDUX
+import { useDispatch, useSelector } from 'react-redux';
+import { initStock, onSaveStock } from 'redux/slice/stockSlice';
+import { setTableLoading } from 'redux/slice/loadingSlice';
+
+// COMPONENTS
 import SearchBar from 'components/common/SearchBar.js';
 import Record from 'components/list/Record';
 
-const ListPage = props => {
+const StockPage = props => {
+  const dispatch = useDispatch();
+  const stocks = useSelector(state => state.stock.stocks);
+
   useEffect(() => {
-    const fetchStocks = async () => {
-      await props.getLocalData('stocks');
-      if (props.stocks) {
-        props.setTableLoading({ tableLoading: true });
-        await onClickReload();
-        props.setTableLoading({ tableLoading: false });
-      }
-    };
-    fetchStocks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(initStock()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    onClickReload();
+  }, [stocks.length]);
 
   const onClickSearch = async symbol => {
     if (symbol === '') return;
@@ -28,13 +30,9 @@ const ListPage = props => {
 
     try {
       const { data } = await apiGetStock(symbol);
-
-      if (data.quote) {
-        props.onSaveStock(formatStockData(data));
-      }
+      data.quote && dispatch(onSaveStock(formatStockData(data)));
       res.isSuccess = true;
     } catch (error) {
-      console.log('error: ', error);
       if (error.response) {
         message.error(error.response.data);
       }
@@ -44,7 +42,8 @@ const ListPage = props => {
   };
 
   const onClickReload = async () => {
-    const { stocks, onSaveStock } = props;
+    dispatch(setTableLoading(true));
+
     const delayIncrement = 250;
     let delay = 0;
 
@@ -60,26 +59,20 @@ const ListPage = props => {
     try {
       const res = await Promise.all(promiseArr);
       res.forEach(({ data }) => {
-        onSaveStock(formatStockData(data));
+        dispatch(onSaveStock(formatStockData(data)));
       });
     } catch (error) {
-      console.log('error: ', error);
+      error.response && message.error(error.response.data);
+    } finally {
+      dispatch(setTableLoading(false));
     }
   };
   return (
     <div>
-      <SearchBar
-        onClickSearch={onClickSearch}
-        onClickReload={onClickReload}
-        setTableLoading={props.setTableLoading}
-      />
+      <SearchBar onClickSearch={onClickSearch} onClickReload={onClickReload} />
       <Record />
     </div>
   );
 };
 
-const mapStateToProps = state => {
-  return { stocks: state.stocks };
-};
-
-export default connect(mapStateToProps, actions)(ListPage);
+export default StockPage;

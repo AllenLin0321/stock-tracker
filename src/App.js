@@ -35,18 +35,15 @@ const routes = [
 ];
 
 const App = () => {
-  // useEffect(() => {
-  //   history.push('/portfolio');
-  // }, []);
+  useEffect(() => {
+    history.push('/portfolio');
+  }, []);
 
   return (
     <Router history={history}>
       <div className="header">
         <NavBar history={history} />
       </div>
-      <Route exact path="/">
-        <Redirect to="/portfolio" />
-      </Route>
       {routes.map((route, index) => (
         <Route key={index} path={route.path} component={route.component} />
       ))}

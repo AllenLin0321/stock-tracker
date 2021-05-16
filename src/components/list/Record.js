@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Table, Button, Tag, Typography, Empty } from 'antd';
 import {
   sortableContainer,
@@ -15,7 +15,7 @@ import {
 } from '@ant-design/icons';
 import arrayMove from 'array-move';
 
-import * as actions from 'store/actions';
+import { onRemoveStock, onChangeOrder } from 'redux/slice/stockSlice';
 import { numberToCurrency, getStockChangePercent } from 'utils';
 import DetailDrawer from 'components/common/DetailDrawer';
 import 'components/common/Record.scss';
@@ -28,11 +28,12 @@ const DragHandle = sortableHandle(() => (
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
 
-const Record = props => {
+const Record = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedStock, setSelectedStock] = useState();
-
-  const { stocks, loading } = props;
+  const dispatch = useDispatch();
+  const stocks = useSelector(state => state.stock.stocks);
+  const tableLoading = useSelector(state => state.loading.tableLoading);
 
   if (!stocks || stocks.length === 0) return <Empty />;
 
@@ -109,7 +110,7 @@ const Record = props => {
             shape="circle"
             icon={<DeleteOutlined />}
             onClick={() => {
-              props.removeStock(rowData);
+              dispatch(onRemoveStock(rowData));
             }}
           />
         );
@@ -120,16 +121,15 @@ const Record = props => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) {
       const newStockArr = arrayMove(
-        [].concat(props.stocks),
+        [].concat(stocks),
         oldIndex,
         newIndex
       ).filter(el => !!el);
-      props.changeStockOrder({ newStockArr });
+      dispatch(onChangeOrder(newStockArr));
     }
   };
 
   const DraggableBodyRow = ({ className, style, ...restProps }) => {
-    const { stocks } = props;
     // function findIndex base on Table rowKey props and should always be a right array index
     const index = stocks.findIndex(x => x.symbol === restProps['data-row-key']);
     return <SortableItem index={index} {...restProps} />;
@@ -152,7 +152,7 @@ const Record = props => {
         columns={columns}
         rowKey="symbol"
         scroll={{ y: 200 }}
-        loading={loading.tableLoading}
+        loading={tableLoading}
         components={{
           body: {
             wrapper: DraggableContainer,
@@ -172,8 +172,4 @@ const Record = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return { stocks: state.stocks, loading: state.loading };
-};
-
-export default connect(mapStateToProps, actions)(Record);
+export default Record;
