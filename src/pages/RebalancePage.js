@@ -10,9 +10,7 @@ const RebalancePage = () => {
   const [isExpandAll, setIsExpandAll] = useState(false);
   const portfolio = useSelector(state => state.portfolio.stocks);
 
-  if (!portfolio || portfolio.length === 0) {
-    return <Empty />;
-  }
+  if (portfolio?.length === 0) return <Empty />;
 
   return (
     <div className="rebalance__wrapper">

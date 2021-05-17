@@ -14,9 +14,7 @@ const ChartPage = () => {
     value: stock.latestPrice * stock.quantity,
   }));
 
-  if (!portfolio || portfolio.length === 0) {
-    return <Empty />;
-  }
+  if (portfolio?.length === 0) return <Empty />;
 
   return (
     <div>

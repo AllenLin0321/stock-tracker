@@ -49,7 +49,7 @@ const Portfolio = () => {
     const delayIncrement = 200;
     let delay = 0;
 
-    if (portfolio.length === 0) return;
+    if (portfolio?.length === 0) return;
 
     let promiseArr = portfolio.map(async stock => {
       delay += delayIncrement;

@@ -34,7 +34,7 @@ const ListRecord = () => {
   const stocks = useSelector(state => state.stock.stocks);
   const tableLoading = useSelector(state => state.loading.tableLoading);
 
-  if (!stocks || stocks.length === 0) return <Empty />;
+  if (stocks?.length === 0) return <Empty />;
 
   const columns = [
     {
