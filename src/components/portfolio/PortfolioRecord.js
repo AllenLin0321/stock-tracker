@@ -148,15 +148,27 @@ const Record = () => {
       render: ({ change, previousClose }) => {
         const changePercent = getStockChangePercent({ change, previousClose });
         const isRise = changePercent > 0;
+        const displayColor = isRise
+          ? 'green'
+          : changePercent === 0
+          ? 'lightgray'
+          : 'red';
+
         return (
           <div>
-            <div style={{ color: isRise ? 'green' : 'red' }}>
+            <div style={{ color: displayColor }}>
               {isRise && '+'}
               {change}
             </div>
             <Tag
-              color={isRise ? 'green' : 'red'}
-              icon={isRise ? <RiseOutlined /> : <FallOutlined />}
+              color={displayColor}
+              icon={
+                isRise ? (
+                  <RiseOutlined />
+                ) : changePercent === 0 ? null : (
+                  <FallOutlined />
+                )
+              }
             >
               {isRise && '+'}
               {changePercent}%
